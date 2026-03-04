@@ -1,0 +1,3 @@
+- [x] Update goHome() function to navigate to "Program Mental Health.html"
+- [x] Change back button onclick from "goNext()" to "goHome()"
+- [x] Define goNext() function to navigate to "Program Mental Health.html"

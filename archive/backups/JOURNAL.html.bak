@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MyDiary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg,#ffd6e7,#ffeef5);
+}
+
+.page{
+    display:none;
+    min-height:100vh;
+    padding:20px;
+}
+
+.active{
+    display:block;
+}
+
+#page1{
+    background-image: url('file:///C:/Users/MGB/Desktop/nhek/IMAGES/10.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#page2{
+    background-image: url('file:///C:/Users/MGB/Desktop/nhek/IMAGES/Research%20UI%20(21).jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.icon{
+    font-size:22px;
+    cursor:pointer;
+}
+
+.container{
+    max-width:500px;
+    margin:30px auto;
+    background:#fff0f6;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+input, textarea{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+textarea{
+    height:200px;
+    resize:none;
+    background: repeating-linear-gradient(
+        white,
+        white 28px,
+        #f0c2d1 29px
+    );
+    line-height:28px;
+}
+
+button{
+    background:#f39ab5;
+    border:none;
+    padding:12px 25px;
+    border-radius:20px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+button:hover{
+    background:#ee7fa3;
+}
+
+.diary-card{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    margin:10px 0;
+    text-align:left;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1: CREATE DIARY -->
+<div class="page active" id="page1">
+    <div class="header">
+        <span></span>
+        <span class="icon" onclick="goHome()">ðŸ </span>
+    </div>
+
+    <div class="container">
+        <h2>MyDiary</h2>
+        <p>A private world, in words untold.</p>
+
+        <input id="name" placeholder="Your Name">
+        <input id="title" placeholder="Diary Title">
+
+        <button onclick="createDiary()">Create</button>
+    </div>
+</div>
+
+<!-- PAGE 2: WRITE DIARY -->
+<div class="page" id="page2">
+    <div class="header">
+        <span class="icon" onclick="goBack()">â¬…</span>
+        <span class="icon" onclick="goHome()">ðŸ </span>
+    </div>
+
+    <div class="container">
+        <h3 id="diaryHeader"></h3>
+
+        <textarea id="content" placeholder="Write your thoughts here..."></textarea>
+
+        <button onclick="addPage()">Add Page</button><br>
+        <button onclick="saveDiary()">Done</button>
+    </div>
+</div>
+
+<!-- PAGE 3: DIARY LIST -->
+<div class="page" id="page3">
+    <div class="header">
+        <span class="icon" onclick="goBack()">â¬…</span>
+        <span class="icon" onclick="goHome()">ðŸ </span>
+    </div>
+
+    <div class="container">
+        <input id="search" placeholder="Search diary..." onkeyup="searchDiary()">
+
+        <div id="diaryList"></div>
+    </div>
+</div>
+
+<script>
+let historyStack = [];
+let pages = document.querySelectorAll(".page");
+
+function showPage(id){
+    pages.forEach(p => p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+function goBack(){
+    if(historyStack.length > 0){
+        showPage(historyStack.pop());
+    }
+}
+
+function goHome(){
+    historyStack = [];
+    showPage("page1");
+}
+
+function createDiary(){
+    let name = document.getElementById("name").value;
+    let title = document.getElementById("title").value;
+
+    if(name === "" || title === ""){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    localStorage.setItem("currentName", name);
+    localStorage.setItem("currentTitle", title);
+    document.getElementById("content").value = "";
+
+    document.getElementById("diaryHeader").innerText =
+        title + " - by " + name;
+
+    historyStack.push("page1");
+    showPage("page2");
+}
+
+function addPage(){
+    document.getElementById("content").value += "\n\n";
+}
+
+function saveDiary(){
+    let diaries = JSON.parse(localStorage.getItem("diaries")) || [];
+
+    diaries.push({
+        title: localStorage.getItem("currentTitle"),
+        name: localStorage.getItem("currentName"),
+        content: document.getElementById("content").value,
+        date: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem("diaries", JSON.stringify(diaries));
+    loadDiaries();
+
+    historyStack.push("page2");
+    showPage("page3");
+}
+
+function loadDiaries(){
+    let list = document.getElementById("diaryList");
+    list.innerHTML = "";
+
+    let diaries = JSON.parse(localStorage.getItem("diaries")) || [];
+
+    diaries.forEach(d => {
+        let div = document.createElement("div");
+        div.className = "diary-card";
+        div.innerHTML = `<strong>${d.title}</strong><br>
+                         ${d.name} | ${d.date}`;
+        div.onclick = () => alert(d.content);
+        list.appendChild(div);
+    });
+}
+
+function searchDiary(){
+    let value = document.getElementById("search").value.toLowerCase();
+    let cards = document.querySelectorAll(".diary-card");
+
+    cards.forEach(card => {
+        card.style.display =
+            card.innerText.toLowerCase().includes(value) ? "block" : "none";
+    });
+}
+
+loadDiaries();
+</script>
+
+</body>
+</html>

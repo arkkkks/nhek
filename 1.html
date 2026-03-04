@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create My Diary</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    padding-top: 100px;
+  }
+
+  h1 {
+    font-family: "Brush Script MT", cursive;
+    font-size: 50px;
+    color: #4b1b39;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #4b1b39;
+    margin-bottom: 30px;
+    font-size: 18px;
+  }
+
+  .input-box {
+    display: block;
+    margin: 15px auto;
+    padding: 15px;
+    width: 280px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    background: #f7c0de;
+    color: #4b1b39;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .input-box:focus {
+    background: #fff;
+  }
+
+  .create-btn {
+    background: #f28ab2;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 40px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+  }
+
+  .create-btn:hover {
+    background: #e36d9f;
+  }
+</style>
+</head>
+<body>
+
+  <h1>My Diary</h1>
+  <p>A private world, in words untold.</p>
+
+  <input type="text" id="nameInput" class="input-box" placeholder="Name">
+  <input type="text" id="titleInput" class="input-box" placeholder="Diary Title">
+
+  <button class="create-btn" onclick="createDiary()">Create</button>
+
+  <script>
+    function createDiary() {
+      const name = document.getElementById("nameInput").value.trim();
+      const title = document.getElementById("titleInput").value.trim();
+
+      if (!name || !title) {
+        alert("Please fill out both Name and Title!");
+        return;
+      }
+
+      localStorage.setItem("userName", name);
+      localStorage.setItem("diaryTitle", title);
+
+      window.location.href ="/2.html";
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+

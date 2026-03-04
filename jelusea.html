@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Jealsy cure</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .page-title {
+    margin-bottom: 20px;
+  }
+
+  /* FLIPBOOK */
+  .flipbook {
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    transition: all 0.4s ease;
+  }
+
+  .flipbook.maximized {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 95vw;
+    height: 95vh;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    background: #fff;
+  }
+
+  .flipbook div {
+    background: white;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .hard {
+    background: #ddd;
+  }
+
+  .hard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .book-title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .thank-you {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  /* BUTTONS */
+  #toggle-icons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+
+  #toggle-icons button {
+    font-size: 18px;
+    padding: 10px 14px;
+    margin-left: 6px;
+    cursor: pointer;
+  }
+
+  #finish-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h1 class="page-title">Story about stress</h1>
+
+<div class="flipbook">
+  <div class="hard">
+    <img src="/IMAGES/overcoming.jpg" alt="Cover">
+  </div>
+
+  <div class="hard"></div>
+
+  <div>
+    <p class="book-title">"Burnout by: Amelia Nagoski"</p>
+  </div>
+
+  <div>
+    <p>
+      Amelia Nagoski was working as a choral conductor — a demanding job she loved.
+      She cared deeply about her students and pushed herself relentlessly.
+    </p>
+    <p>
+      One day, she collapsed from stress and was rushed to the hospital.
+    </p>
+  </div>
+
+  <div>
+    <p>
+      Doctors told her she was suffering from severe burnout.
+      Her body was shutting down.
+    </p>
+  </div>
+
+  <div>
+    <p>
+      Recovery taught her that stress must be released, not ignored.
+      Rest, movement, and boundaries saved her.
+    </p>
+  </div>
+
+  <div class="hard"></div>
+  <div class="hard"><span class="thank-you">Thank You</span></div>
+</div>
+
+<div id="toggle-icons">
+  <button id="maximize-btn">⬜</button>
+  <button id="minimize-btn" style="display:none;">➖</button>
+</div>
+
+<button id="finish-button">Finish Reading</button>
+
+<!-- REQUIRED LIBRARIES -->
+<script src="jquery.js"></script>
+<script src="turn.js"></script>
+
+<script>
+  $(document).ready(function () {
+    const $flipbook = $(".flipbook");
+
+    function lockFlipbookPosition() {
+      $flipbook.css("margin-left", 0);
+    }
+
+    $flipbook.turn({
+      width: 800,
+      height: 500,
+      autoCenter: false
+    });
+    lockFlipbookPosition();
+    $flipbook.on("turning turned", lockFlipbookPosition);
+
+    $("#finish-button").click(() => {
+      alert("You have finished reading the book!");
+    });
+
+    $("#maximize-btn").click(() => {
+      $flipbook.addClass("maximized");
+      $flipbook.turn("size", window.innerWidth * 0.95, window.innerHeight * 0.95);
+      lockFlipbookPosition();
+      $("#maximize-btn").hide();
+      $("#minimize-btn").show();
+    });
+
+    $("#minimize-btn").click(() => {
+      $flipbook.removeClass("maximized");
+      $flipbook.turn("size", 800, 500);
+      lockFlipbookPosition();
+      $("#minimize-btn").hide();
+      $("#maximize-btn").show();
+    });
+
+    $(window).on("resize", () => {
+      if ($flipbook.hasClass("maximized")) {
+        $flipbook.turn(
+          "size",
+          window.innerWidth * 0.95,
+          window.innerHeight * 0.95
+        );
+        lockFlipbookPosition();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

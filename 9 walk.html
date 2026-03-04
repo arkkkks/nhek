@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walk with Nature</title>
+    <style>
+        body {
+            background-image:url("/IMAGES/16.jpg");
+            background-repeat:no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #90EE90); /* Sky to grass gradient */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Hide scrollbars */
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #e91e63;
+        }
+        #subtitle {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        #timer {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        #start-button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #pause-button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            background-color: #008CBA; /* Blue */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .scenery {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 300px;
+            background: url('https://images.unsplash.com/photo-1503828598411-5939a5841db8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') repeat-x bottom;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Walk with Nature</h1>
+        <p id="subtitle">Any time you feel the pain...</p>
+        <div id="timer">00:00</div>
+        <button id="start-button">Start</button>
+        <button id="pause-button" disabled>Pause</button>
+    </div>
+    <div class="scenery"></div>
+    <script>
+        let timerInterval;
+        let timeLeft = 0; // Time in seconds
+        let isRunning = false;
+
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('start-button');
+        const pauseButton = document.getElementById('pause-button');
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')};
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startButton.disabled = true;
+                pauseButton.disabled = false;
+
+                timerInterval = setInterval(() => {
+                    timeLeft++;
+                    updateDisplay();
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            if (isRunning) {
+                isRunning = false;
+                startButton.disabled = false;
+                pauseButton.disabled = true;
+                clearInterval(timerInterval);
+            }
+        }
+
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+    </script>
+</body>
+</html>
+
+

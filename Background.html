@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Mental Health UI</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  color: #3a3550;
+}
+
+/* 🌈 Moving Gradient (Your Colors) */
+.background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+  background-size: 300% 300%;
+  animation: gradientMove 20s ease infinite;
+  z-index: -2;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 💫 Soft Floating Blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: blobFloat 28s ease-in-out infinite;
+}
+
+.blob1 {
+  width: 320px;
+  height: 320px;
+  background: #ffffff;
+  top: 60%;
+  left: 5%;
+}
+
+.blob2 {
+  width: 260px;
+  height: 260px;
+  background: #ffd6f3;
+  top: 15%;
+  left: 70%;
+  animation-delay: 6s;
+}
+
+.blob3 {
+  width: 220px;
+  height: 220px;
+  background: #dbeafe;
+  top: 75%;
+  left: 45%;
+  animation-delay: 12s;
+}
+
+@keyframes blobFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(40px, -60px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* ✨ Gentle Particles */
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: drift linear infinite;
+}
+
+@keyframes drift {
+  from { transform: translateY(100vh); }
+  to   { transform: translateY(-10vh); }
+}
+
+/* 🧘 Content */
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  top: 45%;
+  transform: translateY(-50%);
+  padding: 20px;
+}
+
+.content h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<script>
+for (let i = 0; i < 25; i++) {
+  const particle = document.createElement("div");
+  particle.className = "particle";
+  particle.style.left = Math.random() * 100 + "vw";
+  particle.style.animationDuration = (12 + Math.random() * 18) + "s";
+  particle.style.opacity = Math.random();
+  document.body.appendChild(particle);
+}
+</script>
+
+<main class="content">
+  <h1>Your Safe Space</h1>
+  <p>Breathe gently. You are supported.</p>
+</main>
+
+</body>
+</html>

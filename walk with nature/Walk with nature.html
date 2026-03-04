@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walk with Nature</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button class="icon-btn back" onclick="goBack()" aria-label="Go back" title="Back">&#8592;</button>
+<button class="icon-btn home" onclick="goHome()" aria-label="Go home" title="Home">&#8962;</button>
+
+<div class="scene" id="scene">
+    <div class="nature-layer sky">
+        <div class="sun"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+    <div class="nature-layer mountains"></div>
+    <div class="nature-layer trees trees-far"></div>
+    <div class="nature-layer trees trees-near"></div>
+    <div class="trail"></div>
+
+    <img src="walk-walking.gif" id="character" class="character char-traveler" alt="Walking character">
+    <div id="customCharacter" class="character custom-character hidden" aria-hidden="true">
+        <div class="human-figure" id="walkFigure">
+            <div class="human-head"></div>
+            <div class="human-hair"></div>
+            <div class="human-hat"></div>
+            <div class="human-body"></div>
+            <div class="human-dress"></div>
+            <div class="human-arm arm-left"></div>
+            <div class="human-arm arm-right"></div>
+            <div class="human-leg leg-left"></div>
+            <div class="human-leg leg-right"></div>
+            <div class="human-shoe shoe-left"></div>
+            <div class="human-shoe shoe-right"></div>
+            <div class="human-accessory"></div>
+            <img class="part-object object-wig" alt="Wig object">
+            <img class="part-object object-top" alt="Top object">
+            <img class="part-object object-bottom" alt="Bottom object">
+            <img class="part-object object-dress" alt="Dress object">
+            <img class="part-object object-hat" alt="Hat object">
+            <img class="part-object object-shoes-left" alt="Left shoe object">
+            <img class="part-object object-shoes-right" alt="Right shoe object">
+            <img class="part-object object-accessory" alt="Accessory object">
+        </div>
+    </div>
+
+    <div class="timer">
+        <span id="time">00:03:00</span>
+    </div>
+
+    <div class="controls">
+        <div class="human-picker" id="humanPicker">
+            <button class="human-option is-active" type="button" data-character="traveler" aria-pressed="true">
+                <span class="human-avatar avatar-traveler"></span>
+                Traveler
+            </button>
+            <button class="human-option" type="button" data-character="sport" aria-pressed="false">
+                <span class="human-avatar avatar-sport"></span>
+                Sport
+            </button>
+            <button class="human-option" type="button" data-character="sunset" aria-pressed="false">
+                <span class="human-avatar avatar-sunset"></span>
+                Sunset
+            </button>
+            <button class="human-option" type="button" data-character="classic" aria-pressed="false">
+                <span class="human-avatar avatar-classic"></span>
+                Classic
+            </button>
+            <button class="human-option create-human-btn" id="openCreatorBtn" type="button" aria-pressed="false">
+                <span class="human-avatar avatar-create"></span>
+                Create
+            </button>
+        </div>
+        <div class="time-inputs">
+            <label for="hours" class="sr-only">Hours</label>
+            <input type="number" id="hours" placeholder="HH" min="0" value="0">
+            <label for="minutes" class="sr-only">Minutes</label>
+            <input type="number" id="minutes" placeholder="MM" min="0" value="3">
+            <label for="seconds" class="sr-only">Seconds</label>
+            <input type="number" id="seconds" placeholder="SS" min="0" value="0">
+        </div>
+        <div class="action-buttons">
+            <button id="startBtn" type="button">START</button>
+            <button id="continueBtn" class="hidden" type="button">CONTINUE</button>
+        </div>
+        <div class="speed-controls">
+            <button type="button" data-speed="18">Slow</button>
+            <button type="button" data-speed="12">Steady</button>
+            <button type="button" data-speed="7">Faster</button>
+        </div>
+    </div>
+</div>
+
+<div id="creatorModal" class="creator-modal hidden" role="dialog" aria-modal="true" aria-labelledby="creatorTitle">
+    <div class="creator-panel">
+        <h2 id="creatorTitle">Create Human</h2>
+        <div class="creator-layout">
+            <div class="creator-preview">
+                <div class="human-figure preview-figure" id="creatorFigure">
+                    <div class="human-head"></div>
+                    <div class="human-hair"></div>
+                    <div class="human-hat"></div>
+                    <div class="human-body"></div>
+                    <div class="human-dress"></div>
+                    <div class="human-arm arm-left"></div>
+                    <div class="human-arm arm-right"></div>
+                    <div class="human-leg leg-left"></div>
+                    <div class="human-leg leg-right"></div>
+                    <div class="human-shoe shoe-left"></div>
+                    <div class="human-shoe shoe-right"></div>
+                    <div class="human-accessory"></div>
+                    <img class="part-object object-wig" alt="Wig object">
+                    <img class="part-object object-top" alt="Top object">
+                    <img class="part-object object-bottom" alt="Bottom object">
+                    <img class="part-object object-dress" alt="Dress object">
+                    <img class="part-object object-hat" alt="Hat object">
+                    <img class="part-object object-shoes-left" alt="Left shoe object">
+                    <img class="part-object object-shoes-right" alt="Right shoe object">
+                    <img class="part-object object-accessory" alt="Accessory object">
+                </div>
+            </div>
+            <div class="creator-controls">
+                <label>Gender
+                    <select id="creatorGender">
+                        <option value="boy">Boy</option>
+                        <option value="girl">Girl</option>
+                    </select>
+                </label>
+                <label>Top
+                    <select id="creatorTop">
+                        <option value="tshirt">T-Shirt</option>
+                        <option value="hoodie">Hoodie</option>
+                        <option value="jacket">Jacket</option>
+                    </select>
+                </label>
+                <label>Bottom
+                    <select id="creatorBottom">
+                        <option value="pants">Pants</option>
+                        <option value="shorts">Shorts</option>
+                        <option value="dress">Dress</option>
+                    </select>
+                </label>
+                <label>Hat
+                    <select id="creatorHat">
+                        <option value="none">None</option>
+                        <option value="cap">Cap</option>
+                        <option value="beanie">Beanie</option>
+                    </select>
+                </label>
+                <label>Shoes
+                    <select id="creatorShoes">
+                        <option value="sneakers">Sneakers</option>
+                        <option value="boots">Boots</option>
+                    </select>
+                </label>
+                <label>Accessory
+                    <select id="creatorAccessory">
+                        <option value="none">None</option>
+                        <option value="backpack">Backpack</option>
+                        <option value="scarf">Scarf</option>
+                        <option value="glasses">Glasses</option>
+                    </select>
+                </label>
+                <label>Skin Color <input type="color" id="creatorSkinColor" value="#f2be93"></label>
+                <label>Hair Color <input type="color" id="creatorHairColor" value="#352319"></label>
+                <label>Top Color <input type="color" id="creatorTopColor" value="#4b8f4b"></label>
+                <label>Bottom Color <input type="color" id="creatorBottomColor" value="#55463e"></label>
+                <label>Hat Color <input type="color" id="creatorHatColor" value="#7b3f00"></label>
+                <label>Shoe Color <input type="color" id="creatorShoeColor" value="#f5d64f"></label>
+                <label>Wig Object <input type="file" id="creatorObjectWig" accept="image/*"></label>
+                <label>Top Object <input type="file" id="creatorObjectTop" accept="image/*"></label>
+                <label>Pants Object <input type="file" id="creatorObjectBottom" accept="image/*"></label>
+                <label>Dress Object <input type="file" id="creatorObjectDress" accept="image/*"></label>
+                <label>Hat Object <input type="file" id="creatorObjectHat" accept="image/*"></label>
+                <label>Shoes Object <input type="file" id="creatorObjectShoes" accept="image/*"></label>
+                <label>Accessory Object <input type="file" id="creatorObjectAccessory" accept="image/*"></label>
+            </div>
+        </div>
+        <div class="creator-actions">
+            <button id="closeCreatorBtn" type="button">Close</button>
+            <button id="clearObjectsBtn" type="button">Clear Objects</button>
+            <button id="useCreatorBtn" type="button">Use in Walk</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+    function goBack() {
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+        goHome();
+    }
+
+    function goHome() {
+        window.location.href = "/Program%20Mental%20Health.html";
+    }
+</script>
+</body>
+</html>

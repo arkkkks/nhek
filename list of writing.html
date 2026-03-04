@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Diary Entries</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #fdd6e4, #f9b0d1);
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    font-family: "Brush Script MT", cursive;
+    color: #4b1b39;
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 30px;
+    width: 70%;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .search-bar input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .search-bar i {
+    color: #ff7ea6;
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  .diary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .diary-item {
+    background: #fff;
+    border: 2px solid #e8a2c8;
+    border-radius: 25px;
+    padding: 20px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }
+
+  .diary-item:hover {
+    transform: scale(1.03);
+  }
+
+  .month-circle {
+    background: #e6849c;
+    color: white;
+    font-size: 14px;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .diary-info {
+    flex-grow: 1;
+  }
+
+  .diary-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4b1b39;
+    margin-bottom: 5px;
+  }
+
+  .diary-date {
+    font-size: 14px;
+    color: #777;
+  }
+
+  .home-btn {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .home-btn i {
+    font-size: 28px;
+    color: #4b1b39;
+  }
+</style>
+</head>
+<body>
+
+<button class="home-btn" onclick="goHome()"><i>🏠</i></button>
+
+<h1>💌 My Diary Entries</h1>
+
+<div class="search-bar">
+  <i>🔍</i>
+  <input type="text" id="searchInput" placeholder="Type your every month feeling..." onkeyup="filterDiaries()">
+</div>
+
+<div class="diary-grid" id="diaryList"></div>
+
+<script>
+  // Sample diary entries (for testing)
+  const savedDiaries = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+
+  // Example if you want to test it manually
+  if (savedDiaries.length === 0) {
+    const example = [
+      { title: "Tired, But Still Trying", month: "January", year: "2025", feeling: "Feeling Overwhelmed" },
+      { title: "Finding Strength", month: "February", year: "2025", feeling: "Feeling Left Out" },
+      { title: "Burnout Blues", month: "March", year: "2025", feeling: "Burn out starts" },
+      { title: "Hopeful Heart", month: "April", year: "2025", feeling: "Confused and drained" },
+      { title: "Final Stretch", month: "May", year: "2025", feeling: "End of school pressure" },
+      { title: "Quiet Reflections", month: "June", year: "2025", feeling: "Quiet sadness" }
+    ];
+    localStorage.setItem("diaryEntries", JSON.stringify(example));
+    location.reload();
+  }
+
+  // Render diaries
+  const diaryList = document.getElementById("diaryList");
+
+  function renderDiaries(list) {
+    diaryList.innerHTML = "";
+    list.forEach(entry => {
+      const div = document.createElement("div");
+      div.classList.add("diary-item");
+      div.innerHTML = `
+        <div class="month-circle">${entry.month}</div>
+        <div class="diary-info">
+          <div class="diary-title">${entry.title}</div>
+          <div class="diary-date">${entry.feeling} • ${entry.month} ${entry.year}</div>
+        </div>
+      `;
+      diaryList.appendChild(div);
+    });
+  }
+
+  renderDiaries(savedDiaries);
+
+  // Filter function for search
+  function filterDiaries() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = savedDiaries.filter(entry =>
+      entry.title.toLowerCase().includes(query) ||
+      entry.month.toLowerCase().includes(query) ||
+      entry.feeling.toLowerCase().includes(query)
+    );
+    renderDiaries(filtered);
+  }
+
+  function goHome() {
+    window.location.href = "index.html"; // your home page
+  }
+</script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Diary</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #fdd6e4, #f9b0d1);
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 40px;
+    width: 340px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  h1 {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 42px;
+    margin-bottom: 5px;
+    color: #4b1b39;
+  }
+
+  p {
+    font-size: 14px;
+    color: #5b3756;
+    margin-bottom: 25px;
+  }
+
+  .input-box {
+    background: #e8a4c6;
+    border: none;
+    border-radius: 25px;
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+
+  .input-box::placeholder {
+    color: rgba(255,255,255,0.8);
+  }
+
+  .input-box:focus {
+    background: #f8a8c9;
+    transform: scale(1.03);
+  }
+
+  .create-btn {
+    background: #f6a6b9;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4b1b39;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .create-btn:hover {
+    background: #f09eb2;
+    transform: scale(1.05);
+  }
+
+  .icon {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .icon img {
+    width: 25px;
+    height: 25px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="icon" onclick="goBack()">
+    <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="back">
+  </div>
+
+  <h1>MyDiary</h1>
+  <p>A private world, in words untold.</p>
+
+  <input type="text" id="nameInput" class="input-box" placeholder="Name |">
+  <input type="text" id="titleInput" class="input-box" placeholder="Title |">
+
+  <button class="create-btn" onclick="createDiary()">Create</button>
+</div>
+
+<script>
+  function goBack() {
+    // Optional back button
+    window.history.back();
+  }
+
+  function createDiary() {
+    const name = document.getElementById("nameInput").value.trim();
+    const title = document.getElementById("titleInput").value.trim();
+
+    if (!name || !title) {
+      alert("Please enter both your Name and Diary Title ✨");
+      return;
+    }
+
+    // Save to localStorage or session
+    localStorage.setItem("diaryName", name);
+    localStorage.setItem("diaryTitle", title);
+
+    // Redirect to next page (you can replace diary.html)
+    window.location.href = "/write%20diary.html";
+  }
+</script>
+
+</body>
+</html>
+
+
+

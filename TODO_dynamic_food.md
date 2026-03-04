@@ -1,0 +1,3 @@
+- [ ] Expand foods.json: Add more food suggestions to each emotion's array (aim for 8-10 per emotion) to create a larger pool.
+- [ ] Update 11 food.html: Modify the displayFood() JavaScript function to randomly select and display 4 unique foods from the emotion's pool each time the button is clicked.
+- [ ] Test the page: Click emotion buttons multiple times to ensure foods change and verify popup/other functionalities work.

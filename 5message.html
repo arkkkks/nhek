@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirational Verse</title>
+    <style>
+        body {
+            background-image:url("/IMAGES/Research%20UI%20(11).jpg");
+            background-repeat:no-repeat;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7e6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-container {
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            max-width: 600px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-container::before {
+            display: none;
+        }
+
+        .card-container h2 {
+            color: #d63384;
+            margin-bottom: 15px;
+            font-size: 2em;
+            text-shadow: 1px 2px 10px #fff, 0 1px 0 #a03c6e;
+            text-align: left;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .verse-text {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #333;
+            background: none;
+            box-shadow: none;
+            text-shadow: 1px 2px 10px #fff, 0 1px 0 #a03c6e;
+            text-align: left;
+        }
+
+        .verse-reference {
+            font-weight: bold;
+            color: #d63384;
+            margin-top: 5px;
+            display: block;
+            text-shadow: 1px 2px 10px #fff, 0 1px 0 #a03c6e;
+        }
+
+        .message-text {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #555;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dotted #ffccdd;
+            background: none;
+            box-shadow: none;
+            text-shadow: 1px 2px 10px #fff;
+        }
+
+        .mark-as-read {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            background: none;
+        }
+
+        .done-button {
+            background-color: #ff85a2;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .done-button:hover {
+            background-color: #ff6b8f;
+            transform: translateY(-2px);
+        }
+
+        .done-button:active {
+            background-color: #e05a7d;
+            transform: translateY(0);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <h2>Verse</h2>
+        <p class="verse-text">
+            The pain you're feeling right now, can't<br>
+            compare to the joy that's coming.
+            <span class="verse-reference">Romans 8:18</span>
+        </p>
+        <hr style="border: 0; border-top: 2px solid #d63384; margin: 24px 0;">
+        <h2>Message</h2>
+        <p class="message-text">Dear students, when you feel jealous of others — maybe their grades, talents, or looks — remember that peace and thankfulness bring real happiness. Focus on your own blessings and watch how your heart feels lighter each day.
+           
+        <button class="done-button" style="display:block; margin: 20px auto 0 auto;" onclick="alert('Mensahe: Tapos na basahin!');">Done</button>
+    </div>
+</body>
+</html>
+
+
+
+

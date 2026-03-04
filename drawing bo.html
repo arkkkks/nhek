@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mood Board Paint Pro</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Comic Sans MS", system-ui, sans-serif;
+  background: linear-gradient(135deg,#ffddea,#ffe6f2);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* TOGGLE BUTTON */
+.toggle-tools-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #ffc1da;
+  border: 3px solid #FF69B4;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  font-size: 22px;
+  color: #FF69B4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+
+.toggle-tools-btn:hover {
+  background: #FF69B4;
+  color: white;
+  box-shadow: 0 0 15px rgba(255,105,180,.8);
+}
+
+/* LEFT TOOLBAR */
+.toolbar {
+  width: 200px;
+  background: #ffc1da;
+  padding: 12px;
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: fixed;
+  left: 20px;
+  top: 90px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,.25);
+  animation: slideDown .4s ease;
+}
+
+.toolbar.show { display: flex; }
+
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-10px)}
+  to { opacity:1; transform:translateY(0)}
+}
+
+button,input[type=color],input[type=range] {
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  background: white;
+  font-size: 13px;
+}
+
+button:hover {
+  background: #ffe6f2;
+}
+
+/* COLOR PALETTE */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 6px;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  background: white;
+  padding: 20px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.3);
+  transform-origin: center center;
+}
+
+canvas {
+  background: white;
+  border-radius: 12px;
+  cursor: crosshair;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+  width: 90px;
+  background: #ffc1da;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+</style>
+</head>
+<body>
+
+<button class="toggle-tools-btn" id="toggleBtn">🛠️</button>
+
+<div class="toolbar" id="toolbar">
+  <button onclick="setTool('pen')">✏️ Pen</button>
+  <button onclick="setTool('line')">📏 Line</button>
+  <button onclick="setTool('rect')">▭ Rect</button>
+  <button onclick="setTool('circle')">⭕ Circle</button>
+  <button onclick="setTool('arrow')">➡️ Arrow</button>
+  <button onclick="setTool('eraser')">🧽 Eraser</button>
+  <input type="range" id="size" min="1" max="30" value="4">
+  <input type="color" id="color">
+  <div class="palette" id="palette"></div>
+  <button onclick="undo()">↩ Undo</button>
+  <button onclick="redo()">↪ Redo</button>
+  <button onclick="document.getElementById('imgInput').click()">🖼️ Image</button>
+  <input type="file" id="imgInput" accept="image/*" hidden>
+</div>
+
+<div class="main">
+  <div class="board" id="board">
+    <canvas id="canvas" width="1152" height="648"></canvas>
+  </div>
+</div>
+
+<div class="right-panel">
+  <button onclick="zoom(1.1)">+</button>
+  <button onclick="zoom(0.9)">-</button>
+  <button onclick="saveProject()">💾 Save</button>
+  <button onclick="loadProject()">📁 Load</button>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const board = document.getElementById('board');
+
+let tool='pen', drawing=false, startX=0,startY=0;
+let color='#000', size=4, zoomLevel=1;
+let shapes=[], images=[], history=[], redoStack=[];
+let selectedImage=null, dragging=false;
+
+const paletteColors=['#000','#fff','#ff69b4','#ffa500','#00cfff','#8a2be2','#00ff7f','#ff4500'];
+const palette=document.getElementById('palette');
+paletteColors.forEach(c=>{const d=document.createElement('div');d.className='swatch';d.style.background=c;d.onclick=()=>color=c;palette.appendChild(d);});
+
+document.getElementById('size').oninput=e=>size=e.target.value;
+document.getElementById('color').oninput=e=>color=e.target.value;
+
+function saveState(){history.push(JSON.stringify({shapes,images,zoomLevel}));redoStack=[];}
+function undo(){if(history.length<2)return;redoStack.push(history.pop());loadState(history[history.length-1]);}
+function redo(){if(!redoStack.length)return;const s=redoStack.pop();history.push(s);loadState(s);}
+function loadState(s){const d=JSON.parse(s);shapes=d.shapes;images=d.images;zoomLevel=d.zoomLevel;redraw();}
+
+function setTool(t){tool=t;}
+
+canvas.onmousedown=e=>{
+  drawing=true; startX=e.offsetX; startY=e.offsetY; saveState();
+  if(tool==='pen'){ctx.beginPath();ctx.moveTo(startX,startY);}
+};
+
+canvas.onmousemove=e=>{
+  if(!drawing)return;
+  const x=e.offsetX,y=e.offsetY;
+  ctx.lineWidth=size;ctx.strokeStyle=color;ctx.lineCap='round';
+  if(tool==='pen'){ctx.lineTo(x,y);ctx.stroke();}
+  else redrawPreview(x,y);
+};
+
+canvas.onmouseup=e=>{ if(!drawing)return; drawing=false; commitShape(e.offsetX,e.offsetY); };
+
+function redrawPreview(x,y){redraw(); drawShape({tool,x1:startX,y1:startY,x2:x,y2:y,color,size});}
+
+function commitShape(x,y){
+  if(tool==='pen'||tool==='eraser')return;
+  shapes.push({tool,x1:startX,y1:startY,x2:x,y2:y,color,size}); redraw();
+}
+
+function drawShape(s){ctx.strokeStyle=s.color;ctx.lineWidth=s.size;
+  if(s.tool==='line'){ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();}
+  if(s.tool==='rect'){ctx.strokeRect(s.x1,s.y1,s.x2-s.x1,s.y2-s.y1);}
+  if(s.tool==='circle'){const r=Math.hypot(s.x2-s.x1,s.y2-s.y1);ctx.beginPath();ctx.arc(s.x1,s.y1,r,0,Math.PI*2);ctx.stroke();}
+  if(s.tool==='arrow'){ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();}
+}
+
+function redraw(){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.scale(zoomLevel,zoomLevel);
+  shapes.forEach(drawShape);
+  images.forEach(img=>ctx.drawImage(img.img,img.x,img.y,img.w,img.h));
+}
+
+function zoom(f){zoomLevel*=f;board.style.transform=`scale(${zoomLevel})`;}
+
+// Image import
+document.getElementById('imgInput').onchange=e=>{
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{images.push({img,x:100,y:100,w:img.width/2,h:img.height/2});redraw();saveState();};img.src=r.result;};r.readAsDataURL(file);
+};
+
+function saveProject(){const data=JSON.stringify({shapes,images,zoomLevel});const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(data);a.download='project.json';a.click();}
+function loadProject(){const i=document.createElement('input');i.type='file';i.onchange=e=>{const r=new FileReader();r.onload=()=>loadState(r.result);r.readAsText(e.target.files[0]);};i.click();}
+
+// Toolbar toggle
+const toggleBtn=document.getElementById('toggleBtn');const toolbar=document.getElementById('toolbar');
+toggleBtn.onmouseenter=()=>toolbar.classList.add('show');toolbar.onmouseleave=()=>toolbar.classList.remove('show');
+
+saveState();
+</script>
+</body>
+</html>

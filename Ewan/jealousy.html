@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="Style.css" />
+  <title>The Jealousy Cure</title>
+</head>
+
+<body>
+  <div class="ambient-glow glow-left"></div>
+  <div class="ambient-glow glow-right"></div>
+
+  <button class="icon-btn back" onclick="goBack()" aria-label="Go back">&#8592;</button>
+  <button class="icon-btn home" onclick="goHome()" aria-label="Go home">&#8962;</button>
+
+  <header class="reader-header">
+    <p class="shelf-label">Library Reader</p>
+    <h1 class="page-title" id="dynamic-page-title">The Jealousy Cure</h1>
+    <p class="page-subtitle" id="dynamic-page-subtitle">A short story to calm comparison and protect your peace.</p>
+  </header>
+
+  <div class="reader-controls">
+    <button id="maximize-btn" class="control-btn" type="button" aria-label="Maximize book view">[ ]</button>
+    <button id="minimize-btn" class="control-btn" type="button" aria-label="Minimize book view">&#9472;</button>
+  </div>
+
+  <div class="book-stage">
+    <div class="flipbook">
+      <div class="hard cover-front">
+        <img class="cover-image" id="dynamic-cover-image" src="../IMAGES/overcoming.jpg" alt="Front Cover Image" />
+      </div>
+
+      <div class="hard cover-inner"></div>
+
+      <div>
+        <p class="book-title" id="dynamic-book-title">"Burnout by Amelia Nagoski"</p>
+      </div>
+
+      <div>
+        <p id="dynamic-page-1a">
+          Amelia Nagoski was working as a choral conductor in a demanding job she loved. She cared deeply about her students,
+          pushed herself to meet expectations, and always tried to do everything perfectly. But the stress kept piling up:
+          long hours, emotional pressure, constant performance demands, and her own high standards.
+        </p>
+
+        <p id="dynamic-page-1b">
+          At first she did not notice how exhausted she had become. She assumed stress was normal and something she simply had to
+          push through. But her body disagreed. One day during rehearsal, Amelia suddenly felt a stabbing pain in her side.
+          She thought it was just stress or fatigue, but the pain grew worse until she could barely stand. She was rushed
+          to the hospital, where doctors told her the truth.
+        </p>
+      </div>
+
+      <div>
+        <p id="dynamic-page-2a">
+          Her stress had become so extreme that it was physically destroying her body. She was not suffering from a simple illness;
+          she was suffering from full burnout, so severe that her immune system and nervous system were shutting down.
+          Amelia was shocked. She had spent her life focusing on work and others' needs, believing that her own stress did not matter.
+          But the burnout had reached a crisis point.
+        </p>
+
+        <p id="dynamic-page-2b">
+          Doctors warned her: if she did not change how she handled stress, it could happen again or worse.
+          During recovery, Amelia learned something surprising: her problem was not just stressful events;
+          it was that she never completed the stress cycle.
+        </p>
+      </div>
+
+      <div>
+        <p id="dynamic-page-3a">
+          She dealt with her responsibilities, but never gave her body a chance to release the stress.
+          She learned new ways to heal: physical movement, deep breathing, rest, setting boundaries,
+          and accepting her limits without guilt. Slowly, her body and mind began to recover.
+        </p>
+
+        <p id="dynamic-page-3b">
+          Emily and Amelia then worked together to write Burnout, combining science and Amelia's experience
+          to help others avoid the suffering she went through.
+        </p>
+
+        <p id="dynamic-page-3c">
+          By the end of the story, Amelia learns: you cannot think your way out of stress;
+          you must let your body know you are safe. Burnout is not weakness;
+          it is a signal that you need care, rest, and support.
+        </p>
+      </div>
+
+      <div class="hard cover-back-inner"></div>
+      <div class="hard cover-back"><span class="thank-you">Thank You</span></div>
+    </div>
+  </div>
+
+  <button id="finish-button" type="button">Finish Reading</button>
+
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h2>Congratulations!</h2>
+      <p>You have finished reading the book!</p>
+      <div class="popup-buttons">
+        <button id="close-popup" class="popup-btn" type="button">Close</button>
+        <button id="next-btn" class="popup-btn" type="button" onclick="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-transition" class="page-transition">
+    <div class="page-transition-card">
+      <div class="transition-spinner"></div>
+      <p>Opening next page...</p>
+    </div>
+  </div>
+
+  <script src="jquery.js"></script>
+  <script src="turn.js"></script>
+  <script>
+    const $flipbook = $(".flipbook");
+    const HOME_URL = "../Program Mental Health.html";
+    const NEXT_PAGE_URL = "../Library.html";
+
+    let isMaximized = false;
+    let normalSize = getDefaultBookSize();
+
+    function lockFlipbookPosition() {
+      $flipbook.css("margin-left", 0);
+    }
+
+    $flipbook.turn({
+      width: normalSize.width,
+      height: normalSize.height,
+      autoCenter: false,
+      elevation: 45,
+      gradients: true
+    });
+    lockFlipbookPosition();
+    $flipbook.on("turning turned", lockFlipbookPosition);
+
+    $("#minimize-btn").hide();
+
+    function getDefaultBookSize() {
+      const baseWidth = 1200;
+      const baseHeight = 500;
+      const maxWidth = Math.max(320, window.innerWidth - 40);
+      const maxHeight = Math.max(260, window.innerHeight - 220);
+      const scale = Math.min(1, maxWidth / baseWidth, maxHeight / baseHeight);
+      const width = Math.floor(baseWidth * scale);
+      const height = Math.floor(baseHeight * scale);
+      return { width, height };
+    }
+
+    function setBookSize(width, height) {
+      if ($flipbook.data("turn")) {
+        $flipbook.turn("size", width, height);
+        lockFlipbookPosition();
+      }
+    }
+
+    function applyExpandedLayout() {
+      isMaximized = true;
+      document.body.classList.add("book-expanded");
+      setBookSize(window.innerWidth, window.innerHeight);
+      $("#maximize-btn").hide();
+      $("#minimize-btn").show();
+    }
+
+    function applyNormalLayout() {
+      isMaximized = false;
+      document.body.classList.remove("book-expanded");
+      setBookSize(normalSize.width, normalSize.height);
+      $("#minimize-btn").hide();
+      $("#maximize-btn").show();
+    }
+
+    function isFullscreenActive() {
+      return Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+    }
+
+    async function requestReaderFullscreen() {
+      const target = document.documentElement;
+      if (target.requestFullscreen) {
+        await target.requestFullscreen();
+      } else if (target.webkitRequestFullscreen) {
+        target.webkitRequestFullscreen();
+      } else if (target.msRequestFullscreen) {
+        target.msRequestFullscreen();
+      }
+    }
+
+    async function exitReaderFullscreen() {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+
+    async function maximizeBook() {
+      normalSize = { width: $flipbook.width(), height: $flipbook.height() };
+      applyExpandedLayout();
+      try {
+        if (!isFullscreenActive()) {
+          await requestReaderFullscreen();
+        }
+      } catch (error) {
+        // Keep expanded layout as fallback if fullscreen request is blocked.
+      }
+    }
+
+    async function minimizeBook() {
+      try {
+        if (isFullscreenActive()) {
+          await exitReaderFullscreen();
+        }
+      } catch (error) {
+        // Continue restoring layout even if fullscreen exit throws.
+      }
+      applyNormalLayout();
+    }
+
+    function playNavigationEffect(url) {
+      document.getElementById("page-transition").classList.add("active");
+      setTimeout(function () {
+        window.location.href = url;
+      }, 650);
+    }
+
+    function syncWithFullscreenState() {
+      if (isFullscreenActive()) {
+        if (!isMaximized) {
+          applyExpandedLayout();
+        } else {
+          setBookSize(window.innerWidth, window.innerHeight);
+        }
+        return;
+      }
+
+      if (isMaximized) {
+        applyNormalLayout();
+      }
+    }
+
+    $("#maximize-btn").on("click", function () {
+      maximizeBook();
+    });
+    $("#minimize-btn").on("click", function () {
+      minimizeBook();
+    });
+
+    document.addEventListener("fullscreenchange", syncWithFullscreenState);
+    document.addEventListener("webkitfullscreenchange", syncWithFullscreenState);
+    document.addEventListener("MSFullscreenChange", syncWithFullscreenState);
+
+    window.addEventListener("resize", function () {
+      if (!isMaximized && !isFullscreenActive()) {
+        normalSize = getDefaultBookSize();
+        setBookSize(normalSize.width, normalSize.height);
+      } else {
+        setBookSize(window.innerWidth, window.innerHeight);
+      }
+    });
+
+    $("#finish-button").click(function () {
+      $("#popup").addClass("open");
+    });
+
+    $("#close-popup").click(function () {
+      $("#popup").removeClass("open");
+    });
+
+    function goToNextPage() {
+      playNavigationEffect(NEXT_PAGE_URL);
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      goHome();
+    }
+
+    function goHome() {
+      playNavigationEffect(HOME_URL);
+    }
+
+    function cleanValue(value, fallback) {
+      if (!value) {
+        return fallback;
+      }
+      const text = String(value).trim();
+      return text || fallback;
+    }
+
+    function clampChannel(value) {
+      return Math.max(0, Math.min(255, Math.round(value)));
+    }
+
+    function mixColor(color, target, amount) {
+      const ratio = Math.max(0, Math.min(1, amount));
+      return {
+        r: clampChannel(color.r + (target.r - color.r) * ratio),
+        g: clampChannel(color.g + (target.g - color.g) * ratio),
+        b: clampChannel(color.b + (target.b - color.b) * ratio)
+      };
+    }
+
+    function rgbString(color) {
+      return `rgb(${color.r}, ${color.g}, ${color.b})`;
+    }
+
+    function relativeLuminance(color) {
+      const toLinear = (channel) => {
+        const value = channel / 255;
+        if (value <= 0.04045) {
+          return value / 12.92;
+        }
+        return Math.pow((value + 0.055) / 1.055, 2.4);
+      };
+
+      const r = toLinear(color.r);
+      const g = toLinear(color.g);
+      const b = toLinear(color.b);
+      return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+    }
+
+    function findDominantColor(imageEl) {
+      if (!imageEl || !imageEl.naturalWidth || !imageEl.naturalHeight) {
+        return null;
+      }
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) {
+        return null;
+      }
+
+      const sampleSize = 36;
+      canvas.width = sampleSize;
+      canvas.height = sampleSize;
+
+      try {
+        context.drawImage(imageEl, 0, 0, sampleSize, sampleSize);
+      } catch (error) {
+        return null;
+      }
+
+      let data;
+      try {
+        data = context.getImageData(0, 0, sampleSize, sampleSize).data;
+      } catch (error) {
+        return null;
+      }
+
+      const buckets = new Map();
+      let rawR = 0;
+      let rawG = 0;
+      let rawB = 0;
+      let rawWeight = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const alpha = data[i + 3];
+        if (alpha < 90) {
+          continue;
+        }
+
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        rawR += r;
+        rawG += g;
+        rawB += b;
+        rawWeight += 1;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const lightness = (max + min) / 510;
+        if (lightness < 0.08 || lightness > 0.96) {
+          continue;
+        }
+
+        const saturation = max === 0 ? 0 : (max - min) / max;
+        const weight = 1 + (saturation * 2);
+        const qR = Math.floor(r / 24) * 24;
+        const qG = Math.floor(g / 24) * 24;
+        const qB = Math.floor(b / 24) * 24;
+        const key = `${qR},${qG},${qB}`;
+        const entry = buckets.get(key) || { weight: 0, r: 0, g: 0, b: 0 };
+
+        entry.weight += weight;
+        entry.r += r * weight;
+        entry.g += g * weight;
+        entry.b += b * weight;
+        buckets.set(key, entry);
+      }
+
+      let bestBucket = null;
+      buckets.forEach((bucket) => {
+        if (!bestBucket || bucket.weight > bestBucket.weight) {
+          bestBucket = bucket;
+        }
+      });
+
+      if (bestBucket && bestBucket.weight > 0) {
+        return {
+          r: clampChannel(bestBucket.r / bestBucket.weight),
+          g: clampChannel(bestBucket.g / bestBucket.weight),
+          b: clampChannel(bestBucket.b / bestBucket.weight)
+        };
+      }
+
+      if (rawWeight > 0) {
+        return {
+          r: clampChannel(rawR / rawWeight),
+          g: clampChannel(rawG / rawWeight),
+          b: clampChannel(rawB / rawWeight)
+        };
+      }
+
+      return null;
+    }
+
+    function applyCoverPalette(color) {
+      if (!color) {
+        return;
+      }
+
+      const light = mixColor(color, { r: 255, g: 255, b: 255 }, 0.28);
+      const dark = mixColor(color, { r: 0, g: 0, b: 0 }, 0.3);
+      const text = relativeLuminance(color) > 0.42 ? "#2a1a10" : "#fffaf0";
+
+      document.documentElement.style.setProperty("--cover-base", rgbString(color));
+      document.documentElement.style.setProperty("--cover-light", rgbString(light));
+      document.documentElement.style.setProperty("--cover-dark", rgbString(dark));
+      document.documentElement.style.setProperty("--cover-text", text);
+    }
+
+    function syncCoverPaletteFromImage(imageEl) {
+      const updatePalette = () => {
+        const dominant = findDominantColor(imageEl);
+        applyCoverPalette(dominant);
+      };
+
+      if (imageEl.complete && imageEl.naturalWidth > 0) {
+        updatePalette();
+        return;
+      }
+
+      imageEl.addEventListener("load", updatePalette, { once: true });
+    }
+
+    function applyDynamicBookContent() {
+      const params = new URLSearchParams(window.location.search);
+      const title = cleanValue(params.get("title"), "The Jealousy Cure");
+      const emotion = cleanValue(params.get("emotion"), "Mixed");
+      const cover = cleanValue(params.get("cover"), "../IMAGES/overcoming.jpg");
+      const summary = cleanValue(
+        params.get("summary"),
+        "A reflective story about handling heavy feelings in a healthier way."
+      );
+      const strategy = cleanValue(
+        params.get("strategy"),
+        "Try this strategy: pause, breathe, and choose one steady next step."
+      );
+      const practice = cleanValue(
+        params.get("practice"),
+        "Daily practice: write one honest feeling and one helpful action."
+      );
+
+      document.getElementById("dynamic-page-title").textContent = title;
+      document.getElementById("dynamic-page-subtitle").textContent = `Emotion focus: ${emotion}`;
+      document.getElementById("dynamic-book-title").textContent = `"${title}"`;
+
+      const coverImage = document.getElementById("dynamic-cover-image");
+      coverImage.src = cover;
+      coverImage.alt = `${title} front cover`;
+      syncCoverPaletteFromImage(coverImage);
+
+      document.getElementById("dynamic-page-1a").textContent =
+        `${title} begins with someone carrying a ${emotion.toLowerCase()} feeling that keeps returning in quiet moments. ${summary}`;
+      document.getElementById("dynamic-page-1b").textContent =
+        "As daily pressure builds, the character tries to stay strong in front of others, but inside the thoughts become louder. They realize the feeling will not disappear by ignoring it, and that asking for support is a sign of courage.";
+
+      document.getElementById("dynamic-page-2a").textContent =
+        "The turning point comes when they pause and name what is really happening. Instead of fighting every emotion, they choose to understand it and respond with care, structure, and honesty.";
+      document.getElementById("dynamic-page-2b").textContent =
+        `They begin using one practical tool each day: ${strategy}`;
+
+      document.getElementById("dynamic-page-3a").textContent =
+        "Over time, small actions start changing the story. Confidence returns slowly through consistency, not perfection, and the heavy feeling becomes easier to carry.";
+      document.getElementById("dynamic-page-3b").textContent =
+        `To stay grounded, they keep this routine: ${practice}`;
+      document.getElementById("dynamic-page-3c").textContent =
+        `By the end of ${title}, the lesson is clear: emotions are messages, not enemies. With support and steady habits, healing and growth are possible.`;
+    }
+
+    applyDynamicBookContent();
+  </script>
+</body>
+
+</html>

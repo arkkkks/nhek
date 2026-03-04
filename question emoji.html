@@ -1,0 +1,592 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question and Solve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #26063f;
+    --bg2: #4c1179;
+    --bg3: #8b1e8f;
+    --bg4: #d81b8a;
+    --card: rgba(255, 255, 255, 0.13);
+    --card-border: rgba(255, 255, 255, 0.33);
+    --text: #f8fbff;
+    --muted: #f5dbff;
+    --accent: #ff6ad5;
+    --accent-2: #c084fc;
+    --shadow: rgba(20, 2, 32, 0.45);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    font-family: "Outfit", sans-serif;
+    color: var(--text);
+    text-align: center;
+    background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg3), var(--bg4));
+    background-size: 300% 300%;
+    animation: bgShift 18s ease infinite;
+    overflow-x: hidden;
+    position: relative;
+    padding: 108px 20px 36px;
+    isolation: isolate;
+  }
+
+  .bg-overlay {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 8% 14%, rgba(255, 106, 213, 0.24), transparent 45%),
+      radial-gradient(circle at 87% 16%, rgba(192, 132, 252, 0.26), transparent 40%),
+      radial-gradient(circle at 53% 86%, rgba(244, 114, 182, 0.24), transparent 47%);
+    pointer-events: none;
+    animation: overlayBreathe 12s ease-in-out infinite alternate;
+    z-index: 0;
+  }
+
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 0,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 56px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.035) 0,
+        rgba(255, 255, 255, 0.035) 1px,
+        transparent 1px,
+        transparent 56px
+      );
+    mask-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.75), transparent 85%);
+    pointer-events: none;
+    z-index: 0;
+    animation: gridDrift 20s linear infinite;
+  }
+
+  .question-marks {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .question-marks span {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.14);
+    font-size: clamp(22px, 2.8vw, 36px);
+    font-family: "Space Grotesk", sans-serif;
+    animation: floatQuestion 8s ease-in-out infinite;
+    user-select: none;
+  }
+
+  .question-marks span:nth-child(1) { top: 14%; left: 12%; animation-delay: 0s; }
+  .question-marks span:nth-child(2) { top: 23%; right: 16%; animation-delay: 1.5s; }
+  .question-marks span:nth-child(3) { top: 52%; left: 6%; animation-delay: 3s; }
+  .question-marks span:nth-child(4) { top: 58%; right: 10%; animation-delay: 4.2s; }
+  .question-marks span:nth-child(5) { bottom: 16%; left: 24%; animation-delay: 2.2s; }
+  .question-marks span:nth-child(6) { bottom: 10%; right: 28%; animation-delay: 5.1s; }
+
+  .top-bar {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 5;
+  }
+
+  .icon-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(148, 163, 184, 0.08));
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+    box-shadow: 0 8px 22px var(--shadow);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .icon-btn:hover {
+    transform: translateY(-3px) scale(1.06);
+    border-color: rgba(255, 106, 213, 0.95);
+    box-shadow: 0 0 0 5px rgba(255, 106, 213, 0.2), 0 12px 28px var(--shadow);
+  }
+
+  .icon-btn:active {
+    transform: scale(0.95);
+  }
+
+  .icon-btn:focus-visible,
+  .emoji-item:focus-visible {
+    outline: 2px solid rgba(255, 106, 213, 0.95);
+    outline-offset: 2px;
+  }
+
+  .title-wrap {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto 26px;
+    width: min(900px, 100%);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.65rem, 2.9vw, 2.6rem);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-shadow: 0 8px 22px rgba(2, 8, 23, 0.55);
+  }
+
+  .subtitle {
+    margin: 10px auto 0;
+    max-width: 640px;
+    color: var(--muted);
+    font-size: clamp(0.95rem, 1.7vw, 1.08rem);
+    line-height: 1.4;
+  }
+
+  /* search bar styling */
+  .search-wrapper {
+    margin: 18px auto 22px;
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+  }
+
+  #searchInput {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.15);
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.24s ease, background 0.24s ease;
+  }
+
+  #searchInput::placeholder {
+    color: var(--muted);
+  }
+
+  #searchInput:focus {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.25);
+  }
+
+  .solve-path {
+    margin: 14px auto 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .solve-step {
+    background: rgba(40, 8, 56, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.33);
+    color: var(--muted);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.84rem;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(6px);
+  }
+
+  .solve-arrow {
+    color: rgba(245, 219, 255, 0.86);
+    font-weight: 700;
+  }
+
+  .emoji-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 16px;
+    margin: 0 auto;
+    width: min(950px, 100%);
+  }
+
+  .emoji-item {
+    position: relative;
+    border: 1.5px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px 8px 14px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--card);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    animation: cardEnter 0.48s ease both;
+    animation-delay: calc(var(--i) * 60ms);
+    overflow: hidden;
+  }
+
+  .emoji-item::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle, rgba(255, 106, 213, 0.28), transparent 60%);
+    opacity: 0;
+    transform: rotate(20deg);
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .emoji-item::after {
+    content: "";
+    position: absolute;
+    left: -40%;
+    top: 0;
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 106, 213, 0.95), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .emoji-item:hover {
+    transform: translateY(-6px) scale(1.04);
+    border-color: rgba(255, 106, 213, 0.95);
+    box-shadow: 0 18px 34px rgba(20, 2, 32, 0.4), 0 0 0 4px rgba(255, 106, 213, 0.16);
+  }
+
+  .emoji-item:hover::before {
+    opacity: 1;
+  }
+
+  .emoji-item:hover::after {
+    opacity: 1;
+    animation: edgeSweep 1.1s linear infinite;
+  }
+
+  .emoji-item.is-clicked {
+    animation: clickPulse 0.28s ease;
+  }
+
+  .emoji {
+    display: block;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.32));
+  }
+
+  .label {
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #f8fcff;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease;
+  }
+
+  .emoji-item:hover .label {
+    color: #ffe1f8;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 999px;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.45);
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripplePulse 0.56s ease-out forwards;
+  }
+
+  footer {
+    position: relative;
+    z-index: 2;
+    margin: 24px auto 0;
+    width: fit-content;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: var(--muted);
+    background: rgba(40, 8, 56, 0.45);
+    padding: 10px 16px;
+    font-size: 0.92rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(8px);
+  }
+
+  @keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes overlayBreathe {
+    from { transform: scale(1); opacity: 0.85; }
+    to { transform: scale(1.08); opacity: 1; }
+  }
+
+  @keyframes gridDrift {
+    from { transform: translateY(0); }
+    to { transform: translateY(56px); }
+  }
+
+  @keyframes floatQuestion {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.12; }
+    50% { transform: translateY(-16px) rotate(8deg); opacity: 0.2; }
+  }
+
+  @keyframes cardEnter {
+    from { opacity: 0; transform: translateY(12px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes clickPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.94); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes edgeSweep {
+    from { left: -40%; }
+    to { left: 120%; }
+  }
+
+  @keyframes ripplePulse {
+    to {
+      transform: translate(-50%, -50%) scale(16);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media (max-width: 720px) {
+    body {
+      padding-top: 100px;
+    }
+
+    .top-bar {
+      top: 10px;
+      left: 10px;
+      right: 10px;
+    }
+
+    .icon-btn {
+      width: 46px;
+      height: 46px;
+      font-size: 21px;
+    }
+
+    .emoji-grid {
+      grid-template-columns: repeat(auto-fit, minmax(106px, 1fr));
+      gap: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+<div class="bg-grid"></div>
+<div class="question-marks" aria-hidden="true">
+  <span>?</span>
+  <span>?</span>
+  <span>?</span>
+  <span>?</span>
+  <span>?</span>
+  <span>?</span>
+</div>
+
+<div class="top-bar">
+  <div class="icon-btn back" onclick="goBack()" title="Back" aria-label="Back">&#x2190;</div>
+  <div class="icon-btn home" onclick="goHome()" title="Home" aria-label="Home">&#x2302;</div>
+</div>
+
+<div class="title-wrap">
+  <h1>Question to Solution</h1>
+  <p class="subtitle">Pick the feeling that fits you now, then follow guided questions to understand and solve what is happening.</p>
+  <div class="solve-path" aria-hidden="true">
+    <span class="solve-step">Feel</span>
+    <span class="solve-arrow">&#x2192;</span>
+    <span class="solve-step">Ask</span>
+    <span class="solve-arrow">&#x2192;</span>
+    <span class="solve-step">Solve</span>
+  </div>
+</div>
+<!-- search bar lets user look for additional emotions; extra emotions remain hidden until matched -->
+<div class="search-wrapper">
+  <input type="text" id="searchInput" placeholder="Search emotions…" autocomplete="off" aria-label="Search emotions">
+</div>
+
+<div class="emoji-grid" id="emojiGrid"></div>
+
+<footer>Click an emotion to explore guided questions and possible solutions.</footer>
+
+<script>
+  const emojiGrid = document.getElementById("emojiGrid");
+  const searchInput = document.getElementById("searchInput");
+
+  function showRipple(event, element) {
+    const rect = element.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    const hasPointer = event && typeof event.clientX === "number" && typeof event.clientY === "number";
+    const x = hasPointer ? event.clientX - rect.left : rect.width / 2;
+    const y = hasPointer ? event.clientY - rect.top : rect.height / 2;
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    element.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  }
+
+  function navigateToFeature(item) {
+    const featurePage = item.getAttribute("data-feature");
+    item.classList.remove("is-clicked");
+    void item.offsetWidth;
+    item.classList.add("is-clicked");
+
+    if (!featurePage) {
+      return;
+    }
+
+    setTimeout(() => {
+      window.location.href = featurePage;
+    }, 170);
+  }
+
+  function wireEmojiCard(item, index) {
+    item.style.setProperty("--i", index + 1);
+    item.setAttribute("tabindex", "0");
+    item.setAttribute("role", "button");
+    item.addEventListener("click", () => navigateToFeature(item));
+    item.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showRipple(null, item);
+        navigateToFeature(item);
+      }
+    });
+    item.addEventListener("pointerdown", (event) => showRipple(event, item));
+  }
+
+  function createEmojiItem(entry) {
+    const item = document.createElement("div");
+    item.className = "emoji-item";
+    item.dataset.default = entry.defaultVisible ? "true" : "false";
+    item.dataset.feature = entry.feature || "";
+    item.innerHTML = `<span class="emoji">${entry.emoji}</span><div class="label">${entry.label}</div>`;
+    return item;
+  }
+
+  async function loadQuestionEmotions() {
+    try {
+      const response = await fetch("/api/question/emotions");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to load emotion choices");
+      }
+      return Array.isArray(data.items) ? data.items : [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  function filterEmotions() {
+    const query = (searchInput.value || "").trim().toLowerCase();
+    document.querySelectorAll(".emoji-item").forEach((item) => {
+      const label = item.querySelector(".label").textContent.toLowerCase();
+      const isDefault = item.dataset.default === "true";
+      if (!query) {
+        item.style.display = isDefault ? "" : "none";
+      } else {
+        item.style.display = label.includes(query) ? "" : "none";
+      }
+    });
+  }
+
+  async function renderEmotionCards() {
+    const items = await loadQuestionEmotions();
+    emojiGrid.innerHTML = "";
+
+    if (!items.length) {
+      emojiGrid.innerHTML = '<div class="emoji-item" data-default="true"><span class="emoji">⚠️</span><div class="label">No data available</div></div>';
+      return;
+    }
+
+    items.forEach((entry, index) => {
+      if (!entry || !entry.emoji || !entry.label) {
+        return;
+      }
+      const card = createEmojiItem(entry);
+      emojiGrid.appendChild(card);
+      wireEmojiCard(card, index);
+    });
+
+    filterEmotions();
+  }
+
+  document.querySelectorAll(".icon-btn").forEach((el) => {
+    el.addEventListener("pointerdown", (event) => showRipple(event, el));
+  });
+
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    goHome();
+  }
+
+  function goHome() {
+    window.location.href = "Program Mental Health.html";
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", filterEmotions);
+  }
+
+  renderEmotionCards();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Emotion-Based Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f8f1e6;
+    --ink: #302320;
+    --accent: #bf6f38;
+    --accent-soft: #efd0b8;
+    --card: #fffaf3;
+    --shadow: 0 14px 30px rgba(51, 35, 24, 0.16);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: "Manrope", sans-serif;
+    background:
+      radial-gradient(circle at 10% 12%, rgba(228, 190, 159, 0.44), transparent 42%),
+      radial-gradient(circle at 90% 18%, rgba(186, 130, 85, 0.24), transparent 40%),
+      linear-gradient(165deg, #fff9f2 0%, #f8efe2 47%, #f3e5d4 100%);
+    overflow-x: hidden;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    z-index: 0;
+    border-radius: 999px;
+    pointer-events: none;
+    filter: blur(4px);
+  }
+
+  body::before {
+    width: 300px;
+    height: 300px;
+    right: -120px;
+    bottom: -50px;
+    background: rgba(191, 111, 56, 0.18);
+  }
+
+  body::after {
+    width: 220px;
+    height: 220px;
+    left: -70px;
+    top: 90px;
+    background: rgba(237, 203, 164, 0.35);
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 22px 20px 28px;
+  }
+
+  .top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .icon-btn {
+    border: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    color: #2e211e;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(46, 33, 30, 0.16);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .icon-btn:hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+  }
+
+  .hero {
+    padding: 28px 20px;
+    margin-bottom: 20px;
+    border-radius: 22px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 246, 236, 0.95)),
+      url("IMAGES/library.jpg") center/cover;
+    border: 1px solid rgba(130, 86, 58, 0.2);
+    box-shadow: var(--shadow);
+    animation: slideIn 0.7s ease both;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(2rem, 3.8vw, 3.1rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .hero p {
+    margin: 10px 0 0;
+    max-width: 630px;
+    color: #5b4a42;
+    font-size: 0.95rem;
+  }
+
+  .library {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 18px;
+    padding: 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(128, 91, 66, 0.2);
+    background: linear-gradient(180deg, rgba(255, 252, 247, 0.74), rgba(255, 246, 234, 0.8));
+    box-shadow: var(--shadow);
+  }
+
+  .library::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 164px,
+      rgba(123, 85, 62, 0.06) 164px,
+      rgba(123, 85, 62, 0.06) 168px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  .book {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 14px;
+    text-decoration: none;
+    aspect-ratio: 3 / 4;
+    background: var(--card);
+    border: 1px solid rgba(95, 61, 38, 0.14);
+    box-shadow: 0 8px 16px rgba(53, 31, 19, 0.15);
+    transform: translateY(20px) scale(0.98);
+    opacity: 0;
+    animation: liftIn 0.6s ease forwards;
+    animation-delay: var(--stagger, 0ms);
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .book:hover {
+    transform: translateY(-8px) rotate(-0.8deg);
+    box-shadow: 0 18px 28px rgba(50, 29, 17, 0.22);
+  }
+
+  .book img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .book--empty {
+    background:
+      linear-gradient(145deg, rgba(255, 243, 226, 0.92), rgba(243, 220, 193, 0.86));
+  }
+
+  .book-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 14px;
+    color: #5e4333;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .book::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 56%, rgba(23, 13, 8, 0.74) 100%);
+    pointer-events: none;
+  }
+
+  .book-title {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    color: #fff;
+    font-size: 0.77rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+
+  .book-emotion {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #2f2017;
+    background: rgba(254, 233, 210, 0.88);
+    border: 1px solid rgba(145, 95, 66, 0.35);
+  }
+
+  .book:focus-visible {
+    outline: 3px solid rgba(206, 123, 68, 0.64);
+    outline-offset: 2px;
+  }
+
+  .book.is-clicked {
+    transform: scale(0.95);
+    box-shadow: 0 8px 18px rgba(53, 31, 19, 0.28);
+  }
+
+  .ripple {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    transform: translate(-50%, -50%) scale(0);
+    pointer-events: none;
+    animation: ripple 450ms ease-out forwards;
+    z-index: 3;
+  }
+
+  .book-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+  }
+
+  .book-modal[hidden] {
+    display: none;
+  }
+
+  .book-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 18, 13, 0.58);
+    backdrop-filter: blur(2px);
+  }
+
+  .book-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(620px, 100%);
+    border-radius: 18px;
+    border: 1px solid rgba(118, 77, 53, 0.25);
+    padding: 22px 20px 18px;
+    background: linear-gradient(170deg, #fffbf5, #f7ebdc);
+    box-shadow: 0 18px 36px rgba(31, 19, 13, 0.36);
+    animation: slideIn 0.24s ease both;
+  }
+
+  .book-modal__title {
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    line-height: 1.05;
+  }
+
+  .book-modal__emotion {
+    margin: 8px 0 14px;
+    font-size: 0.86rem;
+    color: #6b4a38;
+    font-weight: 700;
+  }
+
+  .book-modal__body {
+    margin: 0 0 12px;
+    color: #47352d;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .book-modal__tools {
+    margin: 0 0 16px;
+    padding-left: 18px;
+    color: #3f2e25;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .book-modal__close {
+    border: 0;
+    border-radius: 10px;
+    padding: 9px 13px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #32231a;
+    cursor: pointer;
+    background: linear-gradient(145deg, #ffe4cb, #efc099);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes liftIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes ripple {
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(16);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .page {
+      padding: 14px 12px 22px;
+    }
+
+    .hero {
+      padding: 22px 16px;
+      border-radius: 16px;
+    }
+
+    .library {
+      gap: 12px;
+      padding: 12px;
+      border-radius: 15px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .book-title {
+      font-size: 0.72rem;
+    }
+
+    .book-emotion {
+      font-size: 0.62rem;
+      padding: 3px 8px;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <div class="top-actions">
+      <button type="button" class="icon-btn" onclick="goBack()" aria-label="Back">&#8592;</button>
+      <button type="button" class="icon-btn" onclick="goHome()" aria-label="Home">&#8962;</button>
+    </div>
+
+    <section class="hero">
+      <h1>Read based on your emotion</h1>
+      <p>Choose a book cover that matches your feeling. Tap any container to open a reading guide for students dealing with different emotions.</p>
+    </section>
+
+    <section class="library" id="library">
+            <a class="book" href="Ewan/01-overcoming-pain.html"><img src="IMAGES/overcoming.jpg" alt="Overcoming Pain" /></a>
+      <a class="book" href="Ewan/02-healing-and-hope.html"><img src="IMAGES/cure.jpg" alt="Healing and Hope" /></a>
+      <a class="book" href="Ewan/03-become-better.html"><img src="IMAGES/become" alt="Become Better" /></a>
+      <a class="book" href="Ewan/04-burnout-recovery.html"><img src="IMAGES/burn out.jpg" alt="Burnout Recovery" /></a>
+      <a class="book" href="Ewan/05-compassion-and-strength.html"><img src="IMAGES/compassion.jpg" alt="Compassion and Strength" /></a>
+      <a class="book" href="Ewan/06-ride-the-wave.html"><img src="IMAGES/wave.jpg" alt="Ride the Wave" /></a>
+      <a class="book" href="Ewan/07-when-you-feel-down.html"><img src="IMAGES/down.jpg" alt="When You Feel Down" /></a>
+      <a class="book" href="Ewan/08-getting-unstuck.html"><img src="IMAGES/unstuck.jpg" alt="Getting Unstuck" /></a>
+      <a class="book" href="Ewan/09-one-minute-at-a-time.html"><img src="IMAGES/minnute" alt="One Minute at a Time" /></a>
+      <a class="book" href="Ewan/10-too-much-to-carry.html"><img src="IMAGES/too.webp" alt="Too Much to Carry" /></a>
+      <a class="book" href="Ewan/11-mighty-mind.html"><img src="IMAGES/mighty" alt="Mighty Mind" /></a>
+      <a class="book" href="Ewan/12-recharge-your-energy.html"><img src="IMAGES/battery" alt="Recharge Your Energy" /></a>
+      <a class="book" href="Ewan/13-understand-your-feelings.html"><img src="IMAGES/feel" alt="Understand Your Feelings" /></a>
+      <a class="book" href="Ewan/14-anxiety-support.html"><img src="IMAGES/anxiety" alt="Anxiety Support" /></a>
+      <a class="book" href="Ewan/15-manage-your-mind.html"><img src="IMAGES/manage" alt="Manage Your Mind" /></a>
+      <a class="book" href="Ewan/16-stay-strong.html"><img src="IMAGES/strong" alt="Stay Strong" /></a>
+      <a class="book" href="Ewan/17-learning-to-cope.html"><img src="IMAGES/learning.jpg" alt="Learning to Cope" /></a>
+      <a class="book" href="Ewan/18-emotional-support-guide.html"><img src="/IMAGES/sads.jpg" alt="Emotional Support Guide" /></a>
+      <a class="book" href="Ewan/19-quiet-confidence.html"><img src="IMAGES/619962270_1920907151850657_2160372914890448068_n.jpg" alt="Quiet Confidence" /></a>
+      <a class="book" href="Ewan/20-self-care-basics.html"><img src="IMAGES/625088247_1645986186413892_7607820576757620421_n.jpg" alt="Self-Care Basics" /></a>
+      <a class="book" href="Ewan/21-facing-fear-with-courage.html"><img src="IMAGES/625876372_879234974991176_702511813437371796_n.jpg" alt="Facing Fear with Courage" /></a>
+      <a class="book" href="Ewan/22-stress-to-calm.html"><img src="IMAGES/619303422_1822723145797666_5748283995358416967_n.jpg" alt="Stress to Calm" /></a>
+      <a class="book" href="Ewan/23-heal-your-thoughts.html"><img src="IMAGES/621729242_862810750091683_4684899814514375163_n.jpg" alt="Heal Your Thoughts" /></a>
+      <a class="book" href="Ewan/24-move-forward.html"><img src="IMAGES/619809394_2048762192359548_5632895556004283123_n.jpg" alt="Move Forward" /></a>
+      <a class="book" href="Ewan/25-fear-to-focus.html"><img src="IMAGES/620127003_33696985179917169_3959865084275776663_n.jpg" alt="Fear to Focus" /></a>
+      <a class="book" href="Ewan/26-own-your-emotions.html"><img src="IMAGES/622454501_2313386699138012_2361827619759189159_n.jpg" alt="Own Your Emotions" /></a>
+      <a class="book" href="Ewan/27-calming-strategies.html"><img src="IMAGES/619025149_2444767749307675_7542034073540883791_n.jpg" alt="Calming Strategies" /></a>
+      <a class="book" href="Ewan/28-build-resilience.html"><img src="IMAGES/623245228_2444017602686683_86645071400396796_n.jpg" alt="Build Resilience" /></a>
+      <a class="book" href="Ewan/29-inner-balance.html"><img src="IMAGES/619973199_793064937138610_5744758592866743371_n.jpg" alt="Inner Balance" /></a>
+      <a class="book" href="Ewan/30-control-and-clarity.html"><img src="IMAGES/620014807_1258075839621652_3007022062927481629_n.jpg" alt="Control and Clarity" /></a>
+      <a class="book" href="Ewan/31-gentle-progress.html"><img src="IMAGES/625357100_2309924769491408_5229624716984271728_n.jpg" alt="Gentle Progress" /></a>
+      <a class="book" href="Ewan/32-confidence-rebuild.html"><img src="IMAGES/621630418_986689724530173_1162199313719204500_n.jpg" alt="Confidence Rebuild" /></a>
+      <a class="book" href="Ewan/33-mindful-recovery.html"><img src="IMAGES/623154059_1990089832389955_5869793275017063771_n.jpg" alt="Mindful Recovery" /></a>
+      <a class="book" href="Ewan/34-hope-in-hard-days.html"><img src="IMAGES/625023287_2068026363764943_9178187463088923328_n.jpg" alt="Hope in Hard Days" /></a>
+      <a class="book" href="Ewan/35-steady-and-safe.html"><img src="IMAGES/622509398_1437204061394116_6870548812310293758_n.jpg" alt="Steady and Safe" /></a>
+      <a class="book" href="Ewan/36-grow-through-it.html"><img src="IMAGES/624048437_26664661793121347_4135314404713901957_n.jpg" alt="Grow Through It" /></a>
+      <a class="book" href="Ewan/37-take-a-breath.html"><img src="IMAGES/624890698_871100695849837_4160835444238450803_n.jpg" alt="Take a Breath" /></a>
+      <a class="book" href="Ewan/38-small-wins-matter.html"><img src="IMAGES/621666266_1446579917078358_1841201267268275346_n.jpg" alt="Small Wins Matter" /></a>
+      <a class="book" href="Ewan/39-you-are-not-alone.html"><img src="IMAGES/622356956_1345321464277727_7599633015363711308_n.jpg" alt="You Are Not Alone" /></a>
+    </section>
+  </main>
+
+  <div class="book-modal" id="bookModal" hidden>
+    <div class="book-modal__backdrop" data-close-modal></div>
+    <article class="book-modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 class="book-modal__title" id="modalTitle">Student Support Book</h2>
+      <p class="book-modal__emotion" id="modalEmotion">Emotion: Mixed</p>
+      <p class="book-modal__body" id="modalSummary"></p>
+      <ul class="book-modal__tools">
+        <li id="modalStrategy"></li>
+        <li id="modalPractice"></li>
+      </ul>
+      <button type="button" class="book-modal__close" id="closeModalBtn">Close</button>
+    </article>
+  </div>
+
+  <script>
+    const HOME_PAGE = "/Program%20Mental%20Health.html";
+    const EXTRA_BOOKS = [
+      {
+        title: "When Sadness Feels Heavy",
+        emotion: "Sad",
+        summary: "This book helps students understand sadness, grief, and loneliness. It explains how to talk to trusted adults and classmates without feeling weak.",
+        strategy: "Try this strategy: write one page about what hurts and one page about what still gives hope.",
+        practice: "Daily practice: a 10-minute walk and one check-in message to a friend or family member."
+      },
+      {
+        title: "Cooling Down Big Anger",
+        emotion: "Angry",
+        summary: "A guide for students who feel intense anger because of unfair treatment, pressure, or conflict at school and home.",
+        strategy: "Try this strategy: use the pause formula 3 breaths, 3 words, 3 choices before reacting.",
+        practice: "Daily practice: identify one anger trigger and write a healthier response script."
+      },
+      {
+        title: "Stress to Structure",
+        emotion: "Stressed",
+        summary: "This book teaches how to break school stress into small tasks, making heavy workloads more manageable.",
+        strategy: "Try this strategy: divide assignments into 25-minute blocks with 5-minute rests.",
+        practice: "Daily practice: choose only three must-do tasks for the day and complete those first."
+      },
+      {
+        title: "Brave Steps for Fearful Days",
+        emotion: "Scared",
+        summary: "For students afraid of failure, public speaking, or social rejection. It shows how courage can be trained in small steps.",
+        strategy: "Try this strategy: list feared situations from easiest to hardest and start at level one.",
+        practice: "Daily practice: do one tiny brave action and record the result."
+      },
+      {
+        title: "Quiet Voice, Strong Presence",
+        emotion: "Shy",
+        summary: "Helps shy students build confidence in class participation, new friendships, and group work.",
+        strategy: "Try this strategy: prepare one sentence to share before entering class.",
+        practice: "Daily practice: greet one classmate first, even with a simple hello."
+      },
+      {
+        title: "From Guilt to Growth",
+        emotion: "Guilty",
+        summary: "Supports students who feel guilt after mistakes, misunderstandings, or family expectations.",
+        strategy: "Try this strategy: separate what you can repair now from what you must forgive yourself for.",
+        practice: "Daily practice: one action of repair, one sentence of self-forgiveness."
+      },
+      {
+        title: "Learning from Regret",
+        emotion: "Regretful",
+        summary: "Shows students how to turn regret into better decisions instead of self-blame.",
+        strategy: "Try this strategy: use the reflection map what happened, what I learned, what I will do next.",
+        practice: "Daily practice: write one better choice for tomorrow based on today's lesson."
+      },
+      {
+        title: "Recover from Emotional Exhaustion",
+        emotion: "Tired",
+        summary: "For students who feel emotionally and mentally drained from school, chores, and constant pressure.",
+        strategy: "Try this strategy: protect one no-pressure recovery hour each day.",
+        practice: "Daily practice: hydrate, stretch, and sleep at the same time every night."
+      },
+      {
+        title: "Managing Constant Worry",
+        emotion: "Worried",
+        summary: "Teaches worried students how to challenge worst-case thoughts and focus on what they can control.",
+        strategy: "Try this strategy: split worries into control, influence, and release columns.",
+        practice: "Daily practice: schedule a 15-minute worry window then return to present tasks."
+      },
+      {
+        title: "Calm Before the Test",
+        emotion: "Nervous",
+        summary: "Designed for exam stress, performance anxiety, and fear of being judged in class.",
+        strategy: "Try this strategy: 4-4 breathing inhale 4 seconds, exhale 4 seconds for two minutes.",
+        practice: "Daily practice: complete one short mock activity before studying."
+      },
+      {
+        title: "Protecting Positive Momentum",
+        emotion: "Happy",
+        summary: "Helps students sustain good mood and avoid emotional crashes by building balanced routines.",
+        strategy: "Try this strategy: keep a small gratitude and achievement list after classes.",
+        practice: "Daily practice: share one positive moment with someone you trust."
+      },
+      {
+        title: "Channeling Excitement Wisely",
+        emotion: "Excited",
+        summary: "Shows how excited students can stay focused and avoid burnout while chasing goals.",
+        strategy: "Try this strategy: pair every big goal with rest checkpoints.",
+        practice: "Daily practice: track energy level morning, noon, and night."
+      },
+      {
+        title: "Support for Feeling Lonely",
+        emotion: "Lonely",
+        summary: "For students who feel isolated even when surrounded by people. It teaches connection-building in small, safe ways.",
+        strategy: "Try this strategy: prepare two short conversation starters before class.",
+        practice: "Daily practice: join one group activity each week, even for 10 minutes."
+      },
+      {
+        title: "When Everything Feels Overwhelming",
+        emotion: "Overwhelmed",
+        summary: "Helps students who feel overloaded by school, family tasks, and personal expectations.",
+        strategy: "Try this strategy: brain-dump all tasks, then circle only what must be done today.",
+        practice: "Daily practice: finish one task fully before starting another."
+      },
+      {
+        title: "Healing from Disappointment",
+        emotion: "Disappointed",
+        summary: "Supports students dealing with failed plans, low grades, or unmet expectations.",
+        strategy: "Try this strategy: write what you wanted, what happened, and what can still be rebuilt.",
+        practice: "Daily practice: set one realistic improvement target for the next day."
+      },
+      {
+        title: "Clarity for Confused Emotions",
+        emotion: "Confused",
+        summary: "For students who cannot clearly name what they are feeling and need simple emotional awareness tools.",
+        strategy: "Try this strategy: use a mood wheel and pick three words that fit your state.",
+        practice: "Daily practice: one short emotion check-in morning and evening."
+      },
+      {
+        title: "Handling Academic Pressure",
+        emotion: "Pressured",
+        summary: "A practical guide for students feeling intense pressure to perform perfectly.",
+        strategy: "Try this strategy: change perfection goals into progress goals with measurable steps.",
+        practice: "Daily practice: review progress weekly instead of judging yourself every hour."
+      },
+      {
+        title: "Finding Energy When You Feel Numb",
+        emotion: "Numb",
+        summary: "Helps students reconnect with motivation when they feel emotionally flat or detached.",
+        strategy: "Try this strategy: pick one sensory grounding action sight, sound, and movement.",
+        practice: "Daily practice: do one meaningful action before scrolling on your phone."
+      },
+      {
+        title: "Confidence After Self-Doubt",
+        emotion: "Insecure",
+        summary: "Supports students who compare themselves too much and feel they are not enough.",
+        strategy: "Try this strategy: keep a personal wins list with small achievements.",
+        practice: "Daily practice: replace one negative self-statement with a factual strength."
+      },
+      {
+        title: "Motivation with Healthy Balance",
+        emotion: "Motivated",
+        summary: "Helps driven students avoid burnout while still moving strongly toward goals.",
+        strategy: "Try this strategy: pair high-effort sessions with scheduled recovery breaks.",
+        practice: "Daily practice: track effort, rest, and sleep together, not just outcomes."
+      }
+    ];
+
+    const USER_SUPPLIED_COVERS = [
+      "IMAGES/OIP.webp",
+      "IMAGES/Dwyer_SOME-MISTAKES-WERE-MADE_popr2_500pcx.jpg",
+      "IMAGES/1712156152879.jpg",
+      "IMAGES/61ZxgcmkLuL.jpg",
+      "IMAGES/70f718ac-2461-4c5d-94d4-76c83c9f2716.b2fbcacd18ed60aed7a0f45bc0a88cec.webp",
+      "IMAGES/r.jpg",
+      "IMAGES/n.webp",
+      "IMAGES/OIP (1).webp",
+      "IMAGES/o.webp",
+      "IMAGES/n.webp",
+      "IMAGES/jhu.webp",
+      "IMAGES/h.webp",
+      "IMAGES/k.webp",
+      "IMAGES/g.jpg",
+      "IMAGES/every.webp",
+      "IMAGES/g.webp",
+      "IMAGES/feeling.webp",
+      "IMAGES/c.webp",
+      "IMAGES/625876372_879234974991176_702511813437371796_n.jpg",
+      "IMAGES/71ot8CZhx5L._SL1200_.jpg"
+    ];
+
+    const EXTRA_BOOK_LINKS = [
+      "Ewan/40-when-sadness-feels-heavy.html",
+      "Ewan/41-cooling-down-big-anger.html",
+      "Ewan/42-stress-to-structure.html",
+      "Ewan/43-brave-steps-for-fearful-days.html"
+    ];
+    const DEFAULT_EXTRA_BOOK_LINK = "Ewan/jealousy.html";
+
+    const EMOTION_BY_KEYWORD = [
+      { keyword: "sad", emotion: "Sad" },
+      { keyword: "anger", emotion: "Angry" },
+      { keyword: "anxiety", emotion: "Anxious" },
+      { keyword: "stress", emotion: "Stressed" },
+      { keyword: "fear", emotion: "Scared" },
+      { keyword: "shy", emotion: "Shy" },
+      { keyword: "guilt", emotion: "Guilty" },
+      { keyword: "regret", emotion: "Regretful" },
+      { keyword: "tired", emotion: "Tired" },
+      { keyword: "hope", emotion: "Hopeful" }
+    ];
+
+    const libraryElement = document.getElementById("library");
+    const modal = document.getElementById("bookModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalEmotion = document.getElementById("modalEmotion");
+    const modalSummary = document.getElementById("modalSummary");
+    const modalStrategy = document.getElementById("modalStrategy");
+    const modalPractice = document.getElementById("modalPractice");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    let lastFocusedCard = null;
+
+    function createExtraCard(book) {
+      const hasLink = Boolean(book.image && book.href);
+      const card = document.createElement(hasLink ? "a" : "div");
+      card.className = "book";
+      if (hasLink) {
+        card.setAttribute("href", book.href);
+      } else {
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+      }
+      card.dataset.title = book.title;
+      card.dataset.emotion = book.emotion;
+      card.dataset.summary = book.summary;
+      card.dataset.strategy = book.strategy;
+      card.dataset.practice = book.practice;
+      if (book.image) {
+        card.innerHTML = `<img src="${book.image}" alt="${book.title}" />`;
+      } else {
+        card.classList.add("book--empty");
+        card.innerHTML = `<div class="book-placeholder">Add your book cover here</div>`;
+      }
+      return card;
+    }
+
+    function goHome() {
+      window.location.href = HOME_PAGE;
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        goHome();
+      }
+    }
+
+    function addRipple(card, event) {
+      const existingRipple = card.querySelector(".ripple");
+      if (existingRipple) {
+        existingRipple.remove();
+      }
+
+      const rect = card.getBoundingClientRect();
+      const x = event.clientX || rect.left + rect.width / 2;
+      const y = event.clientY || rect.top + rect.height / 2;
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      ripple.style.left = `${x - rect.left}px`;
+      ripple.style.top = `${y - rect.top}px`;
+      card.appendChild(ripple);
+    }
+
+    function inferEmotion(title) {
+      const normalized = title.toLowerCase();
+      const matched = EMOTION_BY_KEYWORD.find((item) => normalized.includes(item.keyword));
+      return matched ? matched.emotion : "Mixed Emotions";
+    }
+
+    function openBookModal(content, trigger) {
+      lastFocusedCard = trigger || document.activeElement;
+      modalTitle.textContent = content.title;
+      modalEmotion.textContent = `Emotion Focus: ${content.emotion}`;
+      modalSummary.textContent = content.summary;
+      modalStrategy.textContent = content.strategy;
+      modalPractice.textContent = content.practice;
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      closeModalBtn.focus();
+    }
+
+    function closeBookModal() {
+      modal.hidden = true;
+      document.body.style.overflow = "";
+      if (lastFocusedCard && typeof lastFocusedCard.focus === "function") {
+        lastFocusedCard.focus();
+      }
+    }
+
+    function normalizeCoverForReader(cover) {
+      if (!cover) {
+        return "";
+      }
+      if (cover.startsWith("IMAGES/")) {
+        return `../${cover}`;
+      }
+      return cover;
+    }
+
+    function buildFallbackReaderLink(book, cover) {
+      const params = new URLSearchParams({
+        title: book.title,
+        emotion: book.emotion,
+        cover: normalizeCoverForReader(cover),
+        summary: book.summary,
+        strategy: book.strategy,
+        practice: book.practice
+      });
+      return `${DEFAULT_EXTRA_BOOK_LINK}?${params.toString()}`;
+    }
+
+    EXTRA_BOOKS.forEach((book, index) => {
+      const cover = USER_SUPPLIED_COVERS[index] || "";
+      const directLink = EXTRA_BOOK_LINKS[index] || "";
+      const href = cover ? (directLink || buildFallbackReaderLink(book, cover)) : "";
+      const withCover = { ...book, image: cover, href };
+      libraryElement.appendChild(createExtraCard(withCover));
+    });
+
+    document.querySelectorAll(".book").forEach((card, index) => {
+      card.style.setProperty("--stagger", `${index * 40}ms`);
+
+      const image = card.querySelector("img");
+      const title = (card.dataset.title || (image && image.alt ? image.alt : "")).trim() || `Book ${index + 1}`;
+      const emotion = (card.dataset.emotion || inferEmotion(title)).trim();
+      const summary = card.dataset.summary || `${title} helps students process ${emotion.toLowerCase()} feelings and build healthier coping routines with support from trusted people.`;
+      const strategy = card.dataset.strategy || "Try this strategy: pause, breathe, and write one realistic next action you can do today.";
+      const practice = card.dataset.practice || "Daily practice: reflect for five minutes and ask for help early when feelings grow too heavy.";
+      const content = { title, emotion, summary, strategy, practice };
+
+      const titleElement = document.createElement("span");
+      titleElement.className = "book-title";
+      titleElement.textContent = title;
+      card.appendChild(titleElement);
+
+      const emotionElement = document.createElement("span");
+      emotionElement.className = "book-emotion";
+      emotionElement.textContent = emotion;
+      card.appendChild(emotionElement);
+      card.setAttribute("aria-label", `Open support book: ${title}`);
+
+      const originalHref = card.getAttribute("href") || "";
+      const keepDirectBook4Or6Or7Or8Or11Or14Link = /Ewan\/(04-burnout-recovery|06-ride-the-wave|07-when-you-feel-down|08-getting-unstuck|11-mighty-mind|14-anxiety-support)\.html$/i.test(originalHref);
+
+      if (image && card.tagName.toLowerCase() === "a" && !keepDirectBook4Or6Or7Or8Or11Or14Link) {
+        const dynamicHref = buildFallbackReaderLink(content, image.getAttribute("src") || "");
+        card.setAttribute("href", dynamicHref);
+      }
+
+      const directHref = card.getAttribute("href");
+      if (directHref) {
+        card.setAttribute("aria-label", `Open book: ${title}`);
+        return;
+      }
+
+      const animateCard = (event) => {
+        if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+        if (event.type === "keydown") {
+          event.preventDefault();
+        }
+        addRipple(card, event);
+        card.classList.add("is-clicked");
+        setTimeout(() => {
+          card.classList.remove("is-clicked");
+        }, 260);
+        setTimeout(() => {
+          openBookModal(content, card);
+        }, 170);
+      };
+
+      card.addEventListener("click", animateCard);
+      card.addEventListener("keydown", animateCard);
+    });
+
+    closeModalBtn.addEventListener("click", closeBookModal);
+
+    modal.addEventListener("click", (event) => {
+      if (event.target.matches("[data-close-modal]")) {
+        closeBookModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.hidden) {
+        closeBookModal();
+      }
+    });
+  </script>
+</body>
+</html>

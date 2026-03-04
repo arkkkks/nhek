@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mood Selector</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+
+<style>
+/* ===================== YOUR ORIGINAL DESIGN ===================== */
+body {
+    background-color: #ffe6f2;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+.title-container {
+    background-color: #ffffff;
+    padding: 20px 50px;
+    border-radius: 50px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.title-container h1 {
+    color: #ff1493;
+    font-size: 2.5em;
+    margin: 0;
+    font-family: 'Righteous', sans-serif;
+}
+
+.emotion-wheel {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+}
+
+.rotation-arrow {
+    position: absolute;
+    left: 50%;
+    top: -60px;
+    transform: translateX(-50%);
+    font-size: 60px;
+}
+
+.emotion {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #d63384;
+    color: #fff;
+    font-weight: bold;
+    transition: .3s;
+}
+.emotion:hover { transform: scale(1.1); }
+
+/* CAUSE PAGE */
+.cause {
+    display: block;
+    margin: 10px;
+    padding: 12px 25px;
+    background: #d8b4fe;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* VERSE PAGE */
+.verse-box {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 20px;
+    background: #d63384;
+    color: white;
+    cursor: pointer;
+}
+
+/* SECTION CONTROL */
+.section { display: none; }
+.active { display: block; }
+
+</style>
+</head>
+
+<body>
+
+<div class="title-container">
+    <h1>What are you feeling today?</h1>
+</div>
+
+<!-- ================= EMOTION PAGE ================= -->
+<div id="emotionPage" class="section active">
+    <div class="emotion-wheel" id="wheel">
+        <div class="rotation-arrow">⬇</div>
+    </div>
+</div>
+
+<!-- ================= CAUSE PAGE ================= -->
+<div id="causePage" class="section">
+    <h2 id="causeTitle"></h2>
+    <div id="causeContainer"></div>
+    <button onclick="backToEmotions()">⬅ Back</button>
+</div>
+
+<!-- ================= VERSE PAGE ================= -->
+<div id="versePage" class="section">
+    <div class="verse-box">
+        <h2 id="verseRef"></h2>
+        <p id="verseText"></p>
+        <hr>
+        <p id="verseMessage"></p>
+    </div>
+    <button onclick="showVerse()">Show Another Verse</button>
+    <button onclick="backToCauses()">⬅ Back</button>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+
+const emotions = [
+    { name:"Happy 😊", key:"Happy" },
+    { name:"Sad 😢", key:"Sad" },
+    { name:"Angry 😡", key:"Angry" },
+    { name:"Scared 😨", key:"Scared" },
+    { name:"Tired 😴", key:"Tired" },
+    { name:"Excited 🤩", key:"Excited" },
+    { name:"Guilt 😔", key:"Guilt" },
+    { name:"Shy 😊", key:"Shy" },
+    { name:"Stressed 😫", key:"Stressed" },
+    { name:"Disappointed 😞", key:"Disappointed" },
+    { name:"Regret 😢", key:"Regret" },
+    { name:"Worried 😟", key:"Worried" },
+    { name:"Nervous 😰", key:"Nervous" }
+];
+
+const causes = {
+    Happy: ["Good Grades","Supportive Friends","Fun Activities","Family Support"],
+    Sad: ["Loneliness","Family Problems","Academic Pressure"],
+    Angry: ["Bullying","Unfair Treatment","Arguments"],
+    Worried: ["Exams","Future","Health"],
+    default: ["School","Friends","Family","Personal Struggles"]
+};
+
+const verses = [
+    {
+        ref:"Proverbs 16:3",
+        text:"Commit to the Lord whatever you do, and He will establish your plans.",
+        message:"Trusting God with your goals brings peace and confidence."
+    },
+    {
+        ref:"Psalm 34:18",
+        text:"The Lord is close to the brokenhearted.",
+        message:"God stays near during sadness and heals your heart."
+    },
+    {
+        ref:"Isaiah 41:10",
+        text:"Do not fear, for I am with you.",
+        message:"You are never alone — God strengthens you."
+    },
+    {
+        ref:"Philippians 4:13",
+        text:"I can do all things through Christ.",
+        message:"You have strength to overcome every challenge."
+    }
+];
+
+const versesByEmotion = {
+    Happy: [
+        {
+            ref:"Psalm 118:24",
+            text:"This is the day that the Lord has made; let us rejoice and be glad in it.",
+            message:"Joy grows when you choose gratitude today."
+        },
+        {
+            ref:"Proverbs 17:22",
+            text:"A cheerful heart is good medicine.",
+            message:"Your happy spirit is a source of healing."
+        },
+        {
+            ref:"Philippians 4:4",
+            text:"Rejoice in the Lord always. I will say it again: Rejoice!",
+            message:"Let joy stay rooted in God."
+        }
+    ],
+    Sad: [
+        {
+            ref:"Psalm 34:18",
+            text:"The Lord is close to the brokenhearted and saves those who are crushed in spirit.",
+            message:"You are not alone in your sadness."
+        },
+        {
+            ref:"Matthew 5:4",
+            text:"Blessed are those who mourn, for they will be comforted.",
+            message:"Comfort is promised while you heal."
+        },
+        {
+            ref:"Revelation 21:4",
+            text:"He will wipe every tear from their eyes.",
+            message:"Your pain matters to God."
+        }
+    ],
+    Angry: [
+        {
+            ref:"Ephesians 4:26",
+            text:"In your anger do not sin.",
+            message:"Feel anger, but choose wise actions."
+        },
+        {
+            ref:"Proverbs 15:1",
+            text:"A gentle answer turns away wrath, but a harsh word stirs up anger.",
+            message:"Calm words can break the cycle."
+        },
+        {
+            ref:"James 1:19",
+            text:"Everyone should be quick to listen, slow to speak and slow to become angry.",
+            message:"Pause first, then respond."
+        }
+    ],
+    Scared: [
+        {
+            ref:"Isaiah 41:10",
+            text:"Do not fear, for I am with you.",
+            message:"God is with you in this moment."
+        },
+        {
+            ref:"Psalm 56:3",
+            text:"When I am afraid, I put my trust in you.",
+            message:"Fear can become trust."
+        },
+        {
+            ref:"2 Timothy 1:7",
+            text:"God gave us a spirit not of fear but of power and love and self-control.",
+            message:"You are equipped for courage."
+        }
+    ],
+    Tired: [
+        {
+            ref:"Matthew 11:28",
+            text:"Come to me, all you who are weary and burdened, and I will give you rest.",
+            message:"You can rest without giving up."
+        },
+        {
+            ref:"Isaiah 40:31",
+            text:"Those who hope in the Lord will renew their strength.",
+            message:"Renewal is possible."
+        },
+        {
+            ref:"Psalm 23:2",
+            text:"He makes me lie down in green pastures, he leads me beside quiet waters.",
+            message:"God leads you to real rest."
+        }
+    ],
+    Excited: [
+        {
+            ref:"Jeremiah 29:11",
+            text:"For I know the plans I have for you... plans to give you hope and a future.",
+            message:"Your excitement can move you toward purpose."
+        },
+        {
+            ref:"Proverbs 16:3",
+            text:"Commit to the Lord whatever you do, and he will establish your plans.",
+            message:"Bring your plans to God."
+        },
+        {
+            ref:"Psalm 20:4",
+            text:"May he give you the desire of your heart and make all your plans succeed.",
+            message:"Keep your goals grounded in faith."
+        }
+    ],
+    Guilt: [
+        {
+            ref:"1 John 1:9",
+            text:"If we confess our sins, he is faithful and just and will forgive us.",
+            message:"Guilt can be released through confession."
+        },
+        {
+            ref:"Psalm 103:12",
+            text:"As far as the east is from the west, so far has he removed our transgressions from us.",
+            message:"You are not chained to your past."
+        },
+        {
+            ref:"Romans 8:1",
+            text:"There is now no condemnation for those who are in Christ Jesus.",
+            message:"Learn and move forward."
+        }
+    ],
+    Shy: [
+        {
+            ref:"Joshua 1:9",
+            text:"Be strong and courageous. Do not be afraid; do not be discouraged.",
+            message:"Take small brave steps."
+        },
+        {
+            ref:"Psalm 139:14",
+            text:"I praise you because I am fearfully and wonderfully made.",
+            message:"Your worth is secure."
+        },
+        {
+            ref:"2 Corinthians 12:9",
+            text:"My grace is sufficient for you, for my power is made perfect in weakness.",
+            message:"God works in vulnerable moments."
+        }
+    ],
+    Stressed: [
+        {
+            ref:"Philippians 4:6-7",
+            text:"Do not be anxious about anything... and the peace of God... will guard your hearts and minds.",
+            message:"Trade pressure for prayer."
+        },
+        {
+            ref:"1 Peter 5:7",
+            text:"Cast all your anxiety on him because he cares for you.",
+            message:"You do not need to carry everything alone."
+        },
+        {
+            ref:"John 14:27",
+            text:"Peace I leave with you; my peace I give you.",
+            message:"God offers deeper peace."
+        }
+    ],
+    Disappointed: [
+        {
+            ref:"Romans 8:28",
+            text:"In all things God works for the good of those who love him.",
+            message:"Disappointment can still become growth."
+        },
+        {
+            ref:"Proverbs 3:5-6",
+            text:"Trust in the Lord with all your heart... and he will make your paths straight.",
+            message:"Keep trusting through outcomes you did not expect."
+        },
+        {
+            ref:"Galatians 6:9",
+            text:"Let us not become weary in doing good... at the proper time we will reap a harvest.",
+            message:"Delay is not failure."
+        }
+    ],
+    Regret: [
+        {
+            ref:"Joel 2:25",
+            text:"I will restore to you the years that the locust hath eaten.",
+            message:"God can restore what feels lost."
+        },
+        {
+            ref:"Philippians 3:13-14",
+            text:"Forgetting what is behind and straining toward what is ahead, I press on.",
+            message:"Regret does not define your next chapter."
+        },
+        {
+            ref:"2 Corinthians 5:17",
+            text:"If anyone is in Christ, the new creation has come: The old has gone, the new is here!",
+            message:"You are allowed to begin again."
+        }
+    ],
+    Worried: [
+        {
+            ref:"Matthew 6:34",
+            text:"Do not worry about tomorrow, for tomorrow will worry about itself.",
+            message:"Focus on today's step."
+        },
+        {
+            ref:"Proverbs 12:25",
+            text:"Anxiety weighs down the heart, but a kind word cheers it up.",
+            message:"Seek words that lift your heart."
+        },
+        {
+            ref:"Psalm 55:22",
+            text:"Cast your cares on the Lord and he will sustain you.",
+            message:"Let God hold what feels heavy."
+        }
+    ],
+    Nervous: [
+        {
+            ref:"Isaiah 26:3",
+            text:"You will keep in perfect peace those whose minds are steadfast, because they trust in you.",
+            message:"Steady trust creates steady peace."
+        },
+        {
+            ref:"Deuteronomy 31:8",
+            text:"The Lord himself goes before you and will be with you.",
+            message:"You are not walking in alone."
+        },
+        {
+            ref:"Hebrews 4:16",
+            text:"Let us then approach God's throne of grace with confidence.",
+            message:"Move forward with courage and prayer."
+        }
+    ],
+    default: [
+        {
+            ref:"Proverbs 16:3",
+            text:"Commit to the Lord whatever you do, and he will establish your plans.",
+            message:"Trust God with your steps."
+        },
+        {
+            ref:"Isaiah 41:10",
+            text:"Do not fear, for I am with you.",
+            message:"You are never alone."
+        }
+    ]
+};
+
+/* ===================== WHEEL LAYOUT ===================== */
+
+const wheel = document.getElementById("wheel");
+const radius = 200;
+const center = 250;
+
+emotions.forEach((emotion, i) => {
+    const angle = (2 * Math.PI * i) / emotions.length - Math.PI / 2;
+    const x = center + radius * Math.cos(angle) - 50;
+    const y = center + radius * Math.sin(angle) - 50;
+
+    const div = document.createElement("div");
+    div.className = "emotion";
+    div.innerText = emotion.name;
+    div.style.left = x + "px";
+    div.style.top = y + "px";
+    div.onclick = () => selectEmotion(emotion.key);
+    wheel.appendChild(div);
+});
+
+/* ===================== FLOW ===================== */
+
+let currentEmotion = "";
+const lastVerseIndexByEmotion = {};
+
+function selectEmotion(emotionKey){
+    currentEmotion = emotionKey;
+    showCauses();
+}
+
+function showCauses(){
+    const container = document.getElementById("causeContainer");
+    container.innerHTML = "";
+
+    const list = causes[currentEmotion] || causes.default;
+
+    list.forEach(cause=>{
+        const btn = document.createElement("button");
+        btn.className = "cause";
+        btn.innerText = cause;
+        btn.onclick = showVerse;
+        container.appendChild(btn);
+    });
+
+    document.getElementById("causeTitle").innerText =
+        "Causes of feeling " + currentEmotion;
+
+    switchPage("causePage");
+}
+
+function showVerse(){
+    const emotionVerses = versesByEmotion[currentEmotion] || versesByEmotion.default || verses;
+    if (!emotionVerses.length) return;
+
+    let index = Math.floor(Math.random() * emotionVerses.length);
+    const previousIndex = lastVerseIndexByEmotion[currentEmotion];
+
+    if (emotionVerses.length > 1 && index === previousIndex) {
+        index = (index + 1) % emotionVerses.length;
+    }
+
+    lastVerseIndexByEmotion[currentEmotion] = index;
+    const v = emotionVerses[index];
+
+    document.getElementById("verseRef").innerText = v.ref;
+    document.getElementById("verseText").innerText = v.text;
+    document.getElementById("verseMessage").innerText = v.message;
+
+    switchPage("versePage");
+}
+
+function backToEmotions(){ switchPage("emotionPage"); }
+function backToCauses(){ switchPage("causePage"); }
+
+function switchPage(pageId){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+}
+</script>
+
+</body>
+</html>

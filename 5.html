@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Diary App</title>
+
+<style>
+body{
+  font-family:"Poppins",sans-serif;
+  background:linear-gradient(135deg,#fdd6e4,#f9b0d1);
+  text-align:center;
+  margin:0;
+  padding:30px;
+}
+
+h1,h2{
+  font-family:"Brush Script MT",cursive;
+  color:#4b1b39;
+}
+
+.section{display:none;}
+.active{display:block;}
+
+input, textarea{
+  width:80%;
+  max-width:400px;
+  padding:15px;
+  margin:10px auto;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+  display:block;
+}
+
+textarea{
+  height:180px;
+  resize:none;
+}
+
+button{
+  background:#f28ab2;
+  border:none;
+  border-radius:30px;
+  padding:12px 30px;
+  font-size:18px;
+  color:white;
+  cursor:pointer;
+  margin:8px;
+}
+
+button:hover{background:#e36d9f;}
+
+.card{
+  background:#fff;
+  border-radius:25px;
+  padding:25px;
+  max-width:700px;
+  margin:20px auto;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+/* Diary list */
+.diary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.diary-item{
+  background:#fff;
+  border:2px solid #e8a2c8;
+  border-radius:25px;
+  padding:20px;
+  text-align:left;
+  display:flex;
+  gap:15px;
+  cursor:pointer;
+}
+
+.month-circle{
+  background:#e6849c;
+  color:white;
+  border-radius:50%;
+  width:60px;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+}
+
+.delete{background:#e85c5c;}
+.back{background:#bbb;}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1: CREATE -->
+<div class="section active" id="createPage">
+  <h1>My Diary</h1>
+  <p>A private world, in words untold.</p>
+  <input id="nameInput" placeholder="Your Name">
+  <input id="titleInput" placeholder="Diary Title">
+  <button onclick="goWrite()">Create</button>
+</div>
+
+<!-- PAGE 2: WRITE -->
+<div class="section" id="writePage">
+  <h2 id="welcomeText"></h2>
+  <div class="card">
+    <textarea id="diaryText" placeholder="Write your thoughts here..."></textarea>
+  </div>
+  <button onclick="saveDiary()">Done</button>
+</div>
+
+<!-- PAGE 3: DIARY LIST -->
+<div class="section" id="listPage">
+  <h1>My Diary Entries</h1>
+  <input placeholder="Search feeling or month..." onkeyup="filterDiaries(this.value)">
+  <div class="diary-grid" id="diaryList"></div>
+  <button class="back" onclick="goWrite()">➕ New Entry</button>
+</div>
+
+<!-- PAGE 4: VIEW / EDIT -->
+<div class="section" id="viewPage">
+  <div class="card">
+    <h2 id="viewTitle"></h2>
+    <p id="viewDate"></p>
+    <textarea id="viewText"></textarea>
+    <div>
+      <button onclick="updateDiary()">💾 Save</button>
+      <button class="delete" onclick="deleteDiary()">🗑 Delete</button>
+      <button class="back" onclick="goList()">⬅ Back</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedId = null;
+
+// Show section
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// PAGE 1 → PAGE 2
+function goWrite(){
+  const name = nameInput.value.trim();
+  const title = titleInput.value.trim();
+
+  if(!name || !title){
+    alert("Please enter name and diary title");
+    return;
+  }
+
+  localStorage.setItem("userName", name);
+  localStorage.setItem("diaryTitle", title);
+
+  welcomeText.textContent = `Hello ${name} 🌸`;
+  diaryText.value="";
+  show("writePage");
+}
+
+// SAVE DIARY → PAGE 3
+function saveDiary(){
+  const text = diaryText.value.trim();
+  if(!text){alert("Write something first!"); return;}
+
+  const now = new Date();
+  const entry = {
+    id: Date.now().toString(),
+    title: localStorage.getItem("diaryTitle"),
+    month: now.toLocaleString("default",{month:"long"}),
+    year: now.getFullYear(),
+    feeling: text.substring(0,40)+"...",
+    text
+  };
+
+  const list = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+  list.push(entry);
+  localStorage.setItem("diaryEntries",JSON.stringify(list));
+
+  loadList();
+  show("listPage");
+}
+
+// LOAD LIST
+function loadList(){
+  diaryList.innerHTML="";
+  const list = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+
+  list.forEach(d=>{
+    const div = document.createElement("div");
+    div.className="diary-item";
+    div.innerHTML=`
+      <div class="month-circle">${d.month}</div>
+      <div>
+        <b>${d.title}</b><br>
+        <small>${d.feeling} • ${d.month} ${d.year}</small>
+      </div>`;
+    div.onclick=()=>openDiary(d.id);
+    diaryList.appendChild(div);
+  });
+}
+
+// FILTER
+function filterDiaries(q){
+  const list = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+  const filtered = list.filter(d =>
+    d.title.toLowerCase().includes(q.toLowerCase()) ||
+    d.feeling.toLowerCase().includes(q.toLowerCase()) ||
+    d.month.toLowerCase().includes(q.toLowerCase())
+  );
+  diaryList.innerHTML="";
+  filtered.forEach(d=>{
+    const div=document.createElement("div");
+    div.className="diary-item";
+    div.innerHTML=`
+      <div class="month-circle">${d.month}</div>
+      <div><b>${d.title}</b><br><small>${d.feeling}</small></div>`;
+    div.onclick=()=>openDiary(d.id);
+    diaryList.appendChild(div);
+  });
+}
+
+// OPEN DIARY
+function openDiary(id){
+  const list = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+  const d = list.find(x=>x.id===id);
+  selectedId=id;
+  viewTitle.textContent=d.title;
+  viewDate.textContent=d.month+" "+d.year;
+  viewText.value=d.text;
+  show("viewPage");
+}
+
+// UPDATE
+function updateDiary(){
+  const list = JSON.parse(localStorage.getItem("diaryEntries"));
+  const d = list.find(x=>x.id===selectedId);
+  d.text=viewText.value;
+  d.feeling=viewText.value.substring(0,40)+"...";
+  localStorage.setItem("diaryEntries", JSON.stringify(list));
+  alert("Diary updated 💖");
+  loadList();
+  show("listPage");
+}
+
+// DELETE
+function deleteDiary(){
+  if(confirm("Are you sure you want to delete this diary?")){
+    let list = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+    list = list.filter(d => d.id !== selectedId);
+    localStorage.setItem("diaryEntries", JSON.stringify(list));
+    loadList();
+    show("listPage");
+  }
+}
+
+// GO TO LIST
+function goList(){
+  loadList();
+  show("listPage");
+}
+
+// AUTO LOAD IF ENTRIES EXIST
+if(localStorage.getItem("diaryEntries")){
+  loadList();
+  show("listPage");
+}
+</script>
+
+</body>
+</html>
+
+
+

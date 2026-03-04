@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Mood!</title>
+    <style>
+        body {
+        background-image: url('images/background.jpg');
+        background-repeat: no-repeat;
+       background-size: cover;
+
+font-family: Arial Black sans-serif;
+            background-color: #ffe6f2; /* Light pink background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10;
+            padding: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Four columns */
+            grid-gap: 20px;
+            max-width: 800px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff; /* White background for icons */
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .app-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .app-icon img {
+            width:10%px; /* Adjust as needed */
+            height:30%px; /* Adjust as needed */
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            background-color: #f9c6d5; /* Light pink search bar */
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin-bottom: 100px;
+            width: 200%;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input[type="text"] {
+            border: none;
+            background: transparent;
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        .search-bar button {
+            background-color: #d66ba0; /* Pink button */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Mood!</h1>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+        <button>Search</button>
+    </div>
+
+    <div class="container">
+        <!-- App Icons -->
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_071747.jpg" alt="Bible verse">
+             <span>Bible Verses</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_064715.jpg" alt="Journal">
+            <span>Journal</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_064802.jpg" alt="Library">
+            <span>Library</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_064835.jpg" alt="Motivation">
+            <span>Motivation</span>
+        </div>
+        <div class="app-icon">
+            <img src=" " alt="Mood Board">
+            <span>Mood Board</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_064932.jpg" alt="Walk with Nature">
+            <span>Walk with Nature</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_065012.jpg" alt="Problem Solution">
+            <span>Problem Solution</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_065039.jpg" alt="Mood Calendar">
+            <span>Mood Calendar</span>
+        </div>
+        <div class="app-icon">
+            <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Mental/media/images/IMG_20250925_065103.jpg" alt="Food to help your mood">
+            <span>Food to help your mood</span>
+        </div>
+    </div>
+
+    <script>
+        // You can add JavaScript here to handle click events on the app icons
+        const appIcons = document.querySelectorAll('.app-icon');
+
+        appIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                alert(Clicked on ${icon.querySelector('span').textContent});
+            });
+        });
+    </script>
+</body>
+</html>

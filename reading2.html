@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Disappointment — Get Unstuck (summary)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:300,400,600|Tulpen+One&display=swap');
+
+  :root {
+    --body-bg: #FAFAFA;
+    --page-bg: #F5F5F5;
+    --dark-text: #2A2935;
+    --baseline: 12px;
+    --book-title: 'Tulpen One', sans-serif;
+    --title: 'Cormorant Garamond', serif;
+    --body: 'Cormorant Garamond', serif;
+    --base-size: calc(var(--baseline) * 1.2);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--body-bg);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--body), "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--dark-text);
+  }
+
+  .cover {
+    width: calc(var(--baseline) * 60);
+    height: calc(var(--baseline) * 42.6);
+    box-shadow: 0 0 100px rgba(0, 0, 0, .3);
+  }
+
+  .book {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    perspective: 1200px;
+    
+    &__page {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      display: grid;
+      transform: rotateY(0deg);
+      transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transform-origin: 0% 0%;
+      background-color: var(--page-bg);
+      background-image: linear-gradient(90deg, rgba(227,227,227,1) 0%, rgba(247,247,247,0) 18%);
+      
+      &:nth-of-type(1) {
+        background-image: linear-gradient(-90deg, rgba(227,227,227,1) 0%, rgba(247,247,247,0) 18%);
+      }
+
+      &--1 {
+        cursor: pointer;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          max-width: 100%;
+          height: auto;
+        }
+      }
+      
+      &--2 {
+        position: absolute;
+        right: 0;
+        pointer-events: none;
+        transform-style: preserve-3d;
+        background-color: var(--page-bg);
+        background-image: linear-gradient(90deg, rgba(227,227,227,1) 0%, rgba(247,247,247,0) 18%);
+      }
+      
+      &--4 {
+        cursor: pointer;
+        padding: 0 calc(var(--baseline) * 3);
+      }
+      
+      &-front {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform: rotateY(0deg) translateZ(1px);
+      }
+      
+      &-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        padding: 0 calc(var(--baseline) * 1.8);
+        transform: rotateY(180deg) translateZ(1px);
+      }
+      
+      .page__content {
+        padding: var(--baseline);
+        height: 100%;
+        position: relative;
+        text-align: center;
+        
+        &-title {
+          font-family: var(--title);
+          font-size: calc(var(--base-size) * 1);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-top: calc(var(--baseline) * 5);
+          margin-bottom: calc(var(--baseline) * 3);
+        }
+        
+        &-text {
+          font-family: var(--title);
+          font-size: calc(var(--base-size) * 0.67);
+          text-align: justify;
+          text-indent: var(--baseline);
+        }
+      }
+      .page__number {
+        position: absolute;
+        bottom: var(--baseline);
+        width: calc(100% - (var(--baseline) * 2));
+        font-family: var(--title);
+        font-size: calc(var(--base-size) * 0.67);
+        text-align: center;
+      }
+    }
+    
+    input[type="radio"] {
+      display: none;
+      
+      &:checked + .book__page {
+        transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transform: rotateY(-180deg);
+      }
+    }
+  }
+
+  .controls {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .btn {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.12);
+    cursor: pointer;
+    font-weight: 700;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn[disabled] {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+
+  .page-meta {
+    font-size: 13px;
+    color: #444;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 560px) {
+    .book { flex-direction: column; height: auto; width: 95%; padding-bottom: 18px; }
+    .book__page { width: 100%; min-height: 240px; }
+  }
+</style>
+</head>
+<body>
+  <div class="cover">
+    <div class="book" id="book">
+      <!-- Cover page -->
+      <label for="page-1" class="book__page book__page--1">
+        <img src="IMAGES/overcoming.jpg" alt="Cover" style="filter: saturate(1.5) brightness(1.1);">
+      </label>
+      
+      <!-- Radios and pages generated by JS -->
+    </div>
+  </div>
+
+  <div style="position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:40;">
+    <div class="controls" role="navigation" aria-label="Book navigation">
+      <button id="prevBtn" class="btn" aria-label="Previous page">
+        ← Prev
+      </button>
+      <div class="page-meta" id="pageMeta">Page 1 / 8</div>
+      <button id="nextBtn" class="btn" aria-label="Next page">
+        Next →
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:8px;color:#ddd;font-size:12px;">
+      Tip: use ← and → keys to navigate
+    </div>
+  </div>
+
+<script>
+const spreads = [
+  {
+    left: `<h3 style="margin-top:2px;margin-bottom:8px;">Introduction</h3>
+           <p>Disappointment is part of life. It comes when expectations meet a different reality — from small plans that fail to larger hopes that don't work out. The important part isn't that we feel disappointment, but what we do next: it's possible to get unstuck and move forward with purpose.</p>`,
+    right: `<h4 style="margin-top:2px;margin-bottom:8px;">Why it matters</h4>
+            <p>Lingering disappointment can sap energy, lower confidence, and stop us trying again. Understanding how disappointment works gives you the power to respond in ways that help you recover, learn, and re-engage with life.</p>`
+  },
+  {
+    left: `<h4>1. Allow the feeling</h4>
+           <p>First, give yourself permission to feel disappointed. Trying to push the feeling away makes it louder. Name it: "I feel disappointed." That simple step reduces overwhelm and makes it easier to think clearly.</p>`,
+    right: `<h4>2. Notice your story</h4>
+            <p>We often tell ourselves stories about why something failed ("I wasn't good enough", "It was unfair"). Notice those thoughts without immediately accepting them. Are they facts or interpretations? Separating facts from the story helps you choose a healthier response.</p>`
+  },
+  {
+    left: `<h4>3. Learn, don't blame</h4>
+           <p>Ask what you can learn rather than only blaming yourself or others. What went wrong? What was out of your control? What could you do differently next time? This turns disappointment into fuel for growth.</p>`,
+    right: `<h4>4. Lower unhelpful expectations</h4>
+            <p>Sometimes disappointment follows unrealistic expectations. Recalibrate: set goals that stretch you but are also achievable. Smaller, clearer steps reduce the risk of being knocked off track.</p>`
+  },
+  {
+    left: `<h4>5. Take one small action</h4>
+           <p>To get unstuck, choose one small, concrete action — even a tiny step. A short action builds momentum and proves you can move forward. Progress, not perfection, is the aim.</p>`,
+    right: `<h4>6. Build a short plan</h4>
+            <p>Sketch a simple plan: next step, timeline, and one person who can help. Writing it down converts vague hopes into practical moves and reduces the chance you'll drift back into passivity.</p>`
+  },
+  {
+    left: `<h4>7. Use support</h4>
+           <p>Talk with someone you trust: a friend, mentor, or counselor. Other perspectives can calm you, spot options you missed, and remind you of the strengths you still have.</p>`,
+    right: `<h4>8. Reframe setbacks</h4>
+            <p>Shift the meaning you attach to the outcome. Instead of "I failed", try "This didn't work — what can I learn?" Reframing opens possibilities and reduces shame or hopelessness.</p>`
+  },
+  {
+    left: `<h4>9. Practice self-kindness</h4>
+           <p>Be as kind to yourself as you would be to a friend. Harsh self-criticism lengthens recovery. Gentle encouragement helps your brain calm and frees up energy for action.</p>`,
+    right: `<h4>10. Notice progress</h4>
+            <p>Keep a simple log of small wins — what you did differently, what you learned, who you reached out to. Seeing progress, even small, rebuilds confidence and makes new effort easier.</p>`
+  },
+  {
+    left: `<h4>11. Reconnect to purpose</h4>
+           <p>Remind yourself why the goal mattered. Does the original aim still fit your values and priorities? Sometimes adjustment or even a fresh goal is the best response — not stubbornly pursuing something that no longer fits.</p>`,
+    right: `<h4>12. Try again (or pivot)</h4>
+            <p>When you're ready, try again using the lessons learned. Or pivot to an alternative path that uses your strengths differently. Both resistance and flexibility are valid choices; choose with clarity.</p>`
+  },
+  {
+    left: `<h4>Final encouragement</h4>
+           <p>Disappointment doesn't define you. It's a signal that something didn't match expectations and an opportunity to grow. With simple steps — acknowledge, reflect, act — you can get unstuck, learn, and move toward a stronger, wiser version of your plans.</p>`,
+    right: `<h4 style="margin-top:2px;">A closing note</h4>
+            <p>Take a breath, choose one small next step, and keep going. Small consistent actions beat big perfect plans every time.</p>
+            <p style="margin-top:12px;font-size:13px;color:#555;"><em>Summary inspired by "Get Unstuck from Disappointment" — Gill Hasson.</em></p>`
+  }
+];
+
+let spreadIndex = 0;
+const total = spreads.length;
+const bookEl = document.getElementById('book');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pageMeta = document.getElementById('pageMeta');
+
+// Generate pages dynamically
+spreads.forEach((spread, index) => {
+  const radioId = `page-${index + 2}`; // Start from page-2 after cover
+  const radio = document.createElement('input');
+  radio.type = 'radio';
+  radio.name = 'page';
+  radio.id = radioId;
+  if (index === 0) radio.checked = true; // First spread checked by default
+
+  const label = document.createElement('label');
+  label.htmlFor = radioId;
+  label.className = 'book__page book__page--2'; // Use --2 for flip effect
+
+  label.innerHTML = `
+    <div class="book__page-front">
+      <div class="page__content">
+        ${spread.left}
+        <div class="page__number">${index * 2 + 1}</div>
+      </div>
+    </div>
+    <div class="book__page-back">
+      <div class="page__content">
+        ${spread.right}
+        <div class="page__number">${index * 2 + 2}</div>
+      </div>
+    </div>
+  `;
+
+  bookEl.appendChild(radio);
+  bookEl.appendChild(label);
+});
+
+// Navigation functions
+function goNext() {
+  if (spreadIndex < total - 1) {
+    spreadIndex++;
+    document.getElementById(`page-${spreadIndex + 2}`).checked = true;
+    updateUI();
+  }
+}
+
+function goPrev() {
+  if (spreadIndex > 0) {
+    spreadIndex--;
+    document.getElementById(`page-${spreadIndex + 2}`).checked = true;
+    updateUI();
+  }
+}
+
+function updateUI() {
+  pageMeta.textContent = `Page ${spreadIndex + 1} / ${total}`;
+  prevBtn.disabled = (spreadIndex === 0);
+  nextBtn.disabled = (spreadIndex === total - 1);
+}
+
+// Event listeners
+nextBtn.addEventListener('click', goNext);
+prevBtn.addEventListener('click', goPrev);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') goNext();
+  if (e.key === 'ArrowLeft') goPrev();
+});
+
+// Initial UI update
+updateUI();
+</script>
+</body>
+</html>
+

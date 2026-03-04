@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MyDiary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:linear-gradient(135deg,#ffd6e7,#ffeef5);
+}
+
+.page{
+    display:none;
+    min-height:100vh;
+    padding:20px;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.active{display:block;}
+
+/* BACKGROUNDS RESTORED */
+#page1{
+    background-image:url('/IMAGES/10.jpg');
+}
+#page2{
+    background-image:url('/IMAGES/Research%20UI%20(21).jpg');
+}
+#page3{
+    background:linear-gradient(135deg,#ffd6e7,#ffeef5);
+}
+
+.icon-btn{
+    position:fixed;
+    top:20px;
+    width:45px;height:45px;
+    border-radius:50%;
+    background:#ff1493;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    cursor:pointer;
+    z-index:10;
+}
+.back{left:20px;}
+.home{right:20px;}
+
+.container{
+    max-width:350px;
+    margin:40px auto;
+    text-align:center;
+    background:transparent;
+}
+
+input,textarea{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+#userName,#diaryTitle{
+    border-radius:50px;
+    background:#D47FA2;
+    height:50px;
+}
+
+textarea{
+    height:200px;
+    resize:none;
+    background:repeating-linear-gradient(
+        white,
+        white 28px,
+        #f0c2d1 29px
+    );
+    line-height:28px;
+}
+
+button{
+    background:#f39ab5;
+    border:none;
+    padding:15px 40px;
+    border-radius:50px;
+    font-size:18px;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+.diary-card{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    margin:10px 0;
+    cursor:pointer;
+}
+
+h2{
+    font-family:'Righteous';
+    font-size:3em;
+    color:#ff1493;
+}
+
+.error{
+    color:red;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="icon-btn back" onclick="goBack()">⬅</div>
+<div class="icon-btn home" onclick="goHome()">🏠</div>
+
+<!-- PAGE 1 -->
+<div class="page active" id="page1">
+    <div class="container">
+        <h2>My Diary</h2>
+
+        <input id="userName" placeholder="Your Name">
+        <div id="nameError" class="error"></div>
+
+        <input id="diaryTitle" placeholder="Diary Title">
+        <div id="titleError" class="error"></div>
+
+        <button onclick="createDiary()">Create</button>
+    </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+    <div class="container">
+
+        <div style="
+            background:#FFCFF1;
+            padding:15px;
+            border-radius:10px;
+            font-family:'Dancing Script';
+            font-size:24px;
+            margin-bottom:15px;">
+            What are you feeling right now<br>after you write your journal?
+        </div>
+
+        <h3 id="diaryHeader"></h3>
+
+        <textarea id="content" placeholder="Write your thoughts..."></textarea>
+        <div id="contentError" class="error"></div>
+
+        <button onclick="saveDiary()">Done</button>
+    </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+    <div class="container">
+        <input id="search" placeholder="Search diary..." onkeyup="searchDiary()">
+        <div id="diaryList"></div>
+    </div>
+</div>
+
+<!-- EDIT POPUP -->
+<div id="editor" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.5);">
+
+    <div style="
+    background:white;
+    margin:60px auto;
+    padding:20px;
+    width:90%;
+    max-width:400px;
+    border-radius:15px;">
+
+        <textarea id="editContent" style="height:300px;"></textarea>
+        <button onclick="saveEdit()">Save</button>
+        <button onclick="closeEditor()">Cancel</button>
+    </div>
+</div>
+
+<script>
+let pages=document.querySelectorAll(".page");
+let historyStack=[];
+let editIndex=null;
+
+function showPage(id){
+    pages.forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    if(id==="page2"){
+        content.value=localStorage.getItem("draftContent")||"";
+    }
+}
+
+function goBack(){
+    if(historyStack.length) showPage(historyStack.pop());
+}
+
+function goHome(){
+    historyStack=[];
+    showPage("page1");
+}
+
+function createDiary(){
+    let name=userName.value.trim();
+    let title=diaryTitle.value.trim();
+
+    nameError.textContent="";
+    titleError.textContent="";
+
+    if(!name) nameError.textContent="Enter your name";
+    if(!title) titleError.textContent="Enter diary title";
+    if(!name||!title) return;
+
+    localStorage.setItem("currentName",name);
+    localStorage.setItem("currentTitle",title);
+    diaryHeader.textContent=title+" - by "+name;
+
+    historyStack.push("page1");
+    showPage("page2");
+}
+
+content.addEventListener("input",()=>{
+    localStorage.setItem("draftContent",content.value);
+});
+
+function saveDiary(){
+    let text=content.value.trim();
+    contentError.textContent="";
+    if(!text){
+        contentError.textContent="Diary cannot be empty";
+        return;
+    }
+
+    let diaries=JSON.parse(localStorage.getItem("diaries"))||[];
+    diaries.push({
+        name:localStorage.getItem("currentName"),
+        title:localStorage.getItem("currentTitle"),
+        content:text,
+        date:new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem("diaries",JSON.stringify(diaries));
+    localStorage.removeItem("draftContent");
+
+    loadDiaries();
+    historyStack.push("page2");
+    showPage("page3");
+}
+
+function loadDiaries(){
+    diaryList.innerHTML="";
+    let diaries=JSON.parse(localStorage.getItem("diaries"))||[];
+    diaries.forEach((d,i)=>{
+        let div=document.createElement("div");
+        div.className="diary-card";
+        div.innerHTML=`<strong>${d.title}</strong><br>${d.name} | ${d.date}`;
+        div.onclick=()=>openEditor(i);
+        diaryList.appendChild(div);
+    });
+}
+
+function searchDiary(){
+    let v=search.value.toLowerCase();
+    document.querySelectorAll(".diary-card").forEach(c=>{
+        c.style.display=c.innerText.toLowerCase().includes(v)?"block":"none";
+    });
+}
+
+function openEditor(i){
+    let diaries=JSON.parse(localStorage.getItem("diaries"));
+    editIndex=i;
+    editContent.value=diaries[i].content;
+    editor.style.display="block";
+}
+
+function saveEdit(){
+    let diaries=JSON.parse(localStorage.getItem("diaries"));
+    diaries[editIndex].content=editContent.value;
+    localStorage.setItem("diaries",JSON.stringify(diaries));
+    closeEditor();
+}
+
+function closeEditor(){
+    editor.style.display="none";
+}
+
+loadDiaries();
+</script>
+
+</body>
+</html>

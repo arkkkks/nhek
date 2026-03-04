@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verses for Sadness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Great+Vibes&family=EB+Garamond:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image:url("/IMAGES/Research%20UI%20(10).jpg");
+            background-repeat:no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0 20px 40px;
+        }
+
+        #header {
+            text-align: left;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        #header h1 {
+            font-family: 'Great Vibes', 'Playfair Display', 'EB Garamond', serif;
+            font-size: 4em;
+            color: #d63384;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-shadow: 2px 4px 18px #fff3fa, 0 1px 0 #a03c6e;
+            margin-bottom: 10px;
+            font-style: normal;
+        }
+
+        #header p {
+            font-family: 'EB Garamond', 'Playfair Display', serif;
+            font-size: 1.35em;
+            color: #a03c6e;
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .verse-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px 32px;
+            justify-items: start;
+            align-items: start;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .verse-button {
+            position: relative;
+            background: linear-gradient(180deg, #fff9ea 0%, #f9e2b5 58%, #efc57d 100%);
+            color: #5b3a14;
+            border: 1px solid #d8ac64;
+            padding: 14px 22px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #c89650, 0 11px 18px rgba(109, 71, 31, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.18s ease;
+            text-decoration: none;
+            font-size: 1.02em;
+            text-align: left;
+            min-width: 180px;
+            font-family: 'EB Garamond', 'Playfair Display', serif;
+            font-weight: 700;
+            white-space: pre-line;
+            line-height: 1.45;
+            overflow: hidden;
+        }
+
+        .verse-button::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            top: 4px;
+            height: 36%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0));
+            pointer-events: none;
+        }
+
+        .verse-button:hover {
+            transform: translateY(-1px) scale(1.01);
+            filter: brightness(1.02);
+            box-shadow: 0 5px 0 #c89650, 0 13px 22px rgba(109, 71, 31, 0.27), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+
+        .verse-button:active {
+            transform: translateY(3px) scale(0.995);
+            box-shadow: 0 1px 0 #c89650, 0 6px 12px rgba(109, 71, 31, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+
+        .verse-button:focus-visible {
+            outline: 2px solid rgba(255, 158, 59, 0.72);
+            outline-offset: 2px;
+        }
+
+        .verse-refresh-button {
+            min-width: 122px;
+            width: auto;
+            margin-bottom: 16px;
+            padding: 8px 13px;
+            font-size: 0.86em;
+            line-height: 1.2;
+            border-radius: 15px;
+            background: linear-gradient(180deg, #f7efff 0%, #e6d2ff 56%, #d5b3f6 100%);
+            color: #4b2f6b;
+            border: 1px solid #c6a2e5;
+            box-shadow: 0 3px 0 #b38ad6, 0 9px 16px rgba(87, 59, 120, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .verse-refresh-button:hover {
+            transform: translateY(-1px) scale(1.01);
+            filter: brightness(1.03);
+            box-shadow: 0 4px 0 #b38ad6, 0 11px 18px rgba(87, 59, 120, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+        }
+
+        .verse-refresh-button:active {
+            transform: translateY(2px) scale(0.995);
+            box-shadow: 0 1px 0 #b38ad6, 0 6px 12px rgba(87, 59, 120, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+
+        .icon-btn {
+            position: fixed;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 230, 245, 0.95));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(254, 197, 229, 0.4);
+            border: 2px solid rgba(254, 197, 229, 0.5);
+            text-decoration: none;
+        }
+
+        .back {
+            left: 20px;
+        }
+
+        .home {
+            right: 20px;
+        }
+
+        .icon-btn:hover {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 12px 35px rgba(255, 20, 147, 0.6);
+            border-color: rgba(255, 20, 147, 0.8);
+            color: white;
+        }
+
+        .icon-btn:active {
+            transform: scale(1.05) rotate(10deg);
+        }
+
+        .verse-container.refreshing {
+            animation: verseFade 0.28s ease;
+        }
+
+        @keyframes verseFade {
+            from { opacity: 0.45; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <a class="icon-btn back" href="/CAUSES%20OF%20THE%20EMOTION/Cause%20of%20sadness.html">&#8592;</a>
+    <a class="icon-btn home" href="/Program%20Mental%20Health.html">&#127968;</a>
+
+    <div id="header">
+        <h1>Feeling Presssure in Academic?</h1>
+        <p>Here are the verses that will help you.</p>
+    </div>
+
+    <button class="verse-button verse-refresh-button" type="button" id="refreshButton">Get New Verse</button>
+    <div class="verse-container" id="verseContainer"></div>
+
+    <script>
+        const verses = [{"href":"../message/sadness-philippians-4-13.html","text":"Philippians 4:13"},{"href":"../message/sadness-matthew-11-28.html","text":"Matthew 11:28"},{"href":"../message/sadness-proverbs-3-5-6.html","text":"Proverbs 3:5-6"},{"href":"../message/sadness-isaiah-41-10.html","text":"Isaiah 41:10"},{"href":"../message/sadness-james-1-5.html","text":"James 1:5"},{"href":"../message/sadness-psalm-55-22.html","text":"Psalm 55:22"}];
+        const MAX_VISIBLE = Math.min(9, verses.length || 0);
+        let lastSignature = '';
+
+        function shuffleArray(items) {
+            const copy = [...items];
+            for (let i = copy.length - 1; i > 0; i -= 1) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function pickNewSet() {
+            if (!verses.length) {
+                return [];
+            }
+
+            const takeCount = Math.max(1, MAX_VISIBLE || verses.length);
+            let selected = [];
+            let nextSignature = '';
+
+            for (let tries = 0; tries < 6; tries += 1) {
+                selected = shuffleArray(verses).slice(0, takeCount);
+                nextSignature = selected.map(v => `${v.text}|${v.href || '#'}`).join('~');
+                if (nextSignature !== lastSignature || verses.length <= takeCount) {
+                    break;
+                }
+            }
+
+            lastSignature = nextSignature;
+            return selected;
+        }
+
+        function renderVerses() {
+            const container = document.getElementById('verseContainer');
+            const selected = pickNewSet();
+
+            container.classList.remove('refreshing');
+            void container.offsetWidth;
+            container.classList.add('refreshing');
+
+            container.innerHTML = selected.map((verse) => {
+                const safeHref = verse.href && verse.href.trim().length ? verse.href : '#';
+                return `<a href="${safeHref}" class="verse-button">${verse.text}</a>`;
+            }).join('');
+        }
+
+        document.getElementById('refreshButton').addEventListener('click', renderVerses);
+        renderVerses();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+- [x] Add CSS styles for DONE button, popup modal, and fireworks animation.
+- [x] Add HTML for DONE button at the bottom, centered.
+- [x] Add HTML for popup modal.
+- [x] Modify emotion buttons to show checkmark when clicked.
+- [x] Add JavaScript to track clicked emotions.
+- [x] Update showFood function to mark button as read and add checkmark.
+- [x] Add JavaScript for DONE button click to show popup with count.

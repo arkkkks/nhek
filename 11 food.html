@@ -1,0 +1,976 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EAT HEALTHY FOOD BASED ON YOUR EMOTION</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-1: #fff4d6;
+  --bg-2: #ffd59f;
+  --bg-3: #ffe8bf;
+  --bg-4: #ffc27c;
+  --card: #fffdf8;
+  --ink: #2f2b23;
+  --accent: #f47b20;
+  --accent-strong: #dc5f09;
+  --accent-soft: #ffd36e;
+  --green: #27985e;
+  --shadow: rgba(112, 76, 27, 0.24);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 26px 16px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  color: var(--ink);
+  background: linear-gradient(140deg, var(--bg-1), var(--bg-2) 42%, var(--bg-3) 70%, var(--bg-4));
+  background-size: 220% 220%;
+  animation: gradientFlow 16s ease infinite;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255, 140, 55, 0.28) 0 14%, transparent 34%),
+    radial-gradient(circle at 82% 22%, rgba(83, 172, 97, 0.26) 0 12%, transparent 33%),
+    radial-gradient(circle at 40% 84%, rgba(255, 213, 122, 0.3) 0 18%, transparent 38%);
+  animation: blobDrift 12s ease-in-out infinite;
+}
+
+body::after {
+  background:
+    repeating-linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.06) 0 16px,
+      rgba(255, 255, 255, 0) 16px 34px
+    );
+  mix-blend-mode: soft-light;
+  animation: grainMove 18s linear infinite;
+}
+
+.food-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.food-float {
+  position: absolute;
+  font-size: clamp(1.25rem, 2.2vw, 2.1rem);
+  opacity: 0.24;
+  filter: drop-shadow(0 8px 10px rgba(77, 43, 13, 0.2));
+  animation: foodFloat linear infinite;
+}
+
+.food-float:nth-child(1) { left: 8%; top: 78%; animation-duration: 15s; animation-delay: -3s; }
+.food-float:nth-child(2) { left: 19%; top: 90%; animation-duration: 18s; animation-delay: -10s; }
+.food-float:nth-child(3) { left: 32%; top: 84%; animation-duration: 16s; animation-delay: -7s; }
+.food-float:nth-child(4) { left: 44%; top: 92%; animation-duration: 19s; animation-delay: -6s; }
+.food-float:nth-child(5) { left: 57%; top: 87%; animation-duration: 17s; animation-delay: -4s; }
+.food-float:nth-child(6) { left: 68%; top: 93%; animation-duration: 20s; animation-delay: -9s; }
+.food-float:nth-child(7) { left: 79%; top: 85%; animation-duration: 16s; animation-delay: -12s; }
+.food-float:nth-child(8) { left: 90%; top: 94%; animation-duration: 18s; animation-delay: -5s; }
+
+.title-container,
+.container {
+  position: relative;
+  z-index: 2;
+}
+
+.title-container {
+  width: min(1100px, 100%);
+  animation: riseIn 0.8s ease both;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  text-align: center;
+  margin: 10px auto 6px;
+  color: #47331f;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.4px;
+}
+
+.subtitle {
+  margin: 0 auto 20px;
+  text-align: center;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: #6f5433;
+}
+
+.container {
+  background: rgba(255, 253, 247, 0.84);
+  padding: 24px;
+  border-radius: 24px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 18px 42px var(--shadow);
+  animation: riseIn 1s ease both;
+}
+
+.emotions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-wrap {
+  margin: 0 auto 16px;
+  width: min(620px, 100%);
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid #ffc983;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #5e4226;
+  background: #fffaf0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  outline: none;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.18);
+}
+
+.search-tip {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #816245;
+  text-align: center;
+}
+
+.emotion-button {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  color: #fffaf3;
+  cursor: pointer;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: linear-gradient(145deg, #ffb162, var(--accent));
+  box-shadow: 0 10px 20px rgba(244, 123, 32, 0.3);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+}
+
+.emotion-button.intro {
+  opacity: 0;
+  animation: buttonEnter 0.52s ease both;
+}
+
+.btn-icon {
+  display: inline-flex;
+  margin-right: 7px;
+  font-size: 1rem;
+  transform: translateY(1px);
+}
+
+.emotion-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 48%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-22deg);
+  transition: left 0.65s ease;
+}
+
+.emotion-button:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 14px 24px rgba(244, 123, 32, 0.36);
+  background: linear-gradient(145deg, #ffb86f, var(--accent-strong));
+}
+
+.emotion-button:hover::before {
+  left: 140%;
+}
+
+.emotion-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.emotion-button.read {
+  background: linear-gradient(145deg, #52c687, var(--green));
+  box-shadow: 0 10px 20px rgba(39, 152, 94, 0.3);
+}
+
+.emotion-button.read::after {
+  content: "\2713";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #1f7e4d;
+  color: white;
+  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.emotion-button.is-hidden {
+  display: none !important;
+}
+
+.result {
+  background: linear-gradient(160deg, #fff8ec, #fff2d8);
+  padding: 18px 20px;
+  border-radius: 18px;
+  min-height: 120px;
+  border: 1px solid #ffdba6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.result ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.food-name {
+  font-weight: 800;
+  color: #cc5b07;
+}
+
+.done-wrap {
+  text-align: center;
+}
+
+.done-button {
+  margin-top: 16px;
+  padding: 13px 34px;
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  background: linear-gradient(145deg, #2db771, #1e8f56);
+  box-shadow: 0 12px 24px rgba(33, 131, 79, 0.33);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, filter 0.24s ease;
+}
+
+.done-button:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 28px rgba(33, 131, 79, 0.38);
+  filter: saturate(1.08);
+}
+
+.done-button:active {
+  transform: scale(0.98);
+}
+
+.icon-btn {
+  position: fixed;
+  top: 18px;
+  overflow: hidden;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 248, 230, 0.88);
+  border: 1px solid rgba(255, 238, 206, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 10px 22px rgba(50, 41, 21, 0.2);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, background-color 0.24s ease;
+}
+
+.back {
+  left: 16px;
+}
+
+.home {
+  right: 16px;
+}
+
+.icon-btn:hover {
+  background-color: #fff0cd;
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 14px 24px rgba(50, 41, 21, 0.24);
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  background: rgba(19, 23, 26, 0.45);
+  backdrop-filter: blur(3px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.popup-content {
+  width: min(360px, 92vw);
+  background: linear-gradient(150deg, #2ca46a, #1f7f52);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  color: #f5fff8;
+  box-shadow: 0 20px 40px rgba(13, 56, 34, 0.38);
+  animation: popIn 0.32s ease;
+}
+
+.popup-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+}
+
+.popup-button {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 24px;
+  color: #1d4f35;
+  background: #fff4cf;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  margin: 6px 5px 0;
+}
+
+.popup-button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.04);
+}
+
+.fade-out {
+  animation: pageFade 0.45s ease forwards;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+.emotion-button .ripple {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.done-button .ripple,
+.popup-button .ripple {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.icon-btn .ripple {
+  background: rgba(244, 123, 32, 0.25);
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 40%; }
+  50% { background-position: 100% 60%; }
+  100% { background-position: 0% 40%; }
+}
+
+@keyframes blobDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-1.5%, 1.5%) scale(1.04); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes grainMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(22px, 14px); }
+}
+
+@keyframes foodFloat {
+  0% {
+    transform: translateY(6vh) rotate(0deg) scale(0.96);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.24;
+  }
+  85% {
+    opacity: 0.24;
+  }
+  100% {
+    transform: translateY(-112vh) rotate(14deg) scale(1.08);
+    opacity: 0;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buttonEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pageFade {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2.7);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    padding-top: 72px;
+  }
+
+  .container {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .emotion-button {
+    width: calc(50% - 8px);
+    min-width: 130px;
+    text-align: center;
+  }
+
+  .icon-btn {
+    top: 14px;
+  }
+
+  h1 {
+    margin-bottom: 18px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="food-bg" aria-hidden="true">
+  <span class="food-float">🍎</span>
+  <span class="food-float">🥑</span>
+  <span class="food-float">🍊</span>
+  <span class="food-float">🥕</span>
+  <span class="food-float">🍓</span>
+  <span class="food-float">🥦</span>
+  <span class="food-float">🍌</span>
+  <span class="food-float">🍅</span>
+</div>
+<!-- BACK BUTTON (GOES TO HOME PAGE) -->
+<div class="icon-btn back" onclick="goBack()">&#8592;</div>
+
+<!-- HOME BUTTON -->
+<div class="icon-btn home" onclick="goHome()">&#127968;</div>
+<div class="title-container">
+  <h1><strong>Eat Healthy Food Based on Your Emotion</strong></h1>
+
+  <div class="container">
+
+    <div class="search-wrap">
+      <input id="emotionSearch" class="search-input" type="text" placeholder="search emotion">
+    </div>
+
+    <div class="emotions" id="emotionsContainer">
+
+      <button class="emotion-button" onclick="showFood('sad',this)" ondblclick="uncheckEmotion('sad',this)">Sad</button>
+      <button class="emotion-button" onclick="showFood('stressed',this)" ondblclick="uncheckEmotion('stressed',this)">Stressed</button>
+      <button class="emotion-button" onclick="showFood('anxious',this)" ondblclick="uncheckEmotion('anxious',this)">Anxious</button>
+      <button class="emotion-button" onclick="showFood('tired',this)" ondblclick="uncheckEmotion('tired',this)">Tired</button>
+      <button class="emotion-button" onclick="showFood('angry',this)" ondblclick="uncheckEmotion('angry',this)">Angry</button>
+      <button class="emotion-button" onclick="showFood('lonely',this)" ondblclick="uncheckEmotion('lonely',this)">Lonely</button>
+      <button class="emotion-button" onclick="showFood('homesick',this)" ondblclick="uncheckEmotion('homesick',this)">Homesick</button>
+      <button class="emotion-button" onclick="showFood('insecure',this)" ondblclick="uncheckEmotion('insecure',this)">Insecure</button>
+      <button class="emotion-button" onclick="showFood('overwhelmed',this)" ondblclick="uncheckEmotion('overwhelmed',this)">Overwhelmed</button>
+      <button class="emotion-button" onclick="showFood('bored',this)" ondblclick="uncheckEmotion('bored',this)">Bored</button>
+      <button class="emotion-button" onclick="showFood('nervous',this)" ondblclick="uncheckEmotion('nervous',this)">Nervous</button>
+      <button class="emotion-button" onclick="showFood('guilty',this)" ondblclick="uncheckEmotion('guilty',this)">Guilty</button>
+      <button class="emotion-button" onclick="showFood('disappointed',this)" ondblclick="uncheckEmotion('disappointed',this)">Disappointed</button>
+      <button class="emotion-button" onclick="showFood('confused',this)" ondblclick="uncheckEmotion('confused',this)">Confused</button>
+      <button class="emotion-button" onclick="showFood('jealous',this)" ondblclick="uncheckEmotion('jealous',this)">Jealous</button>
+      <button class="emotion-button" onclick="showFood('embarrassed',this)" ondblclick="uncheckEmotion('embarrassed',this)">Embarrassed</button>
+      <button class="emotion-button" onclick="showFood('scared',this)" ondblclick="uncheckEmotion('scared',this)">Scared</button>
+
+    </div>
+
+    <div class="result" id="result">
+      Click an emotion to see food recommendations.
+    </div>
+
+    <div class="done-wrap">
+      <button class="done-button" onclick="showSummary()">DONE</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3>&#127775; Daily Emotion Summary</h3>
+    <p id="summaryText"></p>
+    <button class="popup-button" onclick="closePopup()">OK</button>
+    <button class="popup-button" onclick="goNext()">Next</button>
+  </div>
+</div>
+
+<script>
+
+const defaultResultMessage = "Click an emotion to see food recommendations.";
+let selectedEmotions = new Set();
+
+const emotionAliasMap = {
+sadness: "sad",
+grief: "sad",
+sorrow: "sad",
+misery: "sad",
+emptiness: "sad",
+heartbreak: "sad",
+hopelessness: "sad",
+rejection: "sad",
+loneliness: "lonely",
+abandonment: "lonely",
+alienation: "lonely",
+isolation: "lonely",
+anger: "angry",
+rage: "angry",
+hatred: "angry",
+irritation: "angry",
+annoyance: "angry",
+resentment: "angry",
+bitterness: "angry",
+contempt: "angry",
+revulsion: "angry",
+betrayal: "angry",
+disgust: "angry",
+fear: "scared",
+dread: "scared",
+terror: "scared",
+panic: "scared",
+anxiety: "anxious",
+worry: "anxious",
+paranoia: "anxious",
+nervousness: "nervous",
+jealousy: "jealous",
+envy: "jealous",
+guilt: "guilty",
+regret: "guilty",
+shame: "embarrassed",
+embarrassment: "embarrassed",
+humiliation: "embarrassed",
+worthlessness: "insecure",
+inferiority: "insecure",
+inadequacy: "insecure",
+insecurity: "insecure",
+disappointment: "disappointed",
+frustration: "stressed",
+stress: "stressed",
+tension: "stressed",
+burnout: "burnout",
+overwhelm: "overwhelmed"
+};
+
+const searchOnlyEmotions = [
+{ key: "sadness", label: "Sadness" },
+{ key: "grief", label: "Grief" },
+{ key: "sorrow", label: "Sorrow" },
+{ key: "loneliness", label: "Loneliness" },
+{ key: "heartbreak", label: "Heartbreak" },
+{ key: "anger", label: "Anger" },
+{ key: "rage", label: "Rage" },
+{ key: "hatred", label: "Hatred" },
+{ key: "irritation", label: "Irritation" },
+{ key: "annoyance", label: "Annoyance" },
+{ key: "frustration", label: "Frustration" },
+{ key: "resentment", label: "Resentment" },
+{ key: "bitterness", label: "Bitterness" },
+{ key: "fear", label: "Fear" },
+{ key: "anxiety", label: "Anxiety" },
+{ key: "worry", label: "Worry" },
+{ key: "nervousness", label: "Nervousness" },
+{ key: "panic", label: "Panic" },
+{ key: "dread", label: "Dread" },
+{ key: "terror", label: "Terror" },
+{ key: "insecurity", label: "Insecurity" },
+{ key: "paranoia", label: "Paranoia" },
+{ key: "hopelessness", label: "Hopelessness" },
+{ key: "shame", label: "Shame" },
+{ key: "guilt", label: "Guilt" },
+{ key: "embarrassment", label: "Embarrassment" },
+{ key: "humiliation", label: "Humiliation" },
+{ key: "regret", label: "Regret" },
+{ key: "worthlessness", label: "Worthlessness" },
+{ key: "emptiness", label: "Emptiness" },
+{ key: "misery", label: "Misery" },
+{ key: "disappointment", label: "Disappointment" },
+{ key: "jealousy", label: "Jealousy" },
+{ key: "rejection", label: "Rejection" },
+{ key: "abandonment", label: "Abandonment" },
+{ key: "betrayal", label: "Betrayal" },
+{ key: "alienation", label: "Alienation" },
+{ key: "isolation", label: "Isolation" },
+{ key: "stress", label: "Stress" },
+{ key: "burnout", label: "Burnout" },
+{ key: "overwhelm", label: "Overwhelm" },
+{ key: "tension", label: "Tension" },
+{ key: "envy", label: "Envy" },
+{ key: "disgust", label: "Disgust" },
+{ key: "contempt", label: "Contempt" },
+{ key: "revulsion", label: "Revulsion" },
+{ key: "inferiority", label: "Inferiority" },
+{ key: "inadequacy", label: "Inadequacy" }
+];
+
+const emotionFoodIcons = {
+sad: [0x1F622],
+happy: [0x1F60A],
+stressed: [0x1F623],
+anxious: [0x1F630],
+tired: [0x1F62A],
+angry: [0x1F620],
+lonely: [0x1F97A],
+excited: [0x1F929],
+burnout: [0x1F975],
+hopeful: [0x1F308],
+homesick: [0x1F3E0],
+insecure: [0x1F61F],
+motivated: [0x1F525],
+overwhelmed: [0x1F635],
+bored: [0x1F610],
+nervous: [0x1F62C],
+guilty: [0x1F614],
+disappointed: [0x1F61E],
+confused: [0x1F615],
+grateful: [0x1F64F],
+jealous: [0x1F612],
+embarrassed: [0x1F633],
+scared: [0x1F628],
+relaxed: [0x1F60C],
+proud: [0x1F3C6],
+sadness: [0x1F622],
+anger: [0x1F620],
+fear: [0x1F628],
+anxiety: [0x1F630],
+jealousy: [0x1F612],
+guilt: [0x1F614],
+shame: [0x1F633],
+disappointment: [0x1F61E],
+frustration: [0x1F624],
+loneliness: [0x1F97A],
+hopelessness: [0x1F62D],
+resentment: [0x1F621],
+envy: [0x1F60F],
+regret: [0x1F614],
+grief: [0x1F622],
+insecurity: [0x1F61F],
+embarrassment: [0x1F633],
+bitterness: [0x1F620],
+sorrow: [0x1F622],
+heartbreak: [0x1F494],
+rage: [0x1F92C],
+hatred: [0x1F620],
+irritation: [0x1F624],
+annoyance: [0x1F612],
+worry: [0x1F61F],
+nervousness: [0x1F62C],
+panic: [0x1F631],
+dread: [0x1F628],
+terror: [0x1F631],
+paranoia: [0x1F630],
+humiliation: [0x1F633],
+worthlessness: [0x1F97A],
+emptiness: [0x1F611],
+misery: [0x1F62D],
+rejection: [0x1F494],
+abandonment: [0x1F97A],
+betrayal: [0x1F92F],
+alienation: [0x1F97A],
+isolation: [0x1F97A],
+stress: [0x1F62B],
+overwhelm: [0x1F635],
+tension: [0x1F616],
+disgust: [0x1F922],
+contempt: [0x1F612],
+revulsion: [0x1F922],
+inferiority: [0x1F61F],
+inadequacy: [0x1F61F]
+};
+
+function formatEmotionLabel(emotion) {
+return emotion.replace(/[-_]/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getEmotionFromButton(button) {
+if (button.dataset.emotion) {
+return button.dataset.emotion;
+}
+const handler = button.getAttribute("onclick") || "";
+const match = handler.match(/'([^']+)'/);
+return match ? match[1] : "";
+}
+
+async function showFood(emotion, button) {
+const sourceEmotion = emotionAliasMap[emotion] || emotion;
+const emotionLabel = formatEmotionLabel(emotion);
+let foods = [];
+try {
+const response = await fetch(`/api/food/recommendations?emotion=${encodeURIComponent(sourceEmotion)}`);
+const data = await response.json();
+if (!response.ok) {
+throw new Error(data.error || "Unable to get recommendations");
+}
+foods = Array.isArray(data.foods) ? data.foods : [];
+} catch (error) {
+document.getElementById("result").innerHTML = "Food recommendations are temporarily unavailable.";
+return;
+}
+
+if (!foods.length) {
+document.getElementById("result").innerHTML = "No food recommendation is available right now. Please try again.";
+return;
+}
+let output = `<b>You are feeling ${emotionLabel}.</b><br><br>These foods may help:<ul>`;
+foods.forEach((food) => {
+output += `<li><span class="food-name">${food.name}</span><br>${food.desc}</li><br>`;
+});
+output += "</ul>";
+document.getElementById("result").innerHTML = output;
+
+if (!selectedEmotions.has(emotion)) {
+selectedEmotions.add(emotion);
+button.classList.add("read");
+}
+}
+
+function uncheckEmotion(emotion, button) {
+if (selectedEmotions.has(emotion)) {
+selectedEmotions.delete(emotion);
+button.classList.remove("read");
+document.getElementById("result").innerHTML = defaultResultMessage;
+}
+}
+
+function showSummary() {
+const count = selectedEmotions.size;
+document.getElementById("summaryText").innerHTML = "You explored <b>" + count + "</b> different emotions today &#128155;";
+document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() {
+document.getElementById("popup").style.display = "none";
+}
+
+function goBack() {
+window.history.back();
+}
+
+function goHome() {
+document.body.classList.add("fade-out");
+setTimeout(function() {
+window.location.href = "Program Mental Health.html";
+}, 500);
+}
+
+function goNext() {
+document.body.classList.add("fade-out");
+setTimeout(function() {
+window.location.href = "Program Mental Health.html";
+}, 500);
+}
+
+function createSearchOnlyEmotionButtons() {
+const emotionsContainer = document.getElementById("emotionsContainer");
+searchOnlyEmotions.forEach((entry) => {
+const button = document.createElement("button");
+button.className = "emotion-button search-only is-hidden";
+button.textContent = entry.label;
+button.dataset.emotion = entry.key;
+button.dataset.searchOnly = "true";
+button.onclick = function() {
+showFood(entry.key, button);
+};
+button.ondblclick = function() {
+uncheckEmotion(entry.key, button);
+};
+emotionsContainer.appendChild(button);
+});
+}
+
+function initEmotionButtons() {
+document.querySelectorAll(".emotion-button").forEach((button) => {
+const emotion = getEmotionFromButton(button);
+const label = button.textContent.trim();
+const sourceEmotion = emotionAliasMap[emotion] || emotion;
+button.dataset.emotion = emotion;
+button.dataset.label = label;
+button.dataset.searchIndex = `${emotion} ${label} ${sourceEmotion}`.toLowerCase();
+if (!button.dataset.searchOnly) {
+button.dataset.searchOnly = "false";
+}
+});
+}
+
+function decorateEmotionButtons() {
+const buttons = document.querySelectorAll(".emotion-button");
+buttons.forEach((button, index) => {
+const emotion = button.dataset.emotion || "";
+const label = button.dataset.label || formatEmotionLabel(emotion);
+const iconPoints = emotionFoodIcons[emotion];
+const icon = iconPoints ? String.fromCodePoint(...iconPoints) : "";
+button.style.animationDelay = `${Math.min(index * 0.03, 0.72)}s`;
+button.classList.add("intro");
+if (icon) {
+button.innerHTML = `<span class="btn-icon" aria-hidden="true">${icon}</span><span>${label}</span>`;
+} else {
+button.textContent = label;
+}
+});
+}
+
+function escapeHtml(value) {
+return value
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#39;");
+}
+
+function filterEmotionButtons(rawQuery) {
+const query = rawQuery.trim().toLowerCase();
+const buttons = document.querySelectorAll(".emotion-button");
+let visibleCount = 0;
+
+buttons.forEach((button) => {
+const isSearchOnly = button.dataset.searchOnly === "true";
+const searchableText = button.dataset.searchIndex || "";
+const showButton = query ? searchableText.includes(query) : !isSearchOnly;
+button.classList.toggle("is-hidden", !showButton);
+if (showButton) {
+visibleCount += 1;
+}
+});
+
+const result = document.getElementById("result");
+if (query && visibleCount === 0) {
+result.innerHTML = `No emotion found for "<b>${escapeHtml(rawQuery.trim())}</b>".`;
+}
+if (!query && result.textContent.includes("No emotion found")) {
+result.innerHTML = defaultResultMessage;
+}
+}
+
+function setupEmotionSearch() {
+const searchInput = document.getElementById("emotionSearch");
+searchInput.addEventListener("input", function() {
+filterEmotionButtons(searchInput.value);
+});
+}
+
+function attachRipple(selector) {
+document.querySelectorAll(selector).forEach((button) => {
+button.addEventListener("click", (event) => {
+const rect = button.getBoundingClientRect();
+const size = Math.max(rect.width, rect.height);
+const ripple = document.createElement("span");
+ripple.className = "ripple";
+ripple.style.width = `${size}px`;
+ripple.style.height = `${size}px`;
+ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+button.appendChild(ripple);
+setTimeout(() => ripple.remove(), 520);
+});
+});
+}
+
+async function bootstrapFoodPage() {
+createSearchOnlyEmotionButtons();
+initEmotionButtons();
+decorateEmotionButtons();
+setupEmotionSearch();
+attachRipple(".emotion-button, .done-button, .popup-button, .icon-btn");
+filterEmotionButtons("");
+}
+
+bootstrapFoodPage();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Positive Affirmations</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family: "Poppins", sans-serif;
+    background-image: url('file:///C:/Users/MGB/Desktop/nhek/IMAGES/18.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-align:center;
+}
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 20px;
+}
+
+.icon-btn{
+    background:#fff;
+    border:none;
+    border-radius:50%;
+    width:45px;
+    height:45px;
+    font-size:20px;
+    cursor:pointer;
+    box-shadow:0 4px 8px rgba(0,0,0,0.15);
+}
+
+h1{
+    color:#8a2d5e;
+    font-size:26px;
+    margin-top:10px;
+}
+
+.subtitle{
+    color:#6b3358;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap:15px;
+    padding:20px;
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:25px 15px;
+    font-size:14px;
+    cursor:pointer;
+    position:relative;
+    box-shadow:0 6px 12px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.03);
+}
+
+.card.checked{
+    border:3px solid #4CAF50;
+}
+
+.checkmark{
+    position:absolute;
+    top:10px;
+    right:12px;
+    font-size:20px;
+    color:#4CAF50;
+    display:none;
+}
+
+.card.checked .checkmark{
+    display:block;
+}
+
+.done-btn{
+    margin:30px auto;
+    padding:14px 35px;
+    border:none;
+    border-radius:30px;
+    background:#ff6fae;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 5px 10px rgba(0,0,0,0.2);
+}
+
+/* POPUP */
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.4);
+    display:none;
+    align-items:center;
+    justify-content:center;
+}
+
+.popup-content{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    width:80%;
+    max-width:300px;
+}
+
+.popup-content h2{
+    color:#8a2d5e;
+}
+
+.popup-buttons{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:15px;
+}
+
+.popup-buttons button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:#4CAF50;
+    color:#fff;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <button class="icon-btn" onclick="window.location.href = 'file:///C:/Users/MGB/Desktop/nhek/Program%20Mental%20Health.html'">â¬…</button>
+    <button class="icon-btn" onclick="goHome()">ðŸ </button>
+</header>
+
+<h1>Start Your Day with Positivity</h1>
+<p class="subtitle">Click to mark âœ” â€¢ Double-click to remove âœ”</p>
+
+<div class="container" id="affirmationContainer"></div>
+
+<button class="done-btn" onclick="showResult()">DONE</button>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2 id="resultText"></h2>
+        <div class="popup-buttons">
+            <button onclick="closePopup()">OK</button>
+            <button onclick="goNext()">NEXT âžœ</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// DAILY AFFIRMATIONS
+const affirmationSets = [
+[
+"I am enough just as I am.",
+"My feelings matter.",
+"I am learning at my own pace.",
+"It is okay to rest.",
+"I am proud of my effort.",
+"I choose calm today.",
+"I believe in myself.",
+"I deserve kindness.",
+"I am growing every day.",
+"I am not alone."
+],
+[
+"I welcome today with hope.",
+"I can handle challenges.",
+"My mind deserves peace.",
+"I allow myself to breathe.",
+"I am strong in my own way.",
+"I trust the process.",
+"I am doing my best.",
+"I deserve good things.",
+"I take one step at a time.",
+"I choose positivity."
+]
+];
+
+// CHANGE DAILY
+const todayIndex = new Date().getDate() % affirmationSets.length;
+const affirmations = affirmationSets[todayIndex];
+
+const container = document.getElementById("affirmationContainer");
+
+// CREATE CARDS
+affirmations.forEach(text => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<span class="checkmark">âœ”</span>${text}`;
+
+    card.onclick = () => card.classList.toggle("checked");
+    card.ondblclick = () => card.classList.remove("checked");
+
+    container.appendChild(card);
+});
+
+// SHOW RESULT
+function showResult(){
+    const read = document.querySelectorAll(".card.checked").length;
+    document.getElementById("resultText").innerText =
+        `You read ${read}/${affirmations.length} affirmations today ðŸŒ¸`;
+    document.getElementById("popup").style.display = "flex";
+}
+
+// CLOSE POPUP
+function closePopup(){
+    document.getElementById("popup").style.display = "none";
+}
+
+// NEXT PAGE
+function goNext(){
+    window.location.href = "file:///C:/Users/MGB/Desktop/nhek/Program%20Mental%20Health.html";
+}
+
+// HOME PAGE
+function goHome(){
+    window.location.href = "file:///C:/Users/MGB/Desktop/nhek/Program%20Mental%20Health.html";
+}
+</script>
+
+</body>
+</html>
+

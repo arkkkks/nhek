@@ -1,0 +1,28 @@
+{
+  "questionHub": "../question emoji.html",
+  "sets": {
+    "happy question": { "id": "happy", "pattern": { "prefix": "happy problem ", "start": 1, "end": 10 } },
+    "Question nervous": { "id": "nervous", "pattern": { "prefix": "Nervous problem ", "start": 1, "end": 10 } },
+    "Worried question": { "id": "worried", "pattern": { "prefix": "pw", "start": 1, "end": 10 } },
+    "Question regret": { "id": "regret", "pattern": { "prefix": "Regret problem ", "start": 1, "end": 10 } },
+    "diss questions": { "id": "disappointment", "pattern": { "prefix": "problem ", "start": 1, "end": 10 } },
+    "Question stress": { "id": "stress", "pattern": { "prefix": "Stress question ", "start": 1, "end": 10 } },
+    "shy question": { "id": "shy", "pages": ["ps1.html", "ps2.html", "ps3.html", "ps4.html", "ps5.html", "ps6.html", "ps7.html", "ps8.html", "p9.html", "ps10.html"] },
+    "guilt question": { "id": "guilt", "pattern": { "prefix": "pg", "start": 1, "end": 10 } },
+    "excited question": { "id": "excited", "pattern": { "prefix": "pe", "start": 1, "end": 10 } },
+    "Tired question": { "id": "tired", "pattern": { "prefix": "Tired question ", "start": 1, "end": 10 } },
+    "Scared question": { "id": "scared", "pattern": { "prefix": "scared question ", "start": 1, "end": 10 } },
+    "Angry question": { "id": "angry", "pages": ["problem 1.html", "p2.html", "p3.html", "p4.html", "p5.html", "p6.html", "p7.html", "p8.html", "p9.html", "p10.html"] },
+    "sad question": { "id": "sad", "pattern": { "prefix": "sad question ", "start": 1, "end": 10 } },
+    "lonely question": { "id": "lonely", "pattern": { "prefix": "lonely question ", "start": 1, "end": 10 } },
+    "depressed question": { "id": "depressed", "pattern": { "prefix": "depressed question ", "start": 1, "end": 10 } },
+    "jealous question": { "id": "jealous", "pattern": { "prefix": "jealous question ", "start": 1, "end": 10 } },
+    "embarrassed question": { "id": "embarrassed", "pattern": { "prefix": "embarrassed question ", "start": 1, "end": 10 } },
+    "frustrated question": { "id": "frustrated", "pattern": { "prefix": "frustrated question ", "start": 1, "end": 10 } },
+    "overwhelmed question": { "id": "overwhelmed", "pattern": { "prefix": "overwhelmed question ", "start": 1, "end": 10 } },
+    "disgusted question": { "id": "disgusted", "pattern": { "prefix": "disgusted question ", "start": 1, "end": 10 } },
+    "grief question": { "id": "grief", "pattern": { "prefix": "grief question ", "start": 1, "end": 10 } },
+    "panic question": { "id": "panic", "pattern": { "prefix": "panic question ", "start": 1, "end": 10 } },
+    "insecure question": { "id": "insecure", "pattern": { "prefix": "insecure question ", "start": 1, "end": 10 } }
+  }
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Write Your Diary</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #fdd6e4, #f9b0d1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .note-container {
+    position: relative;
+    width: 80%;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h2 {
+    font-family: 'Brush Script MT', cursive;
+    color: #4b1b39;
+    font-size: 32px;
+    margin-bottom: 5px;
+  }
+
+  h3 {
+    color: #444;
+    margin-bottom: 15px;
+    font-style: italic;
+  }
+
+  .book {
+    background: #fefefe;
+    border: 2px solid #f2b6d4;
+    border-radius: 10px;
+    width: 100%;
+    height: 350px;
+    overflow-y: auto;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 24px,
+      rgba(240, 170, 200, 0.5) 25px
+    );
+    padding: 20px;
+    text-align: left;
+    line-height: 25px;
+    font-size: 16px;
+    resize: none;
+  }
+
+  textarea {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    font-size: 16px;
+    color: #333;
+    line-height: 25px;
+  }
+
+  .done-btn {
+    background: #f6a6b9;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 35px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4b1b39;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .done-btn:hover {
+    background: #f09eb2;
+    transform: scale(1.05);
+  }
+
+  .icon {
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    cursor: pointer;
+  }
+
+  .icon img {
+    width: 30px;
+  }
+
+  .message {
+    background: rgba(255,255,255,0.7);
+    border-radius: 15px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    color: #4b1b39;
+    font-weight: bold;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="icon" onclick="goBack()">
+  <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="back">
+</div>
+
+<div class="message">
+  💕 What are you feeling right now after writing your journal?
+</div>
+
+<div class="note-container">
+  <h2 id="diaryName">Diary</h2>
+  <h3 id="diaryTitle">Title: “Untitled”</h3>
+
+  <div class="book">
+    <textarea id="diaryText" placeholder="Write your thoughts here..."></textarea>
+  </div>
+
+  <button class="done-btn" onclick="goNext()">Done</button>
+</div>
+
+<script>
+  // Display stored name and title from previous page
+  const name = localStorage.getItem("diaryName");
+  const title = localStorage.getItem("diaryTitle");
+
+  document.getElementById("diaryName").textContent = name ? `${name}'s Diary` : "My Diary";
+  document.getElementById("diaryTitle").textContent = title ? `Title: “${title}”` : "Title: “Untitled”";
+
+  function goBack() {
+    window.history.back();
+  }
+
+  function goNext() {
+    const text = document.getElementById("diaryText").value.trim();
+    if (text === "") {
+      alert("Please write something in your diary before proceeding 🩷");
+      return;
+    }
+
+    // Save diary content (optional)
+    localStorage.setItem("diaryContent", text);
+
+    // Go to the next feature (you can replace emotion.html with your next page)
+    window.location.href = "/list%20of%20writing.html";
+  }
+
+   function confirmDone() {
+  hidePopup();
+
+  const entries = JSON.parse(localStorage.getItem("/list%20of%20writing.html")) || [];
+  const title = localStorage.getItem("diaryTitle") || "Untitled";
+  const now = new Date();
+  const month = now.toLocaleString("default", { month: "long" });
+  const year = now.getFullYear();
+  const text = document.getElementById("page1Text").value + " " + document.getElementById("page2Text").value;
+
+  entries.push({
+    title: title,
+    month: month,
+    year: year,
+    feeling: text.substring(0, 40) + "..." // preview
+  });
+
+  localStorage.setItem("/list%20of%20writing.html", JSON.stringify(entries));
+  window.location.href = "/list%20of%20writing.html";
+}
+
+</script>
+
+</body>
+</html>
+
+
+

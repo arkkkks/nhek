@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Matthew 11:28</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    background-image: url("/IMAGES/Research%20UI%20(11).jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: "Varela Round", "Segoe UI", sans-serif;
+    background-color: #ffdde1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+  }
+  .container {
+    width: 700px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    position: relative;
+  }
+  .icon-btn {
+    position: fixed;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,230,245,0.95));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(254, 197, 229, 0.4);
+    border: 2px solid rgba(254, 197, 229, 0.5);
+    color: #333;
+  }
+  .back { left: 20px; }
+  .home { right: 20px; }
+  .icon-btn:hover {
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 12px 35px rgba(255,20,147,0.6);
+    border-color: rgba(255,20,147,0.8);
+    color: #fff;
+  }
+  .verse-title { font-family: "Coiny", "Varela Round", sans-serif; font-size: 28px; font-weight: 400; margin-top: 20px; color: #ff4fa3; letter-spacing: 0.4px; }
+  .verse-text { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 22px; margin: 20px 0; line-height: 1.6; }
+  .roman { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 24px; font-weight: bold; color: #ff4fa3; }
+  hr { margin: 25px 0; }
+  .message-title { font-family: "Coiny", "Varela Round", sans-serif; color: #ff4fa3; font-weight: 400; font-size: 30px; letter-spacing: 0.4px; }
+  .message { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 20px; line-height: 1.8; }
+
+      .done-btn {
+    width: 220px;
+    padding: 13px 14px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff9ccd 0%, #ff6fb9 45%, #ff4fa3 100%);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 26px rgba(255, 79, 163, 0.36), inset 0 1px 0 rgba(255,255,255,0.55);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .done-btn::before {
+    content: "";
+    position: absolute;
+    top: -120%;
+    left: -35%;
+    width: 28%;
+    height: 320%;
+    background: linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,0.72), rgba(255,255,255,0));
+    transform: rotate(18deg);
+    animation: doneShine 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .done-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    filter: brightness(1.04);
+    box-shadow: 0 16px 34px rgba(255, 79, 163, 0.5), 0 0 16px rgba(255, 132, 197, 0.45);
+  }
+  .done-btn:active {
+    transform: translateY(1px) scale(0.995);
+  }
+  @keyframes doneShine {
+    0% { left: -35%; opacity: 0; }
+    12% { opacity: 1; }
+    48% { left: 118%; opacity: 0; }
+    100% { left: 118%; opacity: 0; }
+  }
+
+
+  .modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    justify-content: center; align-items: center;
+  }
+  .modal-content {
+    background: #fff; padding: 25px; width: 320px; border-radius: 20px;
+    text-align: center; animation: pop 0.4s ease;
+  }
+  @keyframes pop { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .modal-content h3 { font-size: 24px; margin-bottom: 10px; color: #ff4fa3; }
+  .modal-content p { font-size: 18px; margin-bottom: 20px; }
+  .modal-buttons button { padding: 10px 18px; margin: 6px; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; }
+  .ok-btn { background: #ddd; }
+  .next-btn { background: #ff4fa3; color: white; }
+
+/* Dynamic popup design */
+
+  .modal {
+  backdrop-filter: blur(6px);
+  background: radial-gradient(circle at 12% 8%, rgba(255, 212, 236, 0.46), rgba(46, 21, 54, 0.64));
+}
+
+.modal-content {
+  width: min(92vw, 440px);
+  border: 1px solid rgba(255, 167, 214, 0.76);
+  background: linear-gradient(160deg, #fffafd 0%, #ffeef8 50%, #ffe3f2 100%);
+  box-shadow: 0 24px 52px rgba(121, 33, 84, 0.28);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  padding: 26px 22px;
+  font-family: "Varela Round", "Segoe UI", sans-serif;
+}
+
+.modal-content::before {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.66), rgba(255,255,255,0));
+  top: -100px;
+  right: -70px;
+  pointer-events: none;
+}
+
+.modal-content::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 122, 193, 0.24), rgba(255, 122, 193, 0));
+  bottom: -62px;
+  left: -38px;
+  pointer-events: none;
+}
+
+.modal-content h3 {
+  font-family: "Pacifico", "Comic Sans MS", cursive;
+  font-size: 34px;
+  letter-spacing: 0.2px;
+  text-transform: none;
+  margin: 2px 0 10px;
+  color: #ff4aa5;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.74);
+}
+
+.modal-content p {
+  font-family: "Varela Round", "Segoe UI", sans-serif;
+  font-size: 18px;
+  color: #6d2a4d;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 186, 221, 0.82);
+  border-radius: 16px;
+  padding: 14px 14px;
+  line-height: 1.55;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.ok-btn,
+.next-btn {
+  min-width: 108px;
+  border-radius: 999px;
+  font-family: "Varela Round", "Segoe UI", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 10px 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.ok-btn {
+  background: linear-gradient(180deg, #fff5fb, #efd8e8);
+  color: #6d4b62;
+  box-shadow: 0 6px 12px rgba(112, 66, 97, 0.16);
+}
+
+.next-btn {
+  background: linear-gradient(180deg, #ff74bf, #ff3ca2);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(255, 57, 159, 0.34);
+}
+
+.ok-btn:hover,
+.next-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+.ok-btn:active,
+.next-btn:active {
+  transform: translateY(1px);
+}
+
+/* Simple text reveal */
+.simple-reveal {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.simple-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simple-reveal,
+  .simple-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon-btn back" onclick="goBack()">&#8592;</div>
+  <div class="icon-btn home" onclick="goHome()">&#127968;</div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <div class="verse-title">Verse</div>
+  <div class="verse-text">Meaning: Jesus gives true rest to those who come to Him with heavy burdens.</div>
+  <div class="roman">Matthew 11:28</div>
+
+  <hr>
+
+  <div class="message-title">Message</div>
+  <div class="message">As a top student, nervousness can rise fast when standards are high, and this verse teaches you to protect healthy rest and pacing so your mind stays clear under pressure, so you can prepare with intention, think clearly, and perform with humility and composure in class, exams, recitations, and deadlines; build a clear plan, start early, review weak topics on purpose, ask for help quickly, and keep your focus on faithful progress so your nervousness becomes calm, disciplined confidence.</div>
+
+  <div style="text-align: center;"><button class="done-btn" onclick="openModal()">Done</button></div>
+</div>
+
+<div class="modal" id="popup">
+  <div class="modal-content">
+    <h3>Great Job</h3>
+    <p>
+      May this message inspire your heart.<br>
+      Better days are ahead.
+    </p>
+    <div class="modal-buttons">
+      <button class="ok-btn" onclick="closeModal()">Ok</button>
+      <button class="next-btn" onclick="goBack()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simple text reveal
+  function startSimpleTextReveal() {
+    const verseEl = document.querySelector(".verse-text");
+    const messageEl = document.querySelector(".message");
+
+    if (!verseEl && !messageEl) {
+      return;
+    }
+
+    if (verseEl) {
+      verseEl.classList.add("simple-reveal");
+    }
+
+    if (messageEl) {
+      messageEl.classList.add("simple-reveal");
+    }
+
+    window.requestAnimationFrame(function () {
+      if (verseEl) {
+        verseEl.classList.add("is-visible");
+      }
+
+      window.setTimeout(function () {
+        if (messageEl) {
+          messageEl.classList.add("is-visible");
+        }
+      }, 180);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", startSimpleTextReveal);
+function openModal() {
+    const popup = document.getElementById("popup");
+    const title = popup ? popup.querySelector("h3") : null;
+    const message = popup ? popup.querySelector("p") : null;
+
+    const popupInspireTitles = [
+        "Great Job",
+        "Keep Growing",
+        "Faith + Focus",
+        "Strong Mind"
+    ];
+
+    const popupInspireMessages = [
+        "Keep reading the Bible daily, because consistent truth renews your mind, steadies your emotions, and gives strength to handle pressure without losing peace.",
+        "When nervous thoughts rise, return to Scripture first, pray honestly, and let God's promises guide your focus so your mental health stays grounded in hope.",
+        "Build a habit of reading even a short Bible passage each day, because repeated truth trains your heart to respond with courage instead of panic.",
+        "Your performance matters, but your identity is deeper than one result, so read God's Word regularly and let His wisdom protect your mind from fear and comparison.",
+        "Every time you feel overwhelmed, pause, breathe, and open the Bible, because God's voice brings clarity, resilience, and emotional stability for hard days.",
+        "Success with peace grows when you combine preparation with prayer, so keep studying your lessons and studying Scripture to strengthen both mind and spirit.",
+        "You can overcome nervousness step by step by replacing fearful thoughts with biblical truth, trusting God in the process, and practicing faithful discipline every day.",
+        "Read more Bible, not less, during stressful seasons, because God's truth helps heal anxious thinking and forms a stronger, calmer, and healthier inner life."
+    ];
+
+    const last = Number(window.__popupMessageIndex || -1);
+    let next = Math.floor(Math.random() * popupInspireMessages.length);
+
+    if (popupInspireMessages.length > 1 && next === last) {
+        next = (next + 1 + Math.floor(Math.random() * (popupInspireMessages.length - 1))) % popupInspireMessages.length;
+    }
+
+    window.__popupMessageIndex = next;
+
+    if (title) {
+        title.textContent = popupInspireTitles[next % popupInspireTitles.length];
+    }
+
+    if (message) {
+        message.textContent = popupInspireMessages[next];
+    }
+
+    if (popup) {
+        popup.style.display = "flex";
+    }
+}
+  function closeModal() {
+    document.getElementById("popup").style.display = "none";
+  }
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    window.location.href = "/CAUSES%20OF%20THE%20EMOTION/Cause%20of%20nervous.html";
+  }
+  function goHome() {
+    window.location.href = "/Program%20Mental%20Health.html";
+  }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

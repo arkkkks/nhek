@@ -1,0 +1,15 @@
+- [x] Update index 2.html: Replace the existing button with new HTML code and update the script to use the new button id.
+- [x] Update style.css: Add CSS styles for the new button with light brown color and elegant font.
+- [x] Update style.css: Change button to white background, black font color, and oblong shape.
+- [x] Update style.css: Lighten the button background.
+- [x] Update style.css: Make the flipbook smaller.
+- [x] Update style.css: Make the flipbook a little bigger.
+- [x] Update style.css: Put the flipbook down a little.
+- [x] Update style.css: Reduce font size of text in the book.
+- [x] Update index 2.html: Move title "Story about Anger" to top of the page (above flipbook).
+- [x] Update style.css: Style the page title with elegant font like in a bookstore.
+- [x] Update style.css: Raise the flipbook a little higher.
+- [x] Update style.css: Change the page title font to vintage style.
+- [x] Update style.css: Add background to the page title.
+- [x] Update style.css: Change the page title background to light red.
+- [x] Update style.css: Raise the flipbook a little more.

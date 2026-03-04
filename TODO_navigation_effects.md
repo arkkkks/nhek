@@ -1,0 +1,5 @@
+- [x] Add CSS for fade-in and fade-out transitions to body
+- [x] Add JavaScript to trigger fade-in on page load
+- [x] Modify goHome() function to add fade-out class and navigate after transition
+- [x] Modify goNext() function to add fade-out class and navigate after transition
+- [x] Test navigation effects between pages

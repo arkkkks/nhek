@@ -1,0 +1,25 @@
+.guest-divider {
+  text-align: center;
+  margin: 18px 0;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #7fdfff;
+}
+
+.guest-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #00f2ff;
+  background: transparent;
+  color: #00f2ff;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.guest-btn:hover {
+  background: rgba(0, 242, 255, 0.15);
+  box-shadow: 0 0 15px #00f2ff;
+}

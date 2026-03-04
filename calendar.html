@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emoji Mood Calendar 💗</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #ffe6ee;
+  padding: 20px;
+  padding-top: 90px;
+}
+
+.nav-header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.nav-button {
+    padding: 10px 15px;
+    background-color: transparent;
+    color: #FF69B4;
+    border: 3px solid #FF69B4;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: all 0.3s;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+}
+
+.nav-button:hover {
+    background-color: #FF69B4;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+.icon-btn {
+  position: fixed;
+  top: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 110;
+  transition: 0.3s;
+}
+
+.back {
+  left: 20px;
+}
+
+.home {
+  right: 20px;
+}
+
+.icon-btn:hover {
+  background-color: #ff5fb2;
+  transform: scale(1.1);
+}
+
+.year {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 40px 0 20px;
+}
+
+.month {
+  background: #ffb6c1;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+
+.month h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.days, .dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.days div {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.date {
+  background: #ffd6e0;
+  margin: 3px;
+  padding: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 55px;
+  position: relative;
+}
+
+.date:hover {
+  background: #ffccd9;
+}
+
+.date-number {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.mood {
+  font-size: 22px;
+  line-height: 45px;
+}
+
+/* Emoji Picker */
+.emoji-picker {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  z-index: 100;
+}
+
+.emoji-picker span {
+  font-size: 20px;
+  cursor: pointer;
+  margin: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACK BUTTON (GOES TO NEXT PAGE) -->
+<div class="icon-btn back" onclick="goBack()">⬅</div>
+
+<!-- HOME BUTTON -->
+<div class="icon-btn home" onclick="goHome()">🏠</div>
+
+<div id="calendar"></div>
+
+<script>
+const calendar = document.getElementById("calendar");
+
+// CHANGE YEARS HERE 👇
+const startYear = 2026;
+const endYear = 2222;
+
+// Emojis by emotion
+const emotionEmojis = [
+  "😊","😄","😐","😢","😭",
+  "😡","😤","😍","🥰",
+  "😴","🤒","🤩","🎉","💗"
+];
+
+const months = [
+  {name:"January", days:31},
+  {name:"February", days:28},
+  {name:"March", days:31},
+  {name:"April", days:30},
+  {name:"May", days:31},
+  {name:"June", days:30},
+  {name:"July", days:31},
+  {name:"August", days:31},
+  {name:"September", days:30},
+  {name:"October", days:31},
+  {name:"November", days:30},
+  {name:"December", days:31}
+];
+
+for (let year = startYear; year <= endYear; year++) {
+
+  const yearDiv = document.createElement("div");
+  yearDiv.className = "year";
+  yearDiv.textContent = year + " Mood Calendar 💕";
+  calendar.appendChild(yearDiv);
+
+  months.forEach((month, monthIndex) => {
+
+    // Calculate starting day automatically
+    const firstDay = new Date(year, monthIndex, 1).getDay();
+
+    const monthDiv = document.createElement("div");
+    monthDiv.className = "month";
+
+    monthDiv.innerHTML = `
+      <h2>${month.name} 💗</h2>
+      <div class="days">
+        <div>Sun</div><div>Mon</div><div>Tue</div>
+        <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="dates"></div>
+    `;
+
+    const datesDiv = monthDiv.querySelector(".dates");
+
+    // Empty spaces
+    for (let i = 0; i < firstDay; i++) {
+      datesDiv.innerHTML += "<div></div>";
+    }
+
+    // Dates
+    for (let day = 1; day <= month.days; day++) {
+      const dateDiv = document.createElement("div");
+      dateDiv.className = "date";
+
+      dateDiv.innerHTML = `
+        <div class="date-number">${day}</div>
+        <div class="mood">➕</div>
+      `;
+
+      const moodDiv = dateDiv.querySelector(".mood");
+
+      dateDiv.onclick = () => {
+        document.querySelectorAll(".emoji-picker").forEach(p => p.remove());
+
+        const picker = document.createElement("div");
+        picker.className = "emoji-picker";
+
+        emotionEmojis.forEach(emoji => {
+          const span = document.createElement("span");
+          span.textContent = emoji;
+          span.onclick = () => {
+            moodDiv.textContent = emoji;
+            picker.remove();
+          };
+          picker.appendChild(span);
+        });
+
+        dateDiv.appendChild(picker);
+      };
+
+      datesDiv.appendChild(dateDiv);
+    }
+
+    calendar.appendChild(monthDiv);
+  });
+}
+
+function goNext() {
+    // Change to your NEXT FEATURE page
+    window.location.href = "/Program%20Mental%20Health.html";
+}
+
+function goBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+        return;
+    }
+    goHome();
+}
+
+function goHome() {
+    // Change to your HOME page
+    window.location.href = "/Program%20Mental%20Health.html";
+}
+</script>
+
+</body>
+</html>
+

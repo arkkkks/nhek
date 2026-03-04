@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="Style.css" />
+  <style>
+    .flipbook .cover-front {
+      background: linear-gradient(145deg, #e1e8f2, #bcc9da) !important;
+    }
+
+    .flipbook .cover-inner,
+    .flipbook .cover-back-inner,
+    .flipbook .cover-back {
+      background: linear-gradient(155deg, #c9d4e3, #a6b6cc) !important;
+    }
+  </style>
+  <title>Too Much to Carry</title>
+</head>
+<body>
+  <div class="ambient-glow glow-left"></div>
+  <div class="ambient-glow glow-right"></div>
+
+  <button class="icon-btn back" onclick="goBack()" aria-label="Go back">&#8592;</button>
+  <button class="icon-btn home" onclick="goHome()" aria-label="Go home">&#8962;</button>
+
+  <header class="reader-header">
+    <p class="shelf-label">Library Reader</p>
+    <h1 class="page-title">Too Much to Carry</h1>
+    <p class="page-subtitle">Short story summary based on the cover title.</p>
+  </header>
+
+  <div class="reader-controls">
+    <button id="maximize-btn" class="control-btn" type="button" aria-label="Maximize book view">[ ]</button>
+    <button id="minimize-btn" class="control-btn" type="button" aria-label="Minimize book view">&#9472;</button>
+  </div>
+
+  <div class="book-stage">
+    <div class="flipbook">
+      <div class="hard cover-front" onclick="goToBook1()">
+        <img class="cover-image" src="../IMAGES/too.webp" alt="Too Much to Carry front cover" />
+      </div>
+
+      <div class="hard cover-inner"></div>
+
+      <div>
+        <p class="book-title">"Too Much to Carry" by Claire A. B. Freeland, PhD and Jacqueline B. Toner, PhD</p>
+      </div>
+
+      <div>
+        <p>
+          School, family, and personal pressure pile up until one student feels crushed. The story teaches that sharing burdens and setting limits is not weakness but wisdom.
+        </p>
+
+        <p>
+          At the beginning of <strong>Too Much to Carry</strong>, the character feels pressure, confusion, or fear and is not sure how to move forward. The story starts by naming the emotion honestly instead of hiding it.
+        </p>
+      </div>
+
+      <div>
+        <p>
+          In the middle, real setbacks still happen. Instead of giving up, the character learns to pause before reacting, ask for support, and use small daily habits that make hard days more manageable.
+        </p>
+
+        <p>
+          These repeated choices build confidence and self-control, turning emotional chaos into clear next steps.
+        </p>
+      </div>
+
+      <div>
+        <p>
+          By the end, the story shows steady growth rather than instant perfection. The character becomes more emotionally aware, more resilient, and better prepared for future challenges.
+        </p>
+
+        <p>
+          Emotion focus: Stressed. Author listed for this copy: Claire A. B. Freeland, PhD and Jacqueline B. Toner, PhD.
+        </p>
+      </div>
+      <div class="hard cover-back-inner"></div>
+      <div class="hard cover-back" onclick="goToBook1()"><span class="thank-you">Thank You</span></div>
+    </div>
+  </div>
+
+  <button id="finish-button" type="button">Finish Reading</button>
+
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h2>Congratulations!</h2>
+      <p>You have finished reading the book!</p>
+      <div class="popup-buttons">
+        <button id="close-popup" class="popup-btn" type="button">Close</button>
+        <button id="next-btn" class="popup-btn" type="button" onclick="goToNextPage()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-transition" class="page-transition">
+    <div class="page-transition-card">
+      <div class="transition-spinner"></div>
+      <p>Opening next page...</p>
+    </div>
+  </div>
+
+  <script src="jquery.js"></script>
+  <script src="turn.js"></script>
+  <script src="cover-palette.js"></script>
+  <script>
+    const $flipbook = $(".flipbook");
+    const HOME_URL = "../Program Mental Health.html";
+    const NEXT_PAGE_URL = "../Library.html";
+    const BOOK_1_URL = "./01-overcoming-pain.html";
+
+    let isMaximized = false;
+    let normalSize = getDefaultBookSize();
+
+    function lockFlipbookPosition() {
+      $flipbook.css("margin-left", 0);
+    }
+
+    $flipbook.turn({
+      width: normalSize.width,
+      height: normalSize.height,
+      autoCenter: false,
+      elevation: 45,
+      gradients: true
+    });
+    lockFlipbookPosition();
+    $flipbook.on("turning turned", lockFlipbookPosition);
+
+    $("#minimize-btn").hide();
+
+    function getDefaultBookSize() {
+      const baseWidth = 1200;
+      const baseHeight = 500;
+      const maxWidth = Math.max(320, window.innerWidth - 40);
+      const maxHeight = Math.max(260, window.innerHeight - 220);
+      const scale = Math.min(1, maxWidth / baseWidth, maxHeight / baseHeight);
+      const width = Math.floor(baseWidth * scale);
+      const height = Math.floor(baseHeight * scale);
+      return { width, height };
+    }
+
+    function setBookSize(width, height) {
+      if ($flipbook.data("turn")) {
+        $flipbook.turn("size", width, height);
+        lockFlipbookPosition();
+      }
+    }
+
+    function maximizeBook() {
+      normalSize = { width: $flipbook.width(), height: $flipbook.height() };
+      isMaximized = true;
+      document.body.classList.add("book-expanded");
+      setBookSize(window.innerWidth, window.innerHeight);
+      $("#maximize-btn").hide();
+      $("#minimize-btn").show();
+    }
+
+    function minimizeBook() {
+      isMaximized = false;
+      document.body.classList.remove("book-expanded");
+      setBookSize(normalSize.width, normalSize.height);
+      $("#minimize-btn").hide();
+      $("#maximize-btn").show();
+    }
+
+    function playNavigationEffect(url) {
+      document.getElementById("page-transition").classList.add("active");
+      setTimeout(function () {
+        window.location.href = url;
+      }, 650);
+    }
+
+    $("#maximize-btn").on("click", maximizeBook);
+    $("#minimize-btn").on("click", minimizeBook);
+
+    window.addEventListener("resize", function () {
+      if (!isMaximized) {
+        normalSize = getDefaultBookSize();
+        setBookSize(normalSize.width, normalSize.height);
+      } else {
+        setBookSize(window.innerWidth, window.innerHeight);
+      }
+    });
+
+    $("#finish-button").click(function () {
+      $("#popup").addClass("open");
+    });
+
+    $("#close-popup").click(function () {
+      $("#popup").removeClass("open");
+    });
+
+    function goToNextPage() {
+      playNavigationEffect(NEXT_PAGE_URL);
+    }
+
+    function goToBook1() {
+      playNavigationEffect(BOOK_1_URL);
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      goHome();
+    }
+
+    function goHome() {
+      playNavigationEffect(HOME_URL);
+    }
+  </script>
+</body>
+</html>
+
+
+

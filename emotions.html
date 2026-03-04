@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mood Wheel</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: #ffe6f2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.wheel-container {
+    position: relative;
+    width: 360px;
+    height: 360px;
+}
+
+/* ROTATING WHEEL */
+.wheel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    cursor: grab;
+}
+
+/* EMOTION ICONS */
+.emotion {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* FIXED ARROW (POINTING UP INTO WHEEL) */
+.arrow {
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 30px solid #d63384; /* POINT FACES EMOTION */
+    z-index: 10;
+}
+
+/* LABEL */
+#currentEmotion {
+    margin-top: 26px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #b02a6a;
+}
+
+/* NEXT BUTTON */
+#nextBtn {
+    margin-top: 18px;
+    padding: 12px 28px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    background-color: #d63384;
+    color: white;
+    cursor: pointer;
+}
+
+#nextBtn:disabled {
+    background-color: #e8a9c7;
+    cursor: not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wheel-container">
+    <div class="wheel" id="wheel"></div>
+    <div class="arrow"></div>
+</div>
+
+<div id="currentEmotion">Rotate the wheel</div>
+<button id="nextBtn" disabled>Next</button>
+
+<script>
+const emotions = [
+  { name: "Happy", img: "happy.png", link: "1 happy.html" },
+  { name: "Sad", img: "sad.png", link: "3 Cause of sadness.html" },
+  { name: "Angry", img: "angry.png", link: "2 anger.html" },
+  { name: "Scared", img: "scared.png", link: "13 scared.html" },
+  { name: "Tired", img: "tired.png", link: "12 tired.html" },
+  { name: "Excited", img: "excited.png", link: "11 excited.html" },
+  { name: "Guilt", img: "guilt.png", link: "10 guilt.html" },
+  { name: "Shy", img: "shy.png", link: "9 shy.html" },
+  { name: "Stressed", img: "stressed.png", link: "8 stress.html" },
+  { name: "Disappointed", img: "disappointed.png", link: "7 dissapointment.html" },
+  { name: "Regret", img: "regret.png", link: "6 regret (2).html" },
+  { name: "Worried", img: "worried.png", link: "4 worried.html" },
+  { name: "Nervous", img: "nervous.png", link: "3 nervous.html" }
+];
+
+const wheel = document.getElementById("wheel");
+const label = document.getElementById("currentEmotion");
+const nextBtn = document.getElementById("nextBtn");
+
+const size = 360;
+const center = size / 2;
+const radius = 125;
+const total = emotions.length;
+
+let rotation = 0;
+let dragging = false;
+let startAngle = 0;
+let selectedEmotion = null;
+
+/* BUILD WHEEL */
+emotions.forEach((e, i) => {
+    const angle = (2 * Math.PI / total) * i - Math.PI / 2;
+    const icon = document.createElement("div");
+
+    icon.className = "emotion";
+    icon.style.backgroundImage = `url(${e.img})`;
+    icon.style.left = `${center + radius * Math.cos(angle) - 35}px`;
+    icon.style.top = `${center + radius * Math.sin(angle) - 35}px`;
+
+    wheel.appendChild(icon);
+});
+
+/* ROTATION HELPERS */
+function getAngle(x, y) {
+    return Math.atan2(y - center, x - center);
+}
+
+/* MOUSE */
+wheel.addEventListener("mousedown", e => {
+    dragging = true;
+    startAngle = getAngle(e.offsetX, e.offsetY) - rotation;
+});
+
+wheel.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    rotation = getAngle(e.offsetX, e.offsetY) - startAngle;
+    updateWheel();
+});
+
+document.addEventListener("mouseup", () => dragging = false);
+
+/* TOUCH */
+wheel.addEventListener("touchstart", e => {
+    dragging = true;
+    const t = e.touches[0];
+    startAngle = getAngle(
+        t.clientX - wheel.offsetLeft,
+        t.clientY - wheel.offsetTop
+    ) - rotation;
+});
+
+wheel.addEventListener("touchmove", e => {
+    if (!dragging) return;
+    const t = e.touches[0];
+    rotation = getAngle(
+        t.clientX - wheel.offsetLeft,
+        t.clientY - wheel.offsetTop
+    ) - startAngle;
+    updateWheel();
+});
+
+document.addEventListener("touchend", () => dragging = false);
+
+/* UPDATE SELECTION */
+function updateWheel() {
+    wheel.style.transform = `rotate(${rotation}rad)`;
+
+    let closest = null;
+    let smallestDiff = Infinity;
+
+    emotions.forEach((emotion, i) => {
+        const a = (2 * Math.PI / total) * i + rotation;
+        const diff = Math.abs(a - Math.PI / 2);
+
+        if (diff < smallestDiff) {
+            smallestDiff = diff;
+            closest = emotion;
+        }
+    });
+
+    if (closest && smallestDiff < 0.25) {
+        selectedEmotion = closest;
+        label.textContent = closest.name;
+        nextBtn.disabled = false;
+    } else {
+        selectedEmotion = null;
+        label.textContent = "Rotate the wheel";
+        nextBtn.disabled = true;
+    }
+}
+
+/* NEXT BUTTON */
+nextBtn.addEventListener("click", () => {
+    if (selectedEmotion) {
+        window.location.href = selectedEmotion.link;
+    }
+});
+</script>
+
+</body>
+</html>
+

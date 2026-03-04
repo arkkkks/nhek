@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Earth Mechanism Game</title>
+    <style>
+        body {
+            background: #0b1a2a;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+        }
+
+        #earth {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                #ffcc33 10%,   /* Core */
+                #ff6600 25%,   /* Outer Core */
+                #cc3300 45%,   /* Mantle */
+                #663300 70%,   /* Crust */
+                #003366 100%   /* Ocean */
+            );
+            position: relative;
+            box-shadow: 0 0 30px cyan;
+        }
+
+        .pangea {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background: green;
+            top: 100px;
+            left: 90px;
+            border-radius: 40%;
+            transition: 1s;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        #stats {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🌍 Earth Mechanism Simulator</h1>
+
+<div id="earth">
+    <div id="pangea" class="pangea"></div>
+</div>
+
+<div>
+    <button onclick="heatCore()">🔥 Heat Core</button>
+    <button onclick="coolCore()">❄ Cool Core</button>
+    <button onclick="movePlates()">🌋 Move Plates</button>
+    <button onclick="formPangea()">🌎 Form Pangaea</button>
+</div>
+
+<div id="stats"></div>
+
+<script>
+    let coreHeat = 50;
+    let mantleFlow = 50;
+    let plateStress = 50;
+    let stability = 100;
+    let cycle = 1;
+    const maxCycles = 15;
+
+    const pangea = document.getElementById("pangea");
+
+    function updateStats() {
+        document.getElementById("stats").innerHTML =
+            "Cycle: " + cycle + "/" + maxCycles + "<br>" +
+            "Core Heat: " + coreHeat + "<br>" +
+            "Mantle Flow: " + mantleFlow + "<br>" +
+            "Plate Stress: " + plateStress + "<br>" +
+            "Planet Stability: " + stability;
+    }
+
+    function randomEvents() {
+        let event = Math.random();
+
+        if (event < 0.3) {
+            stability -= 5;
+            plateStress += 5;
+            alert("🌋 Earthquake!");
+        } 
+        else if (event < 0.6) {
+            coreHeat += 5;
+            alert("🔥 Mantle Surge!");
+        } 
+        else {
+            alert("🌊 Calm geological cycle.");
+        }
+    }
+
+    function heatCore() {
+        coreHeat += 10;
+        mantleFlow += 5;
+        stability -= 5;
+        nextTurn();
+    }
+
+    function coolCore() {
+        coreHeat -= 10;
+        mantleFlow -= 5;
+        stability -= 3;
+        nextTurn();
+    }
+
+    function movePlates() {
+        plateStress -= 10;
+        mantleFlow += 5;
+
+        // Break Pangaea visually
+        pangea.style.transform = "translateX(80px) rotate(20deg)";
+        nextTurn();
+    }
+
+    function formPangea() {
+        plateStress += 10;
+
+        // Reform Pangaea visually
+        pangea.style.transform = "translateX(0px) rotate(0deg)";
+        nextTurn();
+    }
+
+    function nextTurn() {
+        cycle++;
+        randomEvents();
+
+        // Lose conditions
+        if (coreHeat <= 0 || coreHeat >= 100 ||
+            mantleFlow <= 0 || mantleFlow >= 100 ||
+            plateStress <= 0 || plateStress >= 100 ||
+            stability <= 0) {
+                alert("💀 Planetary Collapse! Earth became unstable.");
+                location.reload();
+        }
+
+        if (cycle > maxCycles) {
+            alert("🏆 You stabilized Earth's tectonic system!");
+            location.reload();
+        }
+
+        updateStats();
+    }
+
+    updateStats();
+</script>
+
+</body>
+</html>

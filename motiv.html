@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Positive Affirmations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Righteous&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #fff8ed;
+      --bg-2: #f3fffb;
+      --ink: #1f2d39;
+      --accent: #ff6b57;
+      --accent-2: #27b88f;
+      --card: rgba(255, 255, 255, 0.7);
+      --line: rgba(28, 43, 53, 0.14);
+      --shadow: 0 16px 40px rgba(36, 47, 56, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(140deg, var(--bg-1), var(--bg-2));
+      overflow-x: hidden;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 172, 130, 0.65), transparent 45%),
+        radial-gradient(circle at 76% 15%, rgba(70, 205, 175, 0.45), transparent 45%),
+        radial-gradient(circle at 58% 78%, rgba(250, 207, 120, 0.32), transparent 38%);
+      filter: blur(10px);
+      animation: pulseScene 14s ease-in-out infinite alternate;
+    }
+
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background: repeating-linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.11) 0 2px,
+        transparent 2px 26px
+      );
+      opacity: 0.2;
+      animation: slidePattern 26s linear infinite;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      opacity: 0.56;
+      animation: drift 20s linear infinite;
+    }
+
+    .orb.one {
+      width: 280px;
+      height: 280px;
+      left: -60px;
+      top: 28%;
+      background: #ff9f8f;
+      animation-duration: 24s;
+    }
+
+    .orb.two {
+      width: 220px;
+      height: 220px;
+      right: -40px;
+      top: 8%;
+      background: #8de0c8;
+      animation-duration: 18s;
+      animation-direction: reverse;
+    }
+
+    .orb.three {
+      width: 180px;
+      height: 180px;
+      left: 62%;
+      bottom: -30px;
+      background: #ffd38a;
+      animation-duration: 26s;
+    }
+
+    #particleLayer {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.66);
+      animation: floatUp linear infinite;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 20px 36px;
+    }
+
+    .icon-btn {
+      position: fixed;
+      top: 14px;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--ink);
+      border-radius: 50%;
+      padding: 0;
+      cursor: pointer;
+      font-weight: 700;
+      z-index: 15;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      background: #ffffff;
+      border-color: rgba(39, 184, 143, 0.5);
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-back {
+      left: 14px;
+    }
+
+    .icon-home {
+      right: 14px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 16px;
+      animation: reveal 0.9s ease both;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-family: "Righteous", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.15rem);
+      letter-spacing: 0.03em;
+      color: #16393d;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-weight: 600;
+      color: rgba(22, 57, 61, 0.78);
+    }
+
+    .focus-card {
+      margin: 0 auto 14px;
+      max-width: 760px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 10px 24px rgba(21, 38, 49, 0.12);
+      backdrop-filter: blur(6px);
+      animation: reveal 0.85s ease both;
+    }
+
+    .focus-label {
+      margin: 0 0 4px;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(22, 57, 61, 0.7);
+    }
+
+    .focus-text {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #153f43;
+    }
+
+    .progress-wrap {
+      max-width: 760px;
+      margin: 0 auto 16px;
+      animation: reveal 0.9s ease both;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .progress-text {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: rgba(21, 54, 58, 0.78);
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #1a3f44;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .mini-btn:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-1px);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(28, 43, 53, 0.12);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent-2), #56d5a3);
+      transition: width 0.3s ease;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      position: relative;
+      padding: 18px 16px 18px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      min-height: 120px;
+      font-weight: 600;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: transform 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
+      backdrop-filter: blur(7px);
+      animation: reveal 0.5s ease both;
+    }
+
+    .card:focus-visible {
+      outline: 2px solid rgba(39, 184, 143, 0.65);
+      outline-offset: 2px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 107, 87, 0.4);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .card.checked {
+      border-color: rgba(39, 184, 143, 0.72);
+      background: rgba(230, 255, 248, 0.9);
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: white;
+      background: var(--accent-2);
+      transform: scale(0);
+      transition: transform 0.18s ease;
+    }
+
+    .card.checked .checkmark {
+      transform: scale(1);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin: 22px 0 4px;
+    }
+
+    .done-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 30px;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--accent), #ff8855);
+      box-shadow: 0 10px 22px rgba(255, 107, 87, 0.36);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .done-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 24px rgba(255, 107, 87, 0.45);
+      filter: saturate(1.04);
+    }
+
+    .hint {
+      text-align: center;
+      margin: 8px 0 0;
+      color: rgba(31, 45, 57, 0.72);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(22, 30, 37, 0.45);
+      padding: 20px;
+      z-index: 99;
+    }
+
+    .popup-content {
+      width: min(420px, 100%);
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(19, 31, 41, 0.25);
+      animation: reveal 0.32s ease both;
+    }
+
+    #resultText {
+      margin: 4px 0 16px;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      color: #16393d;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseScene {
+      from {
+        transform: scale(1) rotate(0deg);
+      }
+      to {
+        transform: scale(1.06) rotate(4deg);
+      }
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translate(0, 0);
+      }
+      33% {
+        transform: translate(28px, -18px);
+      }
+      66% {
+        transform: translate(-18px, 24px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+
+    @keyframes slidePattern {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-120px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 14px 14px 28px;
+      }
+
+      .icon-btn {
+        top: 10px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .card {
+        min-height: 104px;
+      }
+
+      .focus-text {
+        font-size: 0.94rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+    <div id="particleLayer"></div>
+  </div>
+
+  <main class="app">
+    <button class="icon-btn icon-back" onclick="goBack()" aria-label="Go back" title="Back">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+    </button>
+    <button class="icon-btn icon-home" onclick="goHome()" aria-label="Go home" title="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 11l9-7 9 7"></path>
+        <path d="M6 10v10h12V10"></path>
+      </svg>
+    </button>
+
+    <header class="hero">
+      <h1>Start Your Day with Positivity</h1>
+      <p class="subtitle">Choose the affirmations you are claiming today.</p>
+    </header>
+
+    <section class="focus-card">
+      <p class="focus-label">Focus Affirmation</p>
+      <p class="focus-text" id="focusText"></p>
+    </section>
+
+    <section class="progress-wrap">
+      <div class="progress-row">
+        <p class="progress-text" id="progressText">0 selected</p>
+        <button class="mini-btn" onclick="clearSelection()">Clear</button>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <section class="container" id="affirmationContainer"></section>
+
+    <div class="actions">
+      <button class="done-btn" onclick="showResult()">See Progress</button>
+    </div>
+    <p class="hint">Tip: Click again to unselect a card.</p>
+  </main>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2 id="resultText"></h2>
+      <button class="done-btn" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const affirmationSets = [
+      [
+        "I am enough just as I am.",
+        "My feelings matter.",
+        "I am learning at my own pace.",
+        "It is okay to rest.",
+        "I am proud of my effort.",
+        "I choose calm today.",
+        "I believe in myself.",
+        "I deserve kindness.",
+        "I am growing every day.",
+        "I am not alone.",
+        "I honor my emotions.",
+        "I give myself permission to rest.",
+        "I trust myself."
+      ],
+      [
+        "I welcome today with hope.",
+        "I can handle challenges.",
+        "My mind deserves peace.",
+        "I allow myself to breathe.",
+        "I am strong in my own way.",
+        "I trust the process.",
+        "I am doing my best.",
+        "I deserve good things.",
+        "I take life one step at a time.",
+        "I release what I cannot control.",
+        "I choose peace over pressure."
+      ],
+      [
+        "I am worthy of love and respect.",
+        "I deserve happiness.",
+        "I am resilient.",
+        "I trust my journey.",
+        "I am allowed to change.",
+        "I choose progress over perfection.",
+        "I am proud of how far I have come.",
+        "I forgive myself.",
+        "I am healing every day.",
+        "I am gentle with myself."
+      ],
+      [
+        "I am capable of overcoming obstacles.",
+        "My past does not define me.",
+        "I am stronger than my fears.",
+        "I trust my inner strength.",
+        "I am becoming my best self.",
+        "I choose courage today.",
+        "I allow myself to feel hopeful.",
+        "I believe in my ability to grow."
+      ]
+    ];
+
+    const affirmations = affirmationSets[Math.floor(Math.random() * affirmationSets.length)];
+    const container = document.getElementById("affirmationContainer");
+    const focusText = document.getElementById("focusText");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+
+    focusText.textContent = affirmations[Math.floor(Math.random() * affirmations.length)];
+
+    affirmations.forEach((text, index) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.tabIndex = 0;
+      card.style.animationDelay = `${index * 0.04}s`;
+      card.innerHTML = `<span class="checkmark">✓</span>${text}`;
+      card.onclick = () => {
+        card.classList.toggle("checked");
+        updateProgress();
+      };
+      card.onkeydown = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          card.classList.toggle("checked");
+          updateProgress();
+        }
+      };
+      container.appendChild(card);
+    });
+
+    const particleLayer = document.getElementById("particleLayer");
+    for (let i = 0; i < 30; i += 1) {
+      const p = document.createElement("span");
+      p.className = "particle";
+      const size = 2 + Math.random() * 6;
+      p.style.width = `${size}px`;
+      p.style.height = `${size}px`;
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.bottom = `${-8 - Math.random() * 50}px`;
+      p.style.animationDuration = `${8 + Math.random() * 14}s`;
+      p.style.animationDelay = `${Math.random() * -16}s`;
+      particleLayer.appendChild(p);
+    }
+
+    function updateProgress() {
+      const selected = document.querySelectorAll(".card.checked").length;
+      const total = affirmations.length;
+      const percent = total === 0 ? 0 : Math.round((selected / total) * 100);
+      progressText.textContent = `${selected}/${total} selected`;
+      progressFill.style.width = `${percent}%`;
+    }
+
+    function clearSelection() {
+      document.querySelectorAll(".card.checked").forEach((card) => {
+        card.classList.remove("checked");
+      });
+      updateProgress();
+    }
+
+    function showResult() {
+      const read = document.querySelectorAll(".card.checked").length;
+      const completion = Math.round((read / affirmations.length) * 100);
+      
+      // Dynamic messages based on completion percentage
+      let feedback = "";
+      const messages = {
+        perfect: [
+          "Perfect! You're fully committed to your positivity!",
+          "Amazing! You've claimed all your affirmations!",
+          "Wonderful! 100% dedication to yourself!"
+        ],
+        high: [
+          "Great job! You're building strong habits!",
+          "Excellent progress! Keep up the momentum!",
+          "You're doing amazing! Stay committed!"
+        ],
+        medium: [
+          "Good start! Every affirmation counts!",
+          "Nice progress! You're on the right track!",
+          "Well done! Keep growing your positivity!"
+        ],
+        low: [
+          "Every small step matters! Keep going!",
+          "You've started something great!",
+          "A positive beginning leads to great things!"
+        ],
+        none: [
+          "Start claiming your affirmations today!",
+          "Your journey to positivity begins with one step!",
+          "Choose some affirmations to empower yourself!"
+        ]
+      };
+      
+      // Select appropriate message based on completion
+      if (completion === 100) {
+        feedback = messages.perfect[Math.floor(Math.random() * messages.perfect.length)];
+      } else if (completion >= 60) {
+        feedback = messages.high[Math.floor(Math.random() * messages.high.length)];
+      } else if (completion >= 30) {
+        feedback = messages.medium[Math.floor(Math.random() * messages.medium.length)];
+      } else if (completion > 0) {
+        feedback = messages.low[Math.floor(Math.random() * messages.low.length)];
+      } else {
+        feedback = messages.none[Math.floor(Math.random() * messages.none.length)];
+      }
+      
+      document.getElementById("resultText").textContent =
+        `You selected ${read}/${affirmations.length} affirmations today. ${feedback}`;
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      goHome();
+    }
+
+    function goHome() {
+      window.location.href = "Program Mental Health.html";
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closePopup();
+      }
+    });
+
+    document.getElementById("popup").addEventListener("click", (event) => {
+      if (event.target.id === "popup") {
+        closePopup();
+      }
+    });
+
+    updateProgress();
+  </script>
+</body>
+</html>

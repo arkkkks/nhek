@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verses for Sadness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Great+Vibes&family=EB+Garamond:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image:url("/IMAGES/Research%20UI%20(10).jpg");
+            background-repeat:no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0 20px 40px;
+        }
+
+        #header {
+            text-align: left;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        #header h1 {
+            font-family: 'Great Vibes', 'Playfair Display', 'EB Garamond', serif;
+            font-size: 4em;
+            color: #d63384;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-shadow: 2px 4px 18px #fff3fa, 0 1px 0 #a03c6e;
+            margin-bottom: 10px;
+            font-style: normal;
+        }
+
+        #header p {
+            font-family: 'EB Garamond', 'Playfair Display', serif;
+            font-size: 1.35em;
+            color: #a03c6e;
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .verse-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px 32px;
+            justify-items: start;
+            align-items: start;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .verse-button {
+            background-color: #ffecb3;
+            color: #795548;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(214, 51, 132, 0.18), 0 2px 8px rgba(0, 0, 0, 0.22);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+            text-decoration: none;
+            font-size: 1.15em;
+            text-align: left;
+            min-width: 180px;
+            font-family: 'EB Garamond', 'Playfair Display', serif;
+            font-weight: 700;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .verse-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px rgba(214, 51, 132, 0.28), 0 4px 16px rgba(0,0,0,0.28);
+        }
+
+        #jesus-image {
+            margin-top: 30px;
+        }
+
+        #jesus-image img {
+            width: 200px;
+            height: auto;
+        }
+
+        .icon-btn {
+            position: fixed;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 230, 245, 0.95));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(254, 197, 229, 0.4);
+            border: 2px solid rgba(254, 197, 229, 0.5);
+            text-decoration: none;
+        }
+
+        .back {
+            left: 20px;
+        }
+
+        .home {
+            right: 20px;
+        }
+
+        .icon-btn:hover {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 12px 35px rgba(255, 20, 147, 0.6);
+            border-color: rgba(255, 20, 147, 0.8);
+            color: white;
+        }
+
+        .icon-btn:active {
+            transform: scale(1.05) rotate(10deg);
+        }
+    </style>
+</head>
+<body>
+    <a class="icon-btn back" href="/CAUSES%20OF%20THE%20EMOTION/Cause%20of%20guilt.html">&#8592;</a>
+    <a class="icon-btn home" href="/Program%20Mental%20Health.html">&#127968;</a>
+
+    <div id="header">
+        <h1>Cheating or Academic Dishonesty?</h1>
+        <p>Here are the verses that will help you.</p>
+    </div>
+
+    <button class="verse-button verse-refresh-button" type="button" onclick="refreshVerses()">Get New Verse</button>
+
+    <div class="verse-container" id="verseContainer"></div>
+
+    <script src="../Caause of happines/verses.js"></script>
+    <script>
+        const verses = [{"href":"../message/guilt-1-john-1-9.html","text":"1 John 1:9"},{"href":"../message/guilt-psalm-51-10.html","text":"Psalm 51:10"},{"href":"../message/guilt-proverbs-28-13.html","text":"Proverbs 28:13"},{"href":"../message/guilt-isaiah-1-18.html","text":"Isaiah 1:18"},{"href":"../message/guilt-2-corinthians-5-17.html","text":"2 Corinthians 5:17"},{"href":"../message/guilt-ephesians-4-25.html","text":"Ephesians 4:25"},{"href":"../message/guilt-psalm-32-5.html","text":"Psalm 32:5"}];
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function displayVerses() {
+            const container = document.getElementById('verseContainer');
+            const shuffled = shuffleArray(verses);
+            const selected = shuffled.slice(0, Math.min(9, verses.length));
+            container.innerHTML = selected.map(verse => {
+                const href = verse.href && verse.href.trim().length ? verse.href : '#';
+                return `<a href="${href}" class="verse-button">${verse.text}</a>`;
+            }).join('');
+        }
+
+        function refreshVerses() {
+            displayVerses();
+        }
+
+        displayVerses();
+    </script>
+</body>
+</html>
+

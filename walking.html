@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirational Verse</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7e6f9; /* Light pink background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-container {
+            background-color: #fff0f5; /* Lighter pink for the card */
+            border: 2px solid #ffccdd; /* Pink border */
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 650px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 0;
+            object-fit: contain;
+        }
+
+        .card-container::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 10px;
+            background-color: #ffccdd;
+            border-radius: 5px;
+            z-index: -1;
+        }
+
+        h2 {
+            color: #d63384; /* Darker pink for title */
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .verse-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .verse-reference {
+            font-weight: bold;
+            color: #d63384; /* Matching the title color */
+            margin-top: 5px;
+            display: block;
+        }
+
+        .message-text {
+            font-size: 1em;
+            line-height: 1.7;
+            color: #555;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dotted #ffccdd; /* Dotted line separator */
+        }
+
+        .mark-as-read {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .done-button {
+            background-color: #ff85a2; /* Medium pink for button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+        }
+
+        .done-button:hover {
+            background-color: #ff6b8f; /* Darker pink on hover */
+            transform: translateY(-2px);
+        }
+
+        .done-button:active {
+            background-color: #e05a7d;
+            transform: translateY(0);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <img class="card-image" src="/IMAGES/images.jpg" alt="Image above Verse" />
+        <h2>Verse</h2>
+        <p class="verse-text">
+            The pain you're feeling right now, can't<br>
+            compare to the joy that's coming.
+            <span class="verse-reference">Romans 8:18</span>
+        </p>
+
+        <p class="message-text">
+            If ever life gets hard, and if you feel like giving up, always remember that this is just a season of your life, soon you will experience genuine happiness, soon you will feel less heavy, soon you'll get out of the dark place for now, just hold on to that tiny hope that everything will be alright.
+        </p>
+
+        <p class="mark-as-read">Mark as read</p>
+        <button class="done-button" onclick="alert('Finished Reading !');">Done</button>
+    </div>
+
+    <script>
+        // Maaari kang magdagdag ng JavaScript function dito kung gusto mong may mangyari
+        // kapag pinindot ang "Done" button, bukod sa alert.
+        // Halimbawa, para i-redirect ang user sa ibang page:
+        // function markAsRead() {
+        //     alert('Mensahe: Tapos na basahin!');
+        //     window.location.href = 'your_next_page.html'; // Palitan ng aktwal na URL
+        // }
+        // At palitan ang onclick sa button: onclick="markAsRead()"
+    </script>
+</body>
+</html>
+
+
+
+

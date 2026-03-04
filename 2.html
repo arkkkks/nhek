@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Write Diary</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    padding: 30px;
+  }
+  .book {
+    background: #fff;
+    width: 80%;
+    max-width: 800px;
+    margin: 40px auto;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  h2 {
+    font-family: "Brush Script MT", cursive;
+    color: #4b1b39;
+    font-size: 28px;
+  }
+  textarea {
+    width: 90%;
+    height: 200px;
+    border: none;
+    border-bottom: 2px solid #f4a5c2;
+    outline: none;
+    font-size: 16px;
+    margin-top: 20px;
+    resize: none;
+    line-height: 1.6;
+    background: transparent;
+  }
+
+  .done-btn {
+    background: #f28ab2;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 35px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+  }
+  .done-btn:hover {
+    background: #e36d9f;
+  }
+</style>
+</head>
+<body>
+
+  <h2>Diary Title: <span id="diaryTitle"></span></h2>
+
+  <div class="book">
+    <textarea id="page1Text" placeholder="Write your thoughts here..."></textarea>
+    <textarea id="page2Text" placeholder="Continue writing here..."></textarea>
+  </div>
+
+  <button class="done-btn" onclick="confirmDone()">Done</button>
+
+  <script>
+    const diaryTitle = localStorage.getItem("diaryTitle") || "Untitled Diary";
+    document.getElementById("diaryTitle").textContent = diaryTitle;
+
+    function confirmDone() {
+      const page1Text = document.getElementById("page1Text").value.trim();
+      const page2Text = document.getElementById("page2Text").value.trim();
+
+      if (!page1Text && !page2Text) {
+        alert("Please write something before clicking Done!");
+        return;
+      }
+
+      const text = page1Text + " " + page2Text;
+      const now = new Date();
+      const month = now.toLocaleString("default", { month: "long" });
+      const year = now.getFullYear();
+
+      const entry = {
+        id: Date.now(),
+        title: diaryTitle,
+        month,
+        year,
+        feeling: text.substring(0, 50) + "...",
+        text
+      };
+
+      const entries = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+      entries.push(entry);
+      localStorage.setItem("diaryEntries", JSON.stringify(entries));
+
+      window.location.href = "diary-list.html";
+    }
+  </script>
+</body>
+</html>
+
+

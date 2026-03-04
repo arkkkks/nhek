@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f8c7dc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .quiz-box {
+    background-color: #e768a9;
+    border-radius: 15px;
+    padding: 25px;
+    width: 750px;
+    color: white;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    text-align: left;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 15px;
+  }
+
+  h2 {
+    background-color: #d74b9f;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  .options {
+    margin-top: 20px;
+  }
+
+  .option {
+    background-color: #f8a7c4;
+    color: #333;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 20px;
+    border-radius: 10;
+    margin: 10px 0;
+    font-size: 15px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .option.correct::after {
+    content: "✔";
+    color: green;
+    position: absolute;
+    right: 15px;
+    font-weight: bold;
+  }
+
+  .option.wrong::after {
+    content: "✖";
+    color: red;
+    position: absolute;
+    right: 15px;
+    font-weight: bold;
+  }
+
+  .submit-btn {
+    background-color: #b94a94;
+    border: none;
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .submit-btn:hover {
+    background-color: #a23f86;
+  }
+
+  p {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 10px;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="quiz-box">
+  <h1>🌷 Question 8</h1>
+  <h2>A shy student is invited to a group lunch but feels uncomfortable. What can they do?</h2>
+
+  <div class="options">
+    <button class="option" data-correct="false">A. Say no immediately without trying.</button>
+    <button class="option" data-correct="true">B. Join for a short while to build confidence.</button>
+    <button class="option" data-correct="false">C. Make up an excuse to stay alone.</button>
+    <button class="option" data-correct="false">D. Hide until everyone leaves.</button>
+  </div>
+
+  <button class="submit-btn">Submit</button>
+  <p>Your name will not be shared</p>
+</div>
+
+<script>
+  const options = document.querySelectorAll(".option");
+  const submitBtn = document.querySelector(".submit-btn");
+  let selectedOption = null;
+
+  options.forEach(option => {
+    option.addEventListener("click", () => {
+      if (selectedOption) return; // Prevent multiple selections
+
+      options.forEach(btn => btn.classList.remove("selected"));
+      option.classList.add("selected");
+      selectedOption = option;
+
+      // Show checkmark on correct, X on all wrong
+      options.forEach(opt => {
+        if (opt.dataset.correct === "true") {
+          opt.classList.add("correct");
+        } else {
+          opt.classList.add("wrong");
+        }
+      });
+    });
+  });
+
+  submitBtn.addEventListener("click", () => {
+    if (!selectedOption) {
+      alert("Please select an answer before submitting!");
+      return;
+    }
+    // Navigate to next page (placeholder: replace with actual URL)
+ window.location.href = "/shy%20question/p9.html";
+ });
+</script>
+
+</body>
+</html>
+
+
+
+

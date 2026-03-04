@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Diary</title>
+    <style>
+        body {
+            background-image:url("/IMAGES/12.jpg");
+            background-repeat:no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            background-color: #fddde6; /* Light pink background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 20px;
+        }
+
+        .diary-container {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #e91e63; /* Pink color for the title */
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: none;
+        }
+
+        button {
+            background-color: #e91e63; /* Pink button */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #c2185b; /* Darker pink on hover */
+        }
+
+        .feelings {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .feelings label {
+            font-size: 18px;
+            color: #e91e63;
+        }
+
+        /* Add lines to the textarea */
+        textarea {
+            line-height: 1.5; /* Adjust the line height as needed */
+            background-image: linear-gradient(to bottom, white, white calc(1.5em - 1px), lightgray 1.5em);
+            background-size: 100% 1.5em;
+            background-repeat: repeat-y;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Diary</h1>
+
+    <div class="diary-container">
+        <h2>Title: "Tired, But Still Trying"</h2>
+        <textarea id="diaryEntry" placeholder="Today felt heavy again..."></textarea>
+        <button onclick="continueDiary()">Continue</button>
+    </div>
+
+    <div class="feelings">
+        <label>What are you feeling Right Now after you write your Journal!</label>
+    </div>
+
+    <script>
+        function continueDiary() {
+            let diaryContent = document.getElementById("diaryEntry").value;
+            alert("Diary entry saved!\n\n" + diaryContent);
+            // Here you can add code to save the diaryContent to local storage or send it to a server.
+        }
+    </script>
+</body>
+</html>
+
+

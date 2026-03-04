@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home Page</title>
+  <link rel="stylesheet" href="home.css" />
+</head>
+<body>
+  <div class="home-container">
+    <h1>Welcome to the Home Page!</h1>
+    <p id="status">Checking your session...</p>
+    <button onclick="logout()">Log Out</button>
+  </div>
+
+  <script>
+    const LOGIN_PAGE = "Log in/Log in.html";
+
+    async function requireAuth() {
+      const status = document.getElementById("status");
+      try {
+        const response = await fetch("/api/me", { credentials: "include" });
+        const result = await response.json();
+        if (!response.ok || !result.user) {
+          window.location.href = LOGIN_PAGE;
+          return;
+        }
+        status.textContent = `You are signed in as ${result.user.username}.`;
+      } catch (error) {
+        window.location.href = LOGIN_PAGE;
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch("/api/logout", { method: "POST", credentials: "include" });
+      } catch (error) {
+        // Ignore network failure and still force redirect to login.
+      }
+      window.location.href = LOGIN_PAGE;
+    }
+
+    requireAuth();
+  </script>
+</body>
+</html>
+
+

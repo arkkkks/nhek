@@ -1,0 +1,53 @@
+[2026-01-14 18:56:45.077] [drdaemon] [info] ===============================================================
+[2026-01-14 18:56:45.078] [drdaemon] [info] Log manager initialized - DR Daemon session started
+[2026-01-14 18:56:45.078] [drdaemon] [info] ===============================================================
+[2026-01-14 18:56:45.078] [drdaemon] [info] DR Daemon starting...
+[2026-01-14 18:56:45.079] [drdaemon] [info] Starting DR Daemon - target: drengsrv.exe, interval: 0.5s
+[2026-01-14 18:56:45.079] [drdaemon] [info] Target process set to: drengsrv.exe
+[2026-01-14 18:56:45.079] [drdaemon] [info] Log directory name set to: log
+[2026-01-14 18:56:45.079] [drdaemon] [info] Dump directory name set to: log
+[2026-01-14 18:56:45.079] [drdaemon] [warning] Cannot set monitor interval: ProcessMonitor not initialized
+[2026-01-14 18:56:45.079] [drdaemon] [info] Configuring follow process: recoverit.exe
+[2026-01-14 18:56:45.079] [drdaemon] [info] Process follow exit enabled - will exit when 'recoverit.exe' exits
+[2026-01-14 18:56:45.079] [drdaemon] [info] Configuring report policy: 2
+[2026-01-14 18:56:45.080] [drdaemon] [info] Report policy set to: 2 - Only when valid dumps generated
+[2026-01-14 18:56:45.080] [drdaemon] [info] Initializing service components...
+[2026-01-14 18:56:45.080] [drdaemon] [info] Initializing daemon service components...
+[2026-01-14 18:56:45.080] [drdaemon] [info] ProcessMonitor initialized
+[2026-01-14 18:56:45.082] [drdaemon] [info] Created crash report directory: C:\ProgramData\Wondershare\Recoverit\drdaemon\CrashReports
+[2026-01-14 18:56:45.082] [drdaemon] [info] Log directory name set to: log
+[2026-01-14 18:56:45.082] [drdaemon] [info] Dump directory name set to: log
+[2026-01-14 18:56:45.082] [drdaemon] [info] CrashReportPackager initialized
+[2026-01-14 18:56:45.082] [drdaemon] [info] DaemonCrashReporter: Attempting to locate drreporter at: 
+[2026-01-14 18:56:45.082] [drdaemon] [error] DaemonCrashReporter: drreporter.exe not found at: 
+[2026-01-14 18:56:45.082] [drdaemon] [info] DaemonCrashReporter: Searching alternative locations...
+[2026-01-14 18:56:45.083] [drdaemon] [error] DaemonCrashReporter: drreporter.exe not found in any location
+[2026-01-14 18:56:45.083] [drdaemon] [warning] Error: Failed to initialize DR Reporter, will use fallback upload method
+[2026-01-14 18:56:45.083] [drdaemon] [info] Using default upload (DR Reporter not available)
+[2026-01-14 18:56:45.083] [drdaemon] [info] Setting default upload callback...
+[2026-01-14 18:56:45.083] [drdaemon] [info] Default upload configured (local storage only)
+[2026-01-14 18:56:45.083] [drdaemon] [info] Initializing follow process monitor for: recoverit.exe
+[2026-01-14 18:56:45.083] [drdaemon] [info] Follow process monitor initialized - will exit when 'recoverit.exe' exits
+[2026-01-14 18:56:45.083] [drdaemon] [info] IPC trigger event created (session-local): Local\\DRDaemon.TriggerCollect
+[2026-01-14 18:56:45.083] [drdaemon] [info] Daemon service initialized successfully - monitoring: drengsrv.exe
+[2026-01-14 18:56:45.083] [drdaemon] [info] Daemon service started successfully
+[2026-01-14 18:56:45.083] [drdaemon] [info] Service configured - upload method: Default
+[2026-01-14 18:56:45.083] [drdaemon] [warning] Using local storage only - crash reports will not be uploaded
+[2026-01-14 18:56:45.083] [drdaemon] [info] Starting main service loop...
+[2026-01-14 18:56:45.083] [drdaemon] [info] Starting daemon service main loop - target: drengsrv.exe, follow: recoverit.exe, upload: Default, policy: Only when valid dumps generated
+[2026-01-14 18:56:45.083] [drdaemon] [info] Starting process monitor for: drengsrv.exe
+[2026-01-14 18:56:45.083] [drdaemon] [info] Process monitor started successfully
+[2026-01-14 18:56:45.084] [drdaemon] [info] Starting process monitor for: recoverit.exe
+[2026-01-14 18:56:45.084] [drdaemon] [info] Process monitor loop started for: drengsrv.exe
+[2026-01-14 18:56:45.084] [drdaemon] [info] Follow process monitor started - tracking 'recoverit.exe'
+[2026-01-14 18:56:45.084] [drdaemon] [info] Process monitor loop started for: recoverit.exe
+[2026-01-14 18:56:45.094] [drdaemon] [info] Process drengsrv.exe started (PID: 7672)
+[2026-01-14 18:56:45.095] [drdaemon] [info] Process recoverit.exe started (PID: 9360)
+[2026-01-14 19:56:49.433] [drdaemon] [info] Running periodic cleanup (7 days retention)...
+[2026-01-14 19:56:49.438] [drdaemon] [info] Cleaning up crash reports older than 7 days
+[2026-01-14 19:56:49.441] [drdaemon] [info] Cleaned up 0 old crash reports
+[2026-01-14 20:30:05.760] [drdaemon] [warning] Process drengsrv.exe has exited (PID: 7672)
+[2026-01-14 20:30:05.762] [drdaemon] [info] Process exit type: ABNORMAL
+[2026-01-14 20:30:05.762] [drdaemon] [warning] Process drengsrv.exe (PID: 7672) exited, abnormal: true
+[2026-01-14 20:30:05.763] [drdaemon] [info] Current report policy: Only when valid dumps generated
+[2026-01-14 20:30:05.769] [drdaemon] [info] Abnormal exit detected - starting real-time WER dump monitoring...

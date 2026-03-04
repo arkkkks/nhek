@@ -1,0 +1,1020 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-speed: 12s;
+    --bob-speed: 0.65s;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #8fd7dd;
+}
+
+.scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(180deg, #9ce5ea 0%, #bceff0 52%, #8ccf61 100%);
+}
+
+/* Reference image layer inspired by IMAGES/16.jpg */
+.scene::before {
+    content: "";
+    position: absolute;
+    inset: -4% -6%;
+    background-image: url("../IMAGES/16.jpg");
+    background-size: cover;
+    background-position: center center;
+    transform: scale(1.06);
+    animation: panReference calc(var(--bg-speed) * 2.1) linear infinite alternate;
+    animation-play-state: paused;
+    z-index: 0;
+}
+
+.scene::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(138, 231, 236, 0.22) 0%,
+        rgba(184, 240, 242, 0.14) 50%,
+        rgba(80, 141, 52, 0.12) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.nature-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.sky {
+    top: 0;
+    height: 58vh;
+}
+
+.sun {
+    position: absolute;
+    top: 6vh;
+    right: 10vw;
+    width: clamp(78px, 7vw, 120px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 244, 181, 0.95) 0%, rgba(255, 211, 110, 0.84) 54%, rgba(255, 201, 87, 0.2) 100%);
+    filter: blur(0.2px);
+    box-shadow: 0 0 34px rgba(255, 220, 122, 0.62);
+}
+
+.cloud {
+    position: absolute;
+    width: clamp(140px, 17vw, 240px);
+    height: clamp(44px, 5vw, 72px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    animation: driftCloud linear infinite;
+    animation-duration: calc(var(--bg-speed) * 3.4);
+    animation-play-state: paused;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.cloud::before {
+    width: 45%;
+    height: 125%;
+    left: 18%;
+    top: -48%;
+}
+
+.cloud::after {
+    width: 36%;
+    height: 95%;
+    left: 50%;
+    top: -34%;
+}
+
+.cloud-1 {
+    top: 14vh;
+    left: -28vw;
+}
+
+.cloud-2 {
+    top: 21vh;
+    left: -12vw;
+    opacity: 0.7;
+    animation-duration: calc(var(--bg-speed) * 4);
+}
+
+.cloud-3 {
+    top: 10vh;
+    left: 33vw;
+    opacity: 0.66;
+    animation-duration: calc(var(--bg-speed) * 4.8);
+}
+
+/* Soft moving bush lines similar to the reference background */
+.mountains,
+.trees,
+.trees-far,
+.trees-near {
+    display: none;
+}
+
+/* Road lane inspired by the lower part of the reference image */
+.trail {
+    position: absolute;
+    left: -10%;
+    width: 120%;
+    bottom: 0;
+    height: 18vh;
+    z-index: 5;
+    background: linear-gradient(180deg, rgba(91, 97, 110, 0.92) 0%, rgba(68, 72, 84, 0.96) 100%);
+}
+
+.trail::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44%;
+    height: 20%;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(250, 250, 250, 0.88) 0 84px,
+        rgba(250, 250, 250, 0) 84px 170px
+    );
+    animation: laneMove linear infinite;
+    animation-duration: calc(var(--bg-speed) * 0.82);
+    animation-play-state: paused;
+}
+
+.trail::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -52px;
+    height: 60px;
+    background:
+        radial-gradient(circle at 10% 70%, rgba(250, 94, 173, 0.78) 0 10px, transparent 11px),
+        radial-gradient(circle at 22% 78%, rgba(255, 255, 255, 0.9) 0 8px, transparent 9px),
+        radial-gradient(circle at 40% 74%, rgba(247, 83, 140, 0.78) 0 9px, transparent 10px),
+        radial-gradient(circle at 57% 80%, rgba(255, 255, 255, 0.9) 0 8px, transparent 9px),
+        radial-gradient(circle at 71% 74%, rgba(252, 188, 52, 0.75) 0 9px, transparent 10px),
+        radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.9) 0 8px, transparent 9px),
+        linear-gradient(180deg, rgba(86, 160, 90, 0.96) 0%, rgba(75, 139, 81, 0.96) 100%);
+}
+
+.character {
+    --char-filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.25));
+    --char-scale-x: 1;
+    --char-scale-y: 1;
+    position: absolute;
+    bottom: 9.6vh;
+    left: clamp(54px, 12vw, 200px);
+    width: clamp(170px, 23vw, 300px);
+    z-index: 7;
+    filter: var(--char-filter);
+    animation: walkBob var(--bob-speed) ease-in-out infinite alternate;
+    animation-play-state: paused;
+}
+
+.character.char-traveler {
+    --char-filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.25));
+    --char-scale-x: 1;
+    --char-scale-y: 1;
+}
+
+.character.char-sport {
+    --char-filter: hue-rotate(100deg) saturate(1.3) contrast(1.05) drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
+    --char-scale-x: 0.98;
+    --char-scale-y: 0.98;
+}
+
+.character.char-sunset {
+    --char-filter: hue-rotate(-30deg) saturate(1.45) brightness(1.08) drop-shadow(0 10px 12px rgba(0, 0, 0, 0.28));
+    --char-scale-x: 1.03;
+    --char-scale-y: 1.03;
+}
+
+.character.char-classic {
+    --char-filter: grayscale(0.55) contrast(1.12) brightness(1.05) drop-shadow(0 10px 12px rgba(0, 0, 0, 0.28));
+    --char-scale-x: 1;
+    --char-scale-y: 1;
+}
+
+.custom-character {
+    --char-filter: none;
+    width: clamp(120px, 18vw, 190px);
+    height: 260px;
+}
+
+.human-figure {
+    --skin-color: #f2be93;
+    --hair-color: #352319;
+    --top-color: #4b8f4b;
+    --bottom-color: #55463e;
+    --hat-color: #7b3f00;
+    --shoe-color: #f5d64f;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 130px;
+    height: 260px;
+    transform: translateX(-50%);
+}
+
+.human-head {
+    position: absolute;
+    left: 52px;
+    top: 16px;
+    width: 36px;
+    height: 42px;
+    background: var(--skin-color);
+    border-radius: 18px 18px 16px 16px;
+    z-index: 7;
+}
+
+.human-hair {
+    position: absolute;
+    left: 49px;
+    top: 8px;
+    width: 42px;
+    height: 24px;
+    background: var(--hair-color);
+    border-radius: 18px 18px 8px 8px;
+    z-index: 8;
+}
+
+.human-hat {
+    position: absolute;
+    left: 46px;
+    top: 3px;
+    width: 48px;
+    height: 20px;
+    background: var(--hat-color);
+    border-radius: 12px 12px 7px 7px;
+    z-index: 9;
+    display: none;
+}
+
+.human-body {
+    position: absolute;
+    left: 44px;
+    top: 58px;
+    width: 48px;
+    height: 64px;
+    background: var(--top-color);
+    border-radius: 14px 14px 10px 10px;
+    z-index: 5;
+}
+
+.human-dress {
+    position: absolute;
+    left: 36px;
+    top: 114px;
+    width: 64px;
+    height: 60px;
+    background: var(--bottom-color);
+    clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+    z-index: 4;
+    display: none;
+}
+
+.human-arm,
+.human-leg {
+    position: absolute;
+    transform-origin: top center;
+    animation: limbSwing var(--bob-speed) ease-in-out infinite alternate;
+    animation-play-state: paused;
+}
+
+.human-arm {
+    top: 66px;
+    width: 15px;
+    height: 56px;
+    background: var(--skin-color);
+    border-radius: 9px;
+    z-index: 3;
+}
+
+.arm-left {
+    left: 36px;
+}
+
+.arm-right {
+    left: 84px;
+    animation-direction: alternate-reverse;
+}
+
+.human-leg {
+    top: 121px;
+    width: 18px;
+    height: 88px;
+    background: var(--bottom-color);
+    border-radius: 10px;
+    z-index: 2;
+}
+
+.leg-left {
+    left: 50px;
+}
+
+.leg-right {
+    left: 72px;
+    animation-direction: alternate-reverse;
+}
+
+.human-shoe {
+    position: absolute;
+    top: 206px;
+    width: 24px;
+    height: 12px;
+    background: var(--shoe-color);
+    border-radius: 10px 10px 5px 5px;
+    z-index: 2;
+}
+
+.shoe-left {
+    left: 46px;
+}
+
+.shoe-right {
+    left: 72px;
+}
+
+.human-accessory {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.part-object {
+    position: absolute;
+    display: none;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 12;
+}
+
+.part-object.is-visible {
+    display: block;
+}
+
+.object-wig {
+    left: 42px;
+    top: -4px;
+    width: 56px;
+    height: 42px;
+}
+
+.object-top {
+    left: 34px;
+    top: 50px;
+    width: 68px;
+    height: 78px;
+}
+
+.object-bottom {
+    left: 30px;
+    top: 112px;
+    width: 74px;
+    height: 102px;
+}
+
+.object-dress {
+    left: 26px;
+    top: 100px;
+    width: 82px;
+    height: 120px;
+}
+
+.object-hat {
+    left: 38px;
+    top: -8px;
+    width: 60px;
+    height: 34px;
+    z-index: 13;
+}
+
+.object-shoes-left {
+    left: 42px;
+    top: 198px;
+    width: 30px;
+    height: 20px;
+}
+
+.object-shoes-right {
+    left: 69px;
+    top: 198px;
+    width: 30px;
+    height: 20px;
+}
+
+.object-accessory {
+    left: 26px;
+    top: 56px;
+    width: 82px;
+    height: 104px;
+}
+
+.human-figure.use-object-wig .human-hair {
+    opacity: 0;
+}
+
+.human-figure.use-object-top .human-body {
+    opacity: 0;
+}
+
+.human-figure.use-object-dress .human-dress {
+    opacity: 0;
+}
+
+.human-figure.use-object-hat .human-hat {
+    opacity: 0;
+}
+
+.human-figure.use-object-shoes .human-shoe {
+    opacity: 0;
+}
+
+.human-figure[data-gender="girl"] .human-hair {
+    height: 30px;
+    border-radius: 18px 18px 12px 12px;
+}
+
+.human-figure[data-top="hoodie"] .human-body::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: -8px;
+    width: 28px;
+    height: 16px;
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+}
+
+.human-figure[data-top="jacket"] .human-body {
+    box-shadow: inset -3px 0 0 rgba(255, 255, 255, 0.2), inset 3px 0 0 rgba(0, 0, 0, 0.16);
+}
+
+.human-figure[data-bottom="shorts"] .human-leg {
+    top: 112px;
+    height: 78px;
+}
+
+.human-figure[data-bottom="dress"] .human-dress {
+    display: block;
+}
+
+.human-figure[data-bottom="dress"] .human-leg {
+    top: 162px;
+    height: 50px;
+}
+
+.human-figure[data-hat="cap"] .human-hat,
+.human-figure[data-hat="beanie"] .human-hat {
+    display: block;
+}
+
+.human-figure[data-hat="cap"] .human-hat::after {
+    content: "";
+    position: absolute;
+    right: -7px;
+    top: 9px;
+    width: 10px;
+    height: 4px;
+    background: var(--hat-color);
+    border-radius: 0 3px 3px 0;
+}
+
+.human-figure[data-hat="beanie"] .human-hat {
+    border-radius: 12px 12px 12px 12px;
+    height: 22px;
+}
+
+.human-figure[data-shoes="boots"] .human-shoe {
+    height: 15px;
+    border-radius: 5px;
+}
+
+.human-figure[data-accessory="backpack"] .human-accessory::before {
+    content: "";
+    position: absolute;
+    left: 35px;
+    top: 70px;
+    width: 18px;
+    height: 30px;
+    background: #2f4470;
+    border-radius: 5px;
+}
+
+.human-figure[data-accessory="scarf"] .human-accessory::before {
+    content: "";
+    position: absolute;
+    left: 46px;
+    top: 57px;
+    width: 46px;
+    height: 11px;
+    background: #d9496f;
+    border-radius: 7px;
+}
+
+.human-figure[data-accessory="glasses"] .human-accessory::before,
+.human-figure[data-accessory="glasses"] .human-accessory::after {
+    content: "";
+    position: absolute;
+    top: 31px;
+    width: 10px;
+    height: 9px;
+    border: 2px solid #19222c;
+    border-radius: 3px;
+}
+
+.human-figure[data-accessory="glasses"] .human-accessory::before {
+    left: 58px;
+}
+
+.human-figure[data-accessory="glasses"] .human-accessory::after {
+    left: 71px;
+}
+
+.timer {
+    position: absolute;
+    top: calc(6vh + 8px);
+    right: calc(10vw + clamp(78px, 7vw, 120px) + 24px);
+    z-index: 12;
+    background: rgba(255, 255, 255, 0.9);
+    color: #14422a;
+    padding: 16px 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(19, 67, 32, 0.2);
+    font-weight: 700;
+    font-size: 36px;
+    min-width: 160px;
+    text-align: center;
+}
+
+.controls {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    width: min(96vw, 760px);
+    z-index: 12;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(21, 69, 45, 0.74);
+    backdrop-filter: blur(3px);
+}
+
+.human-picker {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.human-option {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 10px !important;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    font-size: 13px !important;
+    font-weight: 700;
+}
+
+.human-option.is-active {
+    background: rgba(248, 255, 229, 0.98);
+    color: #184224;
+    border-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.human-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background-image: url("walk-walking.gif");
+    background-size: cover;
+    background-position: 50% 18%;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.avatar-traveler {
+    filter: none;
+}
+
+.avatar-sport {
+    filter: hue-rotate(100deg) saturate(1.3) contrast(1.05);
+}
+
+.avatar-sunset {
+    filter: hue-rotate(-30deg) saturate(1.45) brightness(1.08);
+}
+
+.avatar-classic {
+    filter: grayscale(0.55) contrast(1.12) brightness(1.05);
+}
+
+.avatar-create {
+    background-image: none;
+    background: linear-gradient(135deg, #ffe17a, #ff8f6e);
+    position: relative;
+}
+
+.avatar-create::before,
+.avatar-create::after {
+    content: "";
+    position: absolute;
+    background: rgba(21, 45, 28, 0.9);
+}
+
+.avatar-create::before {
+    width: 10px;
+    height: 2px;
+    left: 6px;
+    top: 10px;
+}
+
+.avatar-create::after {
+    width: 2px;
+    height: 10px;
+    left: 10px;
+    top: 6px;
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.controls input {
+    width: 72px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    font-size: 16px;
+    text-align: center;
+}
+
+.controls button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.controls button:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+#startBtn {
+    background: #5bc84d;
+    color: #fff;
+}
+
+#continueBtn {
+    background: #ffb330;
+    color: #13311f;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.speed-controls {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.speed-controls button {
+    background: #1f90e8;
+    color: #fff;
+}
+
+.icon-btn {
+    position: fixed;
+    top: 18px;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #11421f;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 13;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.back {
+    left: 20px;
+}
+
+.home {
+    right: 20px;
+}
+
+.icon-btn:hover {
+    background-color: #c5f6be;
+    transform: scale(1.04);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.scene.is-walking::before,
+.scene.is-walking .cloud,
+.scene.is-walking .trail::before,
+.scene.is-walking .character {
+    animation-play-state: running;
+}
+
+.scene.is-walking.character-paused .character {
+    animation-play-state: paused;
+}
+
+.scene.is-walking .custom-character .human-arm,
+.scene.is-walking .custom-character .human-leg {
+    animation-play-state: running;
+}
+
+.scene.character-paused .custom-character .human-arm,
+.scene.character-paused .custom-character .human-leg {
+    animation-play-state: paused;
+}
+
+.preview-figure {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    margin: 0 auto;
+}
+
+#creatorFigure .human-arm,
+#creatorFigure .human-leg {
+    animation-play-state: paused !important;
+}
+
+.creator-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(10, 23, 16, 0.68);
+    display: grid;
+    place-items: center;
+    padding: 14px;
+}
+
+.creator-panel {
+    width: min(96vw, 900px);
+    max-height: 92vh;
+    overflow: auto;
+    border-radius: 18px;
+    background: #f4fff1;
+    border: 1px solid rgba(20, 56, 32, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+    padding: 16px;
+}
+
+.creator-panel h2 {
+    color: #164728;
+    margin-bottom: 10px;
+}
+
+.creator-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 12px;
+}
+
+.creator-preview {
+    border-radius: 12px;
+    border: 1px solid rgba(22, 71, 40, 0.2);
+    background: linear-gradient(180deg, #dbf6ff 0%, #b9e7b9 100%);
+    min-height: 280px;
+    display: grid;
+    place-items: center;
+}
+
+.creator-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.creator-controls label {
+    display: grid;
+    gap: 5px;
+    color: #1f4f2c;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.creator-controls select,
+.creator-controls input[type="color"],
+.creator-controls input[type="file"] {
+    width: 100%;
+    min-height: 36px;
+    border-radius: 9px;
+    border: 1px solid rgba(20, 56, 32, 0.25);
+    background: #fff;
+    padding: 6px 8px;
+}
+
+.creator-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+.creator-actions button {
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 10px 14px;
+}
+
+#closeCreatorBtn {
+    background: #dde6e1;
+    color: #1f4430;
+}
+
+#clearObjectsBtn {
+    background: #ffd9d9;
+    color: #732b2b;
+}
+
+#useCreatorBtn {
+    background: #56ba4d;
+    color: #fff;
+}
+
+@keyframes panReference {
+    from {
+        background-position: center center;
+        transform: scale(1.06) translateX(0);
+    }
+    to {
+        background-position: center center;
+        transform: scale(1.1) translateX(-4.5%);
+    }
+}
+
+@keyframes driftCloud {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(132vw);
+    }
+}
+
+@keyframes laneMove {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-170px);
+    }
+}
+
+@keyframes walkBob {
+    from {
+        transform: translateY(-2px) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
+    }
+    to {
+        transform: translateY(4px) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
+    }
+}
+
+@keyframes limbSwing {
+    from {
+        transform: rotate(10deg);
+    }
+    to {
+        transform: rotate(-14deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .timer {
+        font-size: 28px;
+        min-width: 130px;
+        padding: 12px 18px;
+        top: 72px;
+        right: auto;
+        left: 14px;
+    }
+
+    .controls {
+        width: min(96vw, 370px);
+        grid-template-columns: 1fr;
+    }
+
+    .human-picker {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .time-inputs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .controls input {
+        width: 100%;
+    }
+
+    .action-buttons {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .creator-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .creator-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .speed-controls {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .speed-controls button {
+        width: 100%;
+    }
+
+    .character {
+        left: 8vw;
+        bottom: 11vh;
+    }
+
+    .trail {
+        height: 20vh;
+    }
+}

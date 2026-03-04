@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Emotion-Based Book Reader</title>
+<style>
+  body {
+    background: url("file:///C:/Users/MGB/Desktop/nhek/IMAGES/download%20(4).jpg") no-repeat center center / contain;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  h2 {
+    font-family: 'Brush Script MT', cursive;
+    color: #FFC0CB;
+    font-size: 3em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .library {
+     padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    justify-items: center;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  /* BOOKS: make them perfect squares */
+  .book {
+    width: 250px;
+    height: 300px; /* ensures it's square */
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    background: #fff;
+  }
+
+  .book:hover {
+    transform: scale(1.05);
+  }
+
+  /* Make image fit perfectly inside the square */
+  .book img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* crops the image nicely to fit the square */
+    border-radius: 8px;
+  }
+
+  /* Bottom navigation */
+  .nav {
+    display: flex;
+    justify-content: space-around;
+    background: #fff;
+    padding: 10px 0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .nav button {
+    background: #ffd700;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .nav button:hover {
+    background: #ffc107;
+  }
+
+  /* ICON BUTTONS */
+  .icon-btn {
+    position: absolute;
+    top: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #f7a1c4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .back {
+    left: 20px;
+  }
+
+  .home {
+    right: 20px;
+  }
+
+
+</style>
+</head>
+<body>
+<div class="icon-btn back" onclick="history.back()">…</div>
+<div class="icon-btn home" onclick="window.location.href='home.html'">ðŸ </div>
+<h2 style="text-align:center; padding:10px;">Read based on your emotion</h2>
+
+<div class="library" id="library">
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/overcoming.jpg" alt="" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/cure.jpg" alt="Sadness and Strength" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/become" alt="Anger Management" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/burn%20out.jpg" alt="Calm and Peace" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/compassion.jpg" alt="Overcoming Stress" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/wave.jpg" alt="Dealing with Disappointment" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/down.jpg" alt="Conquering Shyness" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/unstuck.jpg" alt="Facing Fear" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/minnute" alt="Facing Fear" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/too.webp" alt="Facing Fear" />
+  </a>
+     <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/mighty" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/battery" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/feel" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/anxiety" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/manage" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/strong" alt="" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/625156114_897201302857216_7239825469876908641_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619896987_863522129865363_4684132377503929730_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619962270_1920907151850657_2160372914890448068_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/625088247_1645986186413892_7607820576757620421_n.jpg" alt="" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/625876372_879234974991176_702511813437371796_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619303422_1822723145797666_5748283995358416967_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/621729242_862810750091683_4684899814514375163_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619809394_2048762192359548_5632895556004283123_n.jpg" alt="" />
+  </a>
+ <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/620127003_33696985179917169_3959865084275776663_n.jpg" alt="Facing Fea<r" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/622454501_2313386699138012_2361827619759189159_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619025149_2444767749307675_7542034073540883791_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/623245228_2444017602686683_86645071400396796_n.jpg" alt="" />
+  </a>
+     <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/619973199_793064937138610_5744758592866743371_n.jpg" alt="" />
+  </a>
+ <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/620014807_1258075839621652_3007022062927481629_n.jpg" alt="Facing Fea<r" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/625357100_2309924769491408_5229624716984271728_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/621630418_986689724530173_1162199313719204500_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/623154059_1990089832389955_5869793275017063771_n.jpg" alt="" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/625023287_2068026363764943_9178187463088923328_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/622509398_1437204061394116_6870548812310293758_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/624048437_26664661793121347_4135314404713901957_n.jpg" alt="" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/624890698_871100695849837_4160835444238450803_n.jpg" alt="Facing Fear" />
+  </a>
+   <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/621666266_1446579917078358_1841201267268275346_n.jpg" alt="" />
+  </a>
+  <a class="book" href="Reading.html">
+    <img src="file:///C:/Users/MGB/Desktop/nhek/IMAGES/622356956_1345321464277727_7599633015363711308_n.jpg" alt="" />
+  </a>
+ 
+ 
+ 
+</div>
+
+
+
+
+<!-- Bottom navigation buttons -->
+<div class="nav">
+  <button>Favorite</button>
+  <button>Your Library</button>
+</div>
+
+
+
+</body>
+</html>
+
+
+

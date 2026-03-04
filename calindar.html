@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Calendar</title>
+  <style>
+    :root {
+      --bg-1: #edf5ff;
+      --bg-2: #fff0e4;
+      --bg-3: #e8fff7;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #21323d;
+      --muted: #637887;
+      --accent: #0c8f98;
+      --accent-2: #ff6e4a;
+      --line: rgba(20, 53, 74, 0.12);
+      --shadow: 0 20px 44px rgba(20, 53, 74, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 14px;
+      overflow-x: hidden;
+      background:
+        radial-gradient(1100px 480px at -10% -20%, #ffd9c6 0%, transparent 58%),
+        radial-gradient(900px 460px at 110% -20%, #c8e8ff 0%, transparent 62%),
+        linear-gradient(158deg, var(--bg-3) 0%, var(--bg-1) 48%, var(--bg-2) 100%);
+      background-size: 280% 280%;
+      animation: skyShift 13s ease-in-out infinite;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      z-index: -1;
+      filter: blur(6px);
+      opacity: 0.75;
+    }
+
+    body::before {
+      width: 230px;
+      height: 230px;
+      top: -50px;
+      left: -40px;
+      background: radial-gradient(circle, #ffc49f 0%, rgba(255, 196, 159, 0) 72%);
+      animation: blobFloat 9s ease-in-out infinite;
+    }
+
+    body::after {
+      width: 270px;
+      height: 270px;
+      right: -80px;
+      bottom: -80px;
+      background: radial-gradient(circle, #bce0ff 0%, rgba(188, 224, 255, 0) 74%);
+      animation: blobFloat 12s ease-in-out infinite reverse;
+    }
+
+    .app {
+      width: min(1280px, 98vw);
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      animation: cardEnter 600ms ease-out;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: -30% 20% auto auto;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26, 164, 167, 0.25), rgba(26, 164, 167, 0));
+      pointer-events: none;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 14px 0;
+    }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .control {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+      box-shadow: 0 5px 14px rgba(35, 55, 69, 0.1);
+    }
+
+    .control::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 140%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 58%);
+      transform: translateY(50%);
+      opacity: 0;
+      transition: transform 220ms ease, opacity 220ms ease;
+      z-index: -1;
+    }
+
+    .control:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(35, 55, 69, 0.18);
+    }
+
+    .control:hover::before {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .control:active {
+      transform: translateY(1px);
+    }
+
+    .solid {
+      background: linear-gradient(130deg, var(--accent), #4eb8ba);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .icon-btn {
+      min-width: 42px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .corner-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      font-size: 20px;
+    }
+
+    .home-icon {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .home-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .title-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px 10px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.18));
+    }
+
+    #title {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .calendar-body {
+      padding: 14px;
+    }
+
+    .days,
+    .dates {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .day-name {
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+
+    .date {
+      min-height: 120px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.75);
+      text-align: left;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+      animation: popIn 320ms ease both;
+    }
+
+    .date:hover {
+      transform: translateY(-3px);
+      border-color: rgba(26, 164, 167, 0.45);
+      box-shadow: 0 10px 20px rgba(33, 58, 72, 0.14);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .date.has-mood {
+      border-color: rgba(26, 164, 167, 0.34);
+      background: linear-gradient(160deg, rgba(26, 164, 167, 0.08), rgba(255, 255, 255, 0.92));
+    }
+
+    .date.blank {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .date-number {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .date.today .date-number {
+      color: var(--accent);
+    }
+
+    .mood {
+      margin-top: 14px;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #trackerPage {
+      text-align: center;
+      padding: 18px 20px 28px;
+    }
+
+    .tracker-title {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .bars {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    .bar-item {
+      width: 116px;
+    }
+
+    .bar-shell {
+      height: 260px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.65);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      height: var(--target, 0%);
+      animation: fillRise 900ms ease;
+    }
+
+    .bar-emoji {
+      margin-top: 10px;
+      font-size: 34px;
+    }
+
+    .percent {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .empty-state {
+      padding: 20px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 17px;
+      width: 100%;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(17, 30, 37, 0.5);
+      padding: 16px;
+      z-index: 30;
+      animation: fadeIn 240ms ease;
+    }
+
+    .modal-content {
+      width: min(560px, 100%);
+      max-height: 78vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    .emoji-item {
+      border: 1px solid var(--line);
+      background: #f9fcfd;
+      border-radius: 12px;
+      padding: 10px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 160ms ease, background-color 160ms ease;
+    }
+    .emoji-item.remove {
+      border-color: #ff4d4d;
+      background: #ffe7e7;
+    }
+    .emoji-item.remove:hover {
+      background: #ffcccc;
+    }
+
+    .emoji-item:hover {
+      transform: translateY(-2px);
+      background: #eef9f9;
+    }
+
+    .emoji-big {
+      font-size: 26px;
+    }
+
+    .emoji-name {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .dark {
+      --bg-1: #0f1d22;
+      --bg-2: #13242b;
+      --bg-3: #13221f;
+      --card: rgba(15, 23, 30, 0.86);
+      --text: #deedf3;
+      --muted: #9cb4c1;
+      --line: rgba(221, 238, 246, 0.2);
+      --shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+    }
+
+    .dark .control {
+      background: rgba(17, 28, 36, 0.95);
+      color: var(--text);
+    }
+
+    .dark .solid {
+      background: linear-gradient(130deg, #14878a, #1f9ca0);
+    }
+
+    .dark .date,
+    .dark .bar-shell {
+      background: rgba(14, 24, 31, 0.88);
+    }
+
+    .dark .modal-content {
+      background: #122028;
+    }
+
+    .dark .emoji-item {
+      background: #182a33;
+    }
+
+    .dark .empty-state {
+      background: rgba(14, 24, 31, 0.78);
+    }
+
+    .dark .title-wrap {
+      background: linear-gradient(180deg, rgba(15, 28, 35, 0.75), rgba(15, 28, 35, 0.45));
+    }
+
+    @keyframes skyShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes blobFloat {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-18px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(14px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fillRise {
+      from { height: 0; }
+      to { height: var(--target, 0%); }
+    }
+
+    @media (max-width: 700px) {
+      .modal-content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .date {
+        min-height: 92px;
+      }
+
+      .tracker-title {
+        font-size: 28px;
+      }
+
+      .bar-item {
+        width: 98px;
+      }
+
+      .bar-shell {
+        height: 210px;
+      }
+
+      .bar-emoji {
+        font-size: 30px;
+      }
+
+      .percent {
+        font-size: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="top-bar">
+        <button class="control icon-btn corner-btn" onclick="goBack()" aria-label="Go back">←</button>
+        <a href="Program Mental Health.html" class="control icon-btn corner-btn home-icon" aria-label="Home page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3.1 2.6 10.6a1 1 0 0 0 1.2 1.6l1.2-1V20a1 1 0 0 0 1 1h4.7a1 1 0 0 0 1-1v-4.2h2.7V20a1 1 0 0 0 1 1H20a1 1 0 0 0 1-1v-8.8l1.2 1a1 1 0 1 0 1.2-1.6L12 3.1z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="title-wrap">
+        <div>
+          <h1 id="title"></h1>
+          <p class="subtitle">Tap a date to save your mood</p>
+        </div>
+        <div class="month-nav">
+          <button class="control icon-btn" onclick="showTracker()" aria-label="Show tracker">📊</button>
+          <button class="control icon-btn" onclick="toggleDark()" aria-label="Toggle dark mode">🌓</button>
+          <button class="control" onclick="goToCurrentMonth()">Today</button>
+          <button class="control solid" onclick="prevMonth()">◀</button>
+          <button class="control solid" onclick="nextMonth()">▶</button>
+        </div>
+      </div>
+
+      <div id="calendarPage" class="calendar-body">
+        <div id="calendar"></div>
+      </div>
+
+      <div id="trackerPage" class="hidden">
+        <h2 class="tracker-title">Mood Tracker</h2>
+        <p class="subtitle">Your most frequent moods this month</p>
+        <div class="bars" id="bars"></div>
+        <button class="control solid" style="margin-top:18px;" onclick="showCalendar()">Back to Calendar</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="emojiModal">
+    <div class="modal-content" id="emojiGrid"></div>
+  </div>
+
+  <script>
+    let emotions = {};
+    let moodCache = {};
+
+    async function loadEmotionCatalog() {
+      try {
+        const response = await fetch("/api/mood/emotions");
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Unable to load emotions");
+        }
+        if (data && Array.isArray(data.emotions)) {
+          emotions = data.emotions.reduce((map, item) => {
+            if (item && typeof item.emoji === "string" && typeof item.name === "string") {
+              map[item.emoji] = item.name;
+            }
+            return map;
+          }, {});
+        } else if (data && data.emotions && typeof data.emotions === "object") {
+          emotions = data.emotions;
+        } else {
+          emotions = {};
+        }
+      } catch (error) {
+        emotions = {};
+        console.error("Mood emotion catalog failed to load:", error);
+      }
+    }
+
+    async function loadMoods(month = null) {
+      try {
+        const query = month ? `?month=${encodeURIComponent(month)}` : "";
+        const response = await fetch(`/api/mood/entries${query}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Unable to load moods");
+        }
+        moodCache = data && typeof data.entries === "object" ? data.entries : {};
+        return moodCache;
+      } catch (error) {
+        console.error("Failed to load mood entries:", error);
+        moodCache = {};
+        return moodCache;
+      }
+    }
+
+    async function upsertMood(dateKey, emoji) {
+      const response = await fetch("/api/mood/entries", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dateKey, emoji })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to save mood");
+      }
+    }
+
+    async function removeMoodEntry(dateKey) {
+      const response = await fetch(`/api/mood/entries?dateKey=${encodeURIComponent(dateKey)}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to delete mood");
+      }
+    }
+
+    let current = new Date();
+    let selectedKey = null;
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "Program Mental Health.html";
+      }
+    }
+
+    async function render() {
+      const calendar = document.getElementById("calendar");
+      const year = current.getFullYear();
+      const month = current.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const dayCount = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      const moods = await loadMoods(`${year}-${month + 1}`);
+
+      document.getElementById("title").textContent =
+        current.toLocaleString("default", { month: "long", year: "numeric" });
+
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const daysHtml = dayNames.map((name) => `<div class="day-name">${name}</div>`).join("");
+      calendar.innerHTML = `<div class="days">${daysHtml}</div><div class="dates" id="dates"></div>`;
+
+      const dates = document.getElementById("dates");
+      for (let i = 0; i < firstDay; i += 1) {
+        const blank = document.createElement("div");
+        blank.className = "date blank";
+        dates.appendChild(blank);
+      }
+
+      for (let day = 1; day <= dayCount; day += 1) {
+        const key = `${year}-${month + 1}-${day}`;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "date";
+        if (moods[key]) {
+          button.classList.add("has-mood");
+        }
+        if (
+          day === today.getDate() &&
+          month === today.getMonth() &&
+          year === today.getFullYear()
+        ) {
+          button.classList.add("today");
+        }
+        button.innerHTML = `
+          <div class="date-number">${day}</div>
+          <div class="mood">${moods[key] || "＋"}</div>
+        `;
+        button.addEventListener("click", () => openEmojiPicker(key));
+        dates.appendChild(button);
+      }
+    }
+
+    function openEmojiPicker(key) {
+      selectedKey = key;
+      const grid = document.getElementById("emojiGrid");
+      grid.innerHTML = "";
+
+      const moods = moodCache || {};
+      const used = Array.from(new Set(Object.values(moods)));
+
+      // show delete button if mood exists
+      if (moods[selectedKey]) {
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "emoji-item remove";
+        removeBtn.innerHTML = `
+          <div class="emoji-big">🗑️</div>
+          <div class="emoji-name">Remove mood</div>
+        `;
+        removeBtn.addEventListener("click", () => {
+          deleteMood();
+        });
+        grid.appendChild(removeBtn);
+      }
+
+      // add search box at top
+      const search = document.createElement("input");
+      search.type = "text";
+      search.placeholder = "Search emotions...";
+      search.id = "emojiSearch";
+      search.style.gridColumn = "1 / -1";
+      search.style.padding = "8px 10px";
+      search.style.border = "1px solid var(--line)";
+      search.style.borderRadius = "10px";
+      search.style.marginBottom = "8px";
+      search.addEventListener("input", () => renderGrid());
+      grid.appendChild(search);
+
+      function renderGrid() {
+        // remove all existing emoji items except search
+        grid.querySelectorAll('.emoji-item:not(.remove)').forEach(e => e.remove());
+        const term = search.value.trim().toLowerCase();
+        let entries = [];
+        if (term) {
+          // show any emotion whose name matches search
+          entries = Object.entries(emotions).filter(([_, name]) =>
+            name.toLowerCase().includes(term)
+          );
+        } else {
+          // no search: show only used emojis (preserve order)
+          entries = used.map(e => [e, emotions[e]]).filter(e => e[1]);
+        }
+        entries.forEach(([emoji, name]) => {
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "emoji-item";
+          item.innerHTML = `
+            <div class="emoji-big">${emoji}</div>
+            <div class="emoji-name">${name}</div>
+          `;
+          item.addEventListener("click", () => selectEmoji(emoji));
+          grid.appendChild(item);
+        });
+      }
+
+      renderGrid();
+      document.getElementById("emojiModal").style.display = "flex";
+      search.focus();
+    }
+
+    function closeEmojiPicker() {
+      document.getElementById("emojiModal").style.display = "none";
+    }
+
+    async function selectEmoji(emoji) {
+      try {
+        await upsertMood(selectedKey, emoji);
+      } catch (error) {
+        console.error(error);
+      }
+      closeEmojiPicker();
+      render();
+    }
+
+    async function deleteMood() {
+      if (moodCache[selectedKey]) {
+        try {
+          await removeMoodEntry(selectedKey);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      closeEmojiPicker();
+      render();
+    }
+
+    async function showTracker() {
+      document.getElementById("calendarPage").classList.add("hidden");
+      document.getElementById("trackerPage").classList.remove("hidden");
+      await updateTracker();
+    }
+
+    function showCalendar() {
+      document.getElementById("trackerPage").classList.add("hidden");
+      document.getElementById("calendarPage").classList.remove("hidden");
+    }
+
+    async function updateTracker() {
+      const year = current.getFullYear();
+      const month = current.getMonth() + 1;
+      const moods = await loadMoods(`${year}-${month}`);
+      const counts = {};
+      Object.values(moods).forEach((emoji) => {
+        counts[emoji] = (counts[emoji] || 0) + 1;
+      });
+
+      const bars = document.getElementById("bars");
+      bars.innerHTML = "";
+
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 7);
+      if (!entries.length) {
+        bars.innerHTML = `<p class="empty-state">No mood entries yet. Tap a date to add one.</p>`;
+        return;
+      }
+
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+      entries.forEach(([emoji, count]) => {
+        const percent = Math.round((count / total) * 100);
+        const card = document.createElement("div");
+        card.className = "bar-item";
+        card.innerHTML = `
+          <div class="bar-shell">
+            <div class="bar-fill" style="--target:${percent}%"></div>
+          </div>
+          <div class="bar-emoji">${emoji}</div>
+          <div class="percent">${percent}%</div>
+        `;
+        bars.appendChild(card);
+      });
+    }
+
+    function prevMonth() {
+      current.setMonth(current.getMonth() - 1);
+      render();
+    }
+
+    function nextMonth() {
+      current.setMonth(current.getMonth() + 1);
+      render();
+    }
+
+    function goToCurrentMonth() {
+      current = new Date();
+      render();
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
+    document.getElementById("emojiModal").addEventListener("click", (event) => {
+      if (event.target.id === "emojiModal") {
+        closeEmojiPicker();
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeEmojiPicker();
+      }
+    });
+
+    async function bootstrapCalendar() {
+      await loadEmotionCatalog();
+      await render();
+    }
+
+    bootstrapCalendar();
+  </script>
+</body>
+</html>

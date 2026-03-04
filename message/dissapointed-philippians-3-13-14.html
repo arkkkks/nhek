@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philippians 3:13-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    background-image: url("/IMAGES/Research%20UI%20(11).jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: "Varela Round", "Segoe UI", sans-serif;
+    background-color: #ffdde1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+  }
+  .container {
+    width: 700px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    position: relative;
+  }
+  .icon-btn {
+    position: fixed;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,230,245,0.95));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(254, 197, 229, 0.4);
+    border: 2px solid rgba(254, 197, 229, 0.5);
+    color: #333;
+  }
+  .back { left: 20px; }
+  .home { right: 20px; }
+  .icon-btn:hover {
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 12px 35px rgba(255,20,147,0.6);
+    border-color: rgba(255,20,147,0.8);
+    color: #fff;
+  }
+  .verse-title { font-family: "Coiny", "Varela Round", sans-serif; font-size: 28px; font-weight: 400; margin-top: 20px; color: #ff4fa3; letter-spacing: 0.4px; }
+  .verse-text { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 22px; margin: 20px 0; line-height: 1.6; }
+  .roman { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 24px; font-weight: bold; color: #ff4fa3; }
+  hr { margin: 25px 0; }
+  .message-title { font-family: "Coiny", "Varela Round", sans-serif; color: #ff4fa3; font-weight: 400; font-size: 30px; letter-spacing: 0.4px; }
+  .message { font-family: "Quicksand", "Nunito", "Segoe UI", sans-serif; font-size: 20px; line-height: 1.8; }
+  .done-btn {
+    width: 220px;
+    padding: 13px 14px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff9ccd 0%, #ff6fb9 45%, #ff4fa3 100%);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 26px rgba(255, 79, 163, 0.36), inset 0 1px 0 rgba(255,255,255,0.55);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .done-btn::before {
+    content: "";
+    position: absolute;
+    top: -120%;
+    left: -35%;
+    width: 28%;
+    height: 320%;
+    background: linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,0.72), rgba(255,255,255,0));
+    transform: rotate(18deg);
+    animation: doneShine 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .done-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    filter: brightness(1.04);
+    box-shadow: 0 16px 34px rgba(255, 79, 163, 0.5), 0 0 16px rgba(255, 132, 197, 0.45);
+  }
+  .done-btn:active {
+    transform: translateY(1px) scale(0.995);
+  }
+  @keyframes doneShine {
+    0% { left: -35%; opacity: 0; }
+    12% { opacity: 1; }
+    48% { left: 118%; opacity: 0; }
+    100% { left: 118%; opacity: 0; }
+  }
+  .modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    justify-content: center; align-items: center;
+    backdrop-filter: blur(6px);
+  }
+  .modal-content {
+    width: min(92vw, 440px);
+    border: 1px solid rgba(255, 167, 214, 0.76);
+    background: linear-gradient(160deg, #fffafd 0%, #ffeef8 50%, #ffe3f2 100%);
+    box-shadow: 0 24px 52px rgba(121, 33, 84, 0.28);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    padding: 26px 22px;
+    font-family: "Varela Round", "Segoe UI", sans-serif;
+    text-align: center;
+    animation: pop 0.4s ease;
+  }
+  @keyframes pop { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .modal-content h3 {
+    font-family: "Pacifico", "Comic Sans MS", cursive;
+    font-size: 34px;
+    margin: 2px 0 10px;
+    color: #ff4aa5;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.74);
+  }
+  .modal-content p {
+    font-family: "Varela Round", "Segoe UI", sans-serif;
+    font-size: 18px;
+    color: #6d2a4d;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 186, 221, 0.82);
+    border-radius: 16px;
+    padding: 14px 14px;
+    line-height: 1.55;
+  }
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .ok-btn,
+  .next-btn {
+    min-width: 108px;
+    border-radius: 999px;
+    font-family: "Varela Round", "Segoe UI", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    padding: 10px 18px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+  .ok-btn {
+    background: linear-gradient(180deg, #fff5fb, #efd8e8);
+    color: #6d4b62;
+    box-shadow: 0 6px 12px rgba(112, 66, 97, 0.16);
+  }
+  .next-btn {
+    background: linear-gradient(180deg, #ff74bf, #ff3ca2);
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(255, 57, 159, 0.34);
+  }
+  .ok-btn:hover,
+  .next-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    filter: brightness(1.04);
+  }
+  .ok-btn:active,
+  .next-btn:active {
+    transform: translateY(1px);
+  }
+  .simple-reveal {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .simple-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .simple-reveal,
+    .simple-reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon-btn back" onclick="goBack()">&#8592;</div>
+  <div class="icon-btn home" onclick="goHome()">&#127968;</div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <div class="verse-title">Verse</div>
+  <div class="verse-text">Meaning: Spiritual focus means leaving what is behind and pressing forward toward God's calling.</div>
+  <div class="roman">Philippians 3:13-14</div>
+
+  <hr>
+
+  <div class="message-title">Message</div>
+  <div class="message">When you feel disappointment from Rejection or Failure or Unrealized Career Aspirations, this verse reminds you that Spiritual focus means leaving what is behind and pressing forward toward God's calling. As a student, respond by choosing practical faith: treat setbacks as feedback, prepare again with better structure, and move forward without letting one failure define your identity, then continue in prayer, disciplined study, and honest reflection so one painful result does not decide your future. Step by step, this creates healthier thoughts and better decisions.</div>
+
+  <div style="text-align: center;"><button class="done-btn" onclick="openModal()">Done</button></div>
+</div>
+
+<div class="modal" id="popup">
+  <div class="modal-content">
+    <h3>Great Job</h3>
+    <p>
+      May this message inspire your heart.<br>
+      Better days are ahead.
+    </p>
+    <div class="modal-buttons">
+      <button class="ok-btn" onclick="closeModal()">Ok</button>
+      <button class="next-btn" onclick="goBack()">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function startSimpleTextReveal() {
+    const verseEl = document.querySelector(".verse-text");
+    const messageEl = document.querySelector(".message");
+
+    if (!verseEl && !messageEl) {
+      return;
+    }
+
+    if (verseEl) {
+      verseEl.classList.add("simple-reveal");
+    }
+
+    if (messageEl) {
+      messageEl.classList.add("simple-reveal");
+    }
+
+    window.requestAnimationFrame(function () {
+      if (verseEl) {
+        verseEl.classList.add("is-visible");
+      }
+
+      window.setTimeout(function () {
+        if (messageEl) {
+          messageEl.classList.add("is-visible");
+        }
+      }, 180);
+    });
+  }
+
+  function openModal() {
+    const popup = document.getElementById("popup");
+    if (popup) {
+      popup.style.display = "flex";
+    }
+  }
+
+  function closeModal() {
+    const popup = document.getElementById("popup");
+    if (popup) {
+      popup.style.display = "none";
+    }
+  }
+
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    window.location.href = "/CAUSES%20OF%20THE%20EMOTION/Cause%20of%20dissapointed.html";
+  }
+
+  function goHome() {
+    window.location.href = "/Program%20Mental%20Health.html";
+  }
+
+  document.addEventListener("DOMContentLoaded", startSimpleTextReveal);
+</script>
+</body>
+</html>
+
+
+

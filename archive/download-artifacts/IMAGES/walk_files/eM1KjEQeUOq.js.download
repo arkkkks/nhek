@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("LSClearCMSearchNullstateMetadata",[],(function(t,n,r,o,a,i){function e(){var e=arguments,t=e[e.length-1],n=[],r=[];return t.sequence([function(e){return t.forEach(t.db.table(289).fetch(),function(e){return e.delete()})},function(e){return t.resolve(r)}])}e.__sproc_name__="LSCommunityMessagingSearchClearCMSearchNullstateMetadataStoredProcedure",e.__tables__=["cm_search_nullstate_metadata"],a.exports=e}),null);

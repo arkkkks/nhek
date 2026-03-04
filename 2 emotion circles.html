@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Selector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("/IMAGES/Research%20UI%20(8).jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 30px;
+        }
+
+        .title-container {
+            background-color: #ffffff;
+            padding: 20px 50px;
+            border-radius: 50px;
+            margin-bottom: 0px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .title-container h1 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: bold;
+            font-family: 'Righteous', 'Arial Black', sans-serif;
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.2), 6px 6px 0px rgba(255, 20, 147, 0.3);
+            text-transform: uppercase;
+        }
+
+        .rotation-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 60px solid #d63384;
+            cursor: grab;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: filter 0.3s;
+        }
+
+        .rotation-arrow:hover {
+            filter: drop-shadow(0 2px 8px #ff1493);
+        }
+
+        .rotation-arrow::after {
+            content: '';
+            display: none;
+        }
+
+        .emotion-wheel {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+        }
+
+        .emotion {
+            position: absolute;
+            width: 94px;
+            height: 94px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 94px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.05em;
+            color: #fff;
+            font-weight: bold;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+
+        .emotion:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .happy { background-image: url("/Research%20UI%20(14).png"); }
+        .sad { background-image: url("https://images.unsplash.com/photo-1465101046530-73398c7f28ca?fit=crop&w=80&q=80"); }
+        .angry { background-image: url("https://images.unsplash.com/photo-1519125323398-675f0ddb6308?fit=crop&w=80&q=80"); }
+        .scared { background-image: url("https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?fit=crop&w=80&q=80"); }
+        .tired { background-image: url("https://images.unsplash.com/photo-1465101178521-c1a9136a3c8b?fit=crop&w=80&q=80"); }
+        .excited { background-image: url("https://images.unsplash.com/photo-1465101046530-73398c7f28ca?fit=crop&w=80&q=80"); }
+        .guilt { background-image: url("https://images.unsplash.com/photo-1465101178521-c1a9136a3c8b?fit=crop&w=80&q=80"); }
+        .shy { background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=80&q=80"); }
+        .stressed { background-image: url("https://images.unsplash.com/photo-1519125323398-675f0ddb6308?fit=crop&w=80&q=80"); }
+        .disappointed { background-image: url("https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?fit=crop&w=80&q=80"); }
+        .regret { background-image: url("https://images.unsplash.com/photo-1465101046530-73398c7f28ca?fit=crop&w=80&q=80"); }
+        .worried { background-image: url("https://images.unsplash.com/photo-1465101178521-c1a9136a3c8b?fit=crop&w=80&q=80"); }
+        .nervous { background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=80&q=80"); }
+
+        .arrow-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff1493 0%, #d63384 70%, transparent 100%);
+            box-shadow: 0 0 20px #ff1493, 0 0 40px rgba(255, 20, 147, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4);
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px #ff1493, 0 0 40px rgba(255, 20, 147, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px #ff1493, 0 0 60px rgba(255, 20, 147, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        #selected-emotion {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .checkmark {
+            display: none;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: green;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .emotion.visited .checkmark {
+            display: block;
+        }
+
+        #done-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #d63384;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        #done-button:hover {
+            background-color: #b02a6a;
+        }
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 400px;
+        }
+
+        .modal-content h2 {
+            color: #ff1493;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-family: 'Righteous', 'Arial Black', sans-serif;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.wait {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .modal-btn.wait:hover {
+            background-color: #5a6268;
+        }
+
+        .modal-btn.yes {
+            background-color: #d63384;
+            color: white;
+        }
+
+        .modal-btn.yes:hover {
+            background-color: #b02a6a;
+        }
+
+        .icon-btn {
+            position: fixed;
+            top: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #ff1493;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back {
+            left: 20px;
+        }
+
+        .home {
+            right: 20px;
+        }
+
+        body {
+            padding-top: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-header">
+    <button id="back-button" class="nav-button" title="Go Back">?</button>
+    <button id="home-button" class="nav-button" title="Go Home">??</button>
+</div>
+<div class="title-container">
+    <h1>What are you feeling today?</h1>
+</div>
+<div style="text-align: center; margin-bottom: 100px;">
+    <div class="rotation-arrow" id="rotationArrow"></div>
+</div>
+<div class="emotion-wheel" id="emotionWheel">
+    <!-- Arrow in the center -->
+    <div class="arrow-center"></div>
+    <a class="emotion happy" href="1 happy.html">Happy</a>
+    <a class="emotion sad" href="3 Cause of sadness.html">Sad</a>
+    <a class="emotion angry" href="2 anger.html">Angry</a>
+    <a class="emotion scared" href="13 scared.html">Scared</a>
+    <a class="emotion tired" href="12 tired.html">Tired</a>
+    <a class="emotion excited" href="11 excited.html">Excited</a>
+    <a class="emotion guilt" href="10 guilt.html">Guilt</a>
+    <a class="emotion shy" href="9 shy.html">Shy</a>
+    <a class="emotion stressed" href="8 stress.html">Stressed</a>
+    <a class="emotion disappointed" href="7 dissapointment.html">Disappointed</a>
+    <a class="emotion regret" href="6 regret (2).html">Regret</a>
+    <a class="emotion worried" href="4 worried.html">Worried</a>
+    <a class="emotion nervous" href="3 nervous.html">Nervous</a>
+</div>
+<div id="selected-emotion"></div>
+<div style="text-align: center; margin-top: 20px; width: 50%; margin-left: auto; margin-right: auto;">
+    <input type="range" id="rotation-slider" min="0" max="360" value="0" style="width: 100%; height: 3px; cursor: pointer;">
+    <div id="rotation-percentage" style="margin-top: 8px; font-size: 0.95em; color: #ff1493; font-weight: bold;">
+        Select an emotion
+    </div>
+</div>
+<button id="done-button" style="margin-top: 15px; padding: 10px 30px; background-color: #d63384; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold;" disabled>Continue</button>
+<!-- Modal Popup -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h2>Are you sure about your feelings today?</h2>
+        <div class="modal-buttons">
+            <button class="modal-btn wait" id="waitBtn">Wait</button>
+            <button class="modal-btn yes" id="yesBtn">Yes</button>
+        </div>
+    </div>
+</div>
+<script>
+    let currentRotation = 0;
+    const arrow = document.getElementById('rotationArrow');
+    const wheel = document.getElementById('emotionWheel');
+    const emotions = document.querySelectorAll('.emotion');
+    const radius = 206;
+    const centerX = wheel.offsetWidth / 2;
+    const centerY = wheel.offsetHeight / 2;
+    const total = emotions.length;
+    let selectedEmotion = null;
+    let hasUserDragged = false;
+
+    // Arrow drag rotation
+    let isDragging = false;
+    let lastY = 0;
+
+    // Slider control
+    const slider = document.getElementById('rotation-slider');
+    const continueBtn = document.getElementById('done-button');
+    
+    slider.addEventListener('input', (e) => {
+        currentRotation = -parseInt(e.target.value);
+        
+        // Rotate only the wheel, keep arrow steady
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
+        
+        // Update emotion positions and highlighting
+        updateEmotionPositions();
+        
+        // Check if an emotion is aligned with arrow - find the closest one to top
+        let alignedEmotion = null;
+        let closestDistance = Infinity;
+        
+        emotions.forEach((emotion, i) => {
+            const angle = (2 * Math.PI * i) / total;
+            const normalizedAngle = ((angle * 180 / Math.PI) - (currentRotation % 360) + 360) % 360;
+            
+            // Calculate distance to perfect alignment (0 degrees at top)
+            let distance = Math.min(normalizedAngle, 360 - normalizedAngle);
+            
+            // Only consider emotions within 8 degrees
+            if (distance < 8) {
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    alignedEmotion = emotion;
+                }
+            }
+        });
+        
+        // Display emotion name or default message
+        if (alignedEmotion) {
+            const emotionName = alignedEmotion.textContent.trim();
+            document.getElementById('rotation-percentage').textContent = emotionName;
+        } else {
+            document.getElementById('rotation-percentage').textContent = 'Select an emotion';
+        }
+        
+        // Enable/disable Continue button based on alignment
+        if (alignedEmotion) {
+            selectedEmotion = alignedEmotion;
+            continueBtn.disabled = false;
+            continueBtn.style.opacity = '1';
+            continueBtn.style.cursor = 'pointer';
+        } else {
+            selectedEmotion = null;
+            continueBtn.disabled = true;
+            continueBtn.style.opacity = '0.5';
+            continueBtn.style.cursor = 'not-allowed';
+        }
+    });
+
+    // Continue button functionality
+    continueBtn.addEventListener('click', () => {
+        if (selectedEmotion) {
+            document.getElementById('confirmModal').classList.add('show');
+        }
+    });
+
+    // Position emotions in circle
+    function updateEmotionPositions() {
+        let closestDistance = Infinity;
+        let closestEmotion = null;
+        
+        emotions.forEach((emotion, i) => {
+            const angle = (2 * Math.PI * i) / total;
+            const x = centerX + radius * Math.cos(angle) - emotion.offsetWidth / 2;
+            const y = centerY + radius * Math.sin(angle) - emotion.offsetHeight / 2;
+            emotion.style.left = `${x}px`;
+            emotion.style.top = `${y}px`;
+
+            // Check if emotion is aligned with arrow (at top) - find closest one
+            const normalizedAngle = ((angle * 180 / Math.PI) - (currentRotation % 360) + 360) % 360;
+            let distance = Math.min(normalizedAngle, 360 - normalizedAngle);
+            
+            if (distance < 8) {
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestEmotion = emotion;
+                }
+            }
+        });
+        
+        // Highlight only the closest aligned emotion
+        emotions.forEach((emotion) => {
+            if (emotion === closestEmotion) {
+                emotion.style.transform = 'scale(1.15)';
+                emotion.style.zIndex = '10';
+            } else {
+                emotion.style.transform = 'scale(1)';
+                emotion.style.zIndex = '1';
+            }
+        });
+    }
+
+    // Initial positioning
+    updateEmotionPositions();
+
+    // Check if emotion has been visited
+    emotions.forEach((emotion, i) => {
+        const emotionName = emotion.textContent.trim();
+        if (localStorage.getItem(`visited_${emotionName}`)) {
+            emotion.classList.add('visited');
+        }
+    });
+
+    let lastAlignedEmotion = null;
+    let alignmentTimer = 0;
+
+    // Continuously check for aligned emotions (just for visual feedback)
+    setInterval(() => {
+        emotions.forEach((emotion, i) => {
+            const angle = (2 * Math.PI * i) / total;
+            const normalizedAngle = ((angle * 180 / Math.PI) - (currentRotation % 360) + 360) % 360;
+            const isAligned = normalizedAngle < 25 || normalizedAngle > 335;
+            
+            if (isAligned) {
+                emotion.style.transform = 'scale(1.15)';
+                emotion.style.zIndex = '10';
+            } else {
+                emotion.style.transform = 'scale(1)';
+                emotion.style.zIndex = '1';
+            }
+        });
+    }, 100);
+
+    // Reset modal when Wait is clicked
+    document.getElementById('waitBtn').addEventListener('click', () => {
+        document.getElementById('confirmModal').classList.remove('show');
+        selectedEmotion = null;
+    });
+
+    // Yes button - navigate to selected emotion
+    document.getElementById('yesBtn').addEventListener('click', () => {
+        if (selectedEmotion && selectedEmotion.href) {
+            window.location.href = selectedEmotion.href;
+        }
+    });
+
+    function goNext() {
+        // Change to your NEXT FEATURE page
+        window.location.href = "/Program%20Mental%20Health.html";
+    }
+
+    function goHome() {
+        // Change to your HOME page
+        window.location.href = "/Program%20Mental%20Health.html";
+    }
+</script>
+</body>
+</html>
+
+

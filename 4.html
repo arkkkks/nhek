@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View Diary</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #fdd6e4, #f9b0d1);
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    padding: 40px;
+  }
+  .container {
+    background: #fff;
+    border-radius: 25px;
+    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+  h2 {
+    font-family: "Brush Script MT", cursive;
+    color: #4b1b39;
+    font-size: 35px;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  textarea {
+    width: 90%;
+    height: 250px;
+    border: none;
+    border-bottom: 2px solid #f4a5c2;
+    outline: none;
+    font-size: 16px;
+    margin-top: 10px;
+    resize: none;
+    line-height: 1.6;
+    background: transparent;
+  }
+  .button-group {
+    margin-top: 30px;
+  }
+  button {
+    background: #f28ab2;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 35px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    margin: 8px;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #e36d9f;
+  }
+  .delete-btn {
+    background: #e85c5c;
+  }
+  .delete-btn:hover {
+    background: #d94848;
+  }
+  .back-btn {
+    background: #bbb;
+  }
+  .back-btn:hover {
+    background: #999;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="diaryTitle"></h2>
+  <p id="diaryDate"></p>
+  <textarea id="diaryText"></textarea>
+
+  <div class="button-group">
+    <button onclick="saveChanges()">💾 Save Changes</button>
+    <button class="delete-btn" onclick="deleteDiary()">🗑️ Delete</button>
+    <button class="back-btn" onclick="goBack()">⬅️ Back</button>
+  </div>
+</div>
+
+<script>
+  // Load diary data
+  const diaries = JSON.parse(localStorage.getItem("diaryEntries")) || [];
+  const selectedId = localStorage.getItem("selectedDiaryId");
+
+  if (!selectedId) {
+    alert("No diary selected!");
+    window.location.href = "diary-list.html";
+  }
+
+  const diary = diaries.find(d => d.id.toString() === selectedId);
+
+  if (diary) {
+    document.getElementById("diaryTitle").textContent = diary.title;
+    document.getElementById("diaryDate").textContent = `${diary.month} ${diary.year}`;
+    document.getElementById("diaryText").value = diary.text;
+  } else {
+    alert("Diary not found!");
+    window.location.href = "diary-list.html";
+  }
+
+  // Save Changes function
+  function saveChanges() {
+    const updatedText = document.getElementById("diaryText").value;
+    diary.text = updatedText;
+    diary.feeling = updatedText.substring(0, 50) + "...";
+
+    localStorage.setItem("diaryEntries", JSON.stringify(diaries));
+    alert("Diary updated!");
+    window.location.href = "diary-list.html";
+  }
+
+  // Delete function
+  function deleteDiary() {
+    if (confirm("Are you sure you want to delete this diary? This action cannot be undone.")) {
+      const updatedDiaries = diaries.filter(d => d.id.toString() !== selectedId);
+      localStorage.setItem("diaryEntries", JSON.stringify(updatedDiaries));
+      alert("Diary deleted successfully!");
+      window.location.href = "diary-list.html";
+    }
+  }
+
+  // Back function
+  function goBack() {
+    window.location.href = "diary-list.html";
+  }
+</script>
+
+</body>
+</html>
+
+
