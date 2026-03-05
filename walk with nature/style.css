@@ -4,6 +4,395 @@
     box-sizing: border-box;
 }
 
+/* Source-style timer and control behavior */
+.timer {
+    cursor: pointer;
+    flex-direction: column;
+}
+
+.timer-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 130px;
+    height: 130px;
+}
+
+.timer-ring circle {
+    fill: none;
+    stroke-width: 7;
+    stroke-linecap: round;
+}
+
+.timer-ring-bg {
+    stroke: rgba(195, 160, 230, 0.2);
+}
+
+.timer-ring-progress {
+    stroke: #b848d0;
+    stroke-dasharray: 325;
+    stroke-dashoffset: 325;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.timer-display {
+    font-family: "Caveat", cursive;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #6820a0;
+    z-index: 1;
+    line-height: 1;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 7px;
+    margin-top: 5px;
+    z-index: 1;
+}
+
+.timer-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.13s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-btn.pp {
+    background: #b848d0;
+    color: #fff;
+    box-shadow: 0 3px 0 #7820a0;
+}
+
+.timer-btn.rs {
+    background: rgba(195, 160, 230, 0.35);
+    color: #6820a0;
+}
+
+.timer-btn:hover {
+    transform: translateY(-1px);
+}
+
+.timer-add {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: #b848d0;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#startBtn.running {
+    background: linear-gradient(135deg, #ff88a0, #e04868);
+    box-shadow: 0 5px 0 #8a0028, 0 8px 22px rgba(215, 55, 98, 0.32);
+}
+
+.speed-controls {
+    gap: 11px;
+}
+
+.speed-btn {
+    padding: 9px 26px;
+    border-radius: 50px;
+    font-family: "Caveat", cursive;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(9px);
+    border: 1.5px solid rgba(198, 148, 210, 0.42);
+    color: #9052e0;
+    box-shadow: 0 3px 11px rgba(140, 70, 200, 0.14);
+    cursor: pointer;
+    transition: all 0.14s;
+}
+
+.speed-btn:hover {
+    transform: translateY(-2px);
+}
+
+.speed-btn.slow.is-active {
+    background: linear-gradient(135deg, #6eb8fc, #48a8f5);
+    color: #fff;
+    border-color: #48a8f5;
+    box-shadow: 0 4px 0 #2880d0, 0 6px 18px rgba(60, 158, 248, 0.32);
+}
+
+.speed-btn.fast.is-active {
+    background: linear-gradient(135deg, #ff88a0, #e04868);
+    color: #fff;
+    border-color: #e04868;
+    box-shadow: 0 4px 0 #a81838, 0 6px 18px rgba(215, 55, 98, 0.32);
+}
+
+.mbg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(25, 8, 48, 0.42);
+    backdrop-filter: blur(5px);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+}
+
+.mbg.open {
+    display: flex;
+}
+
+.mcard {
+    background: rgba(255, 246, 255, 0.97);
+    border-radius: 28px;
+    padding: 28px 34px;
+    text-align: center;
+    position: relative;
+    min-width: 325px;
+    border: 2px solid rgba(215, 165, 240, 0.52);
+    box-shadow: 0 20px 58px rgba(95, 35, 158, 0.22);
+}
+
+.mcard h2 {
+    font-family: "Caveat", cursive;
+    font-size: 1.8rem;
+    color: #6820a0;
+    margin-bottom: 17px;
+}
+
+.mclose {
+    position: absolute;
+    top: 11px;
+    right: 13px;
+    background: #df4868;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tinputs {
+    display: flex;
+    gap: 11px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 19px;
+}
+
+.tg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.tg label {
+    font-size: 0.7rem;
+    color: #b088c0;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tg input {
+    width: 67px;
+    height: 55px;
+    border: 2px solid #d4aaee;
+    border-radius: 14px;
+    font-family: "Caveat", cursive;
+    font-size: 1.75rem;
+    text-align: center;
+    color: #550090;
+    outline: none;
+    background: rgba(238, 218, 255, 0.38);
+}
+
+.tsep {
+    font-family: "Caveat", cursive;
+    font-size: 2rem;
+    color: #b088c0;
+    margin-top: 13px;
+}
+
+.tsetbtn {
+    background: linear-gradient(135deg, #bf7cfc, #9052e0);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 34px;
+    font-family: "Caveat", cursive;
+    font-size: 1.28rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #5a28a0;
+    transition: all 0.14s;
+}
+
+.tsetbtn:hover {
+    transform: translateY(-2px);
+}
+
+.finish-mbg {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 205, 112, 0.22) 0%, transparent 38%),
+        radial-gradient(circle at 80% 80%, rgba(191, 124, 252, 0.22) 0%, transparent 42%),
+        rgba(18, 8, 35, 0.58);
+}
+
+.finish-card {
+    position: relative;
+    width: min(92vw, 420px);
+    padding: 30px 24px 24px;
+    border-radius: 28px;
+    background: linear-gradient(160deg, rgba(255, 248, 255, 0.98), rgba(245, 238, 255, 0.96));
+    border: 2px solid rgba(214, 175, 244, 0.7);
+    box-shadow: 0 24px 65px rgba(58, 28, 105, 0.35);
+    text-align: center;
+    overflow: hidden;
+    animation: finishPopIn 0.28s ease-out;
+}
+
+.finish-glow {
+    position: absolute;
+    inset: -35% -20% auto -20%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255, 208, 96, 0.35) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.finish-icon {
+    width: 74px;
+    height: 74px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 2rem;
+    background: linear-gradient(135deg, #ffd277, #ff9d58);
+    box-shadow: 0 10px 22px rgba(237, 140, 60, 0.35);
+}
+
+.finish-card h2 {
+    font-family: "Caveat", cursive;
+    font-size: 2rem;
+    color: #5d2b9c;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+.finish-card p {
+    color: #5c4f77;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 18px;
+}
+
+.finish-ok {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 34px;
+    font-family: "Caveat", cursive;
+    font-size: 1.35rem;
+    letter-spacing: 1px;
+    color: #fff;
+    cursor: pointer;
+    background: linear-gradient(135deg, #66d878, #3cbe52);
+    box-shadow: 0 5px 0 #245e2e, 0 10px 20px rgba(53, 182, 76, 0.3);
+    transition: transform 0.14s;
+}
+
+.finish-ok:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes finishPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.86) translateY(14px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .speed-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .speed-btn {
+        width: 100%;
+        padding: 9px 8px;
+        font-size: 1rem;
+    }
+
+    .timer-ring {
+        width: 104px;
+        height: 104px;
+    }
+
+    .timer-controls {
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .timer-add {
+        top: 4px;
+        right: 4px;
+        font-size: 9px;
+    }
+
+    .mcard {
+        min-width: 90vw;
+        padding: 24px 16px;
+    }
+
+    .tinputs {
+        gap: 6px;
+    }
+
+    .tg input {
+        width: 58px;
+        height: 50px;
+        font-size: 1.55rem;
+    }
+
+    .finish-card {
+        padding: 24px 16px 18px;
+        border-radius: 22px;
+    }
+
+    .finish-icon {
+        width: 62px;
+        height: 62px;
+        font-size: 1.7rem;
+    }
+
+    .finish-card h2 {
+        font-size: 1.65rem;
+    }
+
+    .finish-card p {
+        font-size: 0.95rem;
+    }
+}
+
 :root {
     --bg-speed: 12s;
     --bob-speed: 0.65s;
@@ -187,6 +576,8 @@ body {
     --char-filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.25));
     --char-scale-x: 1;
     --char-scale-y: 1;
+    --run-shift: 3px;
+    --run-tilt: 0.8deg;
     position: absolute;
     bottom: 9.6vh;
     left: clamp(54px, 12vw, 200px);
@@ -195,6 +586,10 @@ body {
     filter: var(--char-filter);
     animation: walkBob var(--bob-speed) ease-in-out infinite alternate;
     animation-play-state: paused;
+}
+
+.character.is-fast {
+    --run-tilt: -4deg;
 }
 
 .character.char-traveler {
@@ -559,44 +954,106 @@ body {
     left: 71px;
 }
 
+.walk-title-wrap {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 14;
+    text-align: center;
+}
+
+.walk-title-pill {
+    display: inline-block;
+    padding: 8px 36px;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(14px);
+    border-radius: 50px;
+    border: 1.5px solid rgba(255, 175, 210, 0.6);
+    box-shadow: 0 3px 18px rgba(200, 70, 140, 0.18);
+}
+
+.walk-title-pill h1 {
+    font-family: "Caveat", cursive;
+    font-size: 1.85rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e04888, #9b5de5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.walk-title-sub {
+    font-size: 0.8rem;
+    color: rgba(148, 88, 120, 0.9);
+    font-style: italic;
+    margin-top: 3px;
+}
+
 .timer {
     position: absolute;
-    top: calc(6vh + 8px);
-    right: calc(10vw + clamp(78px, 7vw, 120px) + 24px);
-    z-index: 12;
-    background: rgba(255, 255, 255, 0.9);
-    color: #14422a;
-    padding: 16px 28px;
-    border-radius: 999px;
-    border: 1px solid rgba(19, 67, 32, 0.2);
+    top: 13px;
+    right: 13px;
+    z-index: 15;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(195, 155, 225, 0.42);
+    box-shadow: 0 4px 20px rgba(140, 70, 200, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#time {
+    font-family: "Caveat", cursive;
+    font-size: 1.45rem;
     font-weight: 700;
-    font-size: 36px;
-    min-width: 160px;
-    text-align: center;
+    color: #6820a0;
+    line-height: 1;
+}
+
+.step-badge {
+    position: absolute;
+    left: 16px;
+    bottom: 86px;
+    z-index: 14;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(9px);
+    border-radius: 20px;
+    padding: 6px 15px;
+    border: 1.5px solid rgba(195, 148, 210, 0.35);
+    font-family: "Caveat", cursive;
+    font-size: 1.15rem;
+    color: #8a42d8;
+    box-shadow: 0 3px 10px rgba(140, 70, 200, 0.12);
 }
 
 .controls {
     position: absolute;
     left: 50%;
-    bottom: 26px;
+    bottom: 13px;
     transform: translateX(-50%);
-    width: min(96vw, 760px);
-    z-index: 12;
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 10px;
+    width: min(96vw, 840px);
+    z-index: 14;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 14px;
-    border-radius: 16px;
-    background: rgba(21, 69, 45, 0.74);
-    backdrop-filter: blur(3px);
+    gap: 9px;
 }
 
 .human-picker {
-    grid-column: 1 / -1;
+    width: min(96vw, 760px);
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 8px;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(195, 148, 210, 0.4);
 }
 
 .human-option {
@@ -605,17 +1062,24 @@ body {
     align-items: center;
     gap: 7px;
     padding: 8px 10px !important;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    font-size: 13px !important;
+    background: rgba(255, 255, 255, 0.6);
+    color: #9052e0;
+    border: 1.5px solid rgba(198, 148, 210, 0.42) !important;
+    border-radius: 999px !important;
+    font-family: "Caveat", cursive;
+    font-size: 1rem !important;
     font-weight: 700;
+    transition: all 0.14s;
+}
+
+.human-option:hover {
+    transform: translateY(-2px);
 }
 
 .human-option.is-active {
-    background: rgba(248, 255, 229, 0.98);
-    color: #184224;
-    border-color: rgba(255, 255, 255, 0.95) !important;
+    background: linear-gradient(135deg, #e2b4ff, #bf7cfc);
+    color: #fff;
+    border-color: #bf7cfc !important;
 }
 
 .human-avatar {
@@ -675,46 +1139,67 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(195, 148, 210, 0.35);
 }
 
 .action-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 11px;
 }
 
 .controls input {
-    width: 72px;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    font-size: 16px;
+    width: 67px;
+    height: 55px;
+    border: 2px solid #d4aaee;
+    border-radius: 14px;
+    font-family: "Caveat", cursive;
+    font-size: 1.55rem;
     text-align: center;
+    color: #550090;
+    outline: none;
+    background: rgba(238, 218, 255, 0.38);
+    transition: border-color 0.2s;
 }
 
-.controls button {
-    padding: 10px 18px;
+.controls input:focus {
+    border-color: #9052e0;
+}
+
+.controls button:not(.human-option) {
     border: none;
-    border-radius: 10px;
     cursor: pointer;
-    font-size: 15px;
+    transition: all 0.14s;
+}
+
+#startBtn,
+#continueBtn {
+    padding: 12px 42px;
+    border-radius: 50px;
+    font-family: "Caveat", cursive;
+    font-size: 1.5rem;
     font-weight: 700;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.controls button:hover {
-    transform: translateY(-1px);
-    opacity: 0.92;
-}
-
-#startBtn {
-    background: #5bc84d;
+    letter-spacing: 2px;
     color: #fff;
 }
 
+#startBtn {
+    background: linear-gradient(135deg, #66d878, #3cbe52);
+    box-shadow: 0 5px 0 #245e2e, 0 8px 22px rgba(48, 178, 74, 0.3);
+}
+
 #continueBtn {
-    background: #ffb330;
-    color: #13311f;
+    background: linear-gradient(135deg, #ff88a0, #e04868);
+    box-shadow: 0 5px 0 #8a0028, 0 8px 22px rgba(215, 55, 98, 0.32);
+}
+
+#startBtn:hover,
+#continueBtn:hover {
+    transform: translateY(-2px);
 }
 
 .hidden {
@@ -722,49 +1207,82 @@ body {
 }
 
 .speed-controls {
-    grid-column: 1 / -1;
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 11px;
 }
 
 .speed-controls button {
-    background: #1f90e8;
+    padding: 9px 26px;
+    border-radius: 50px;
+    font-family: "Caveat", cursive;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(9px);
+    border: 1.5px solid rgba(198, 148, 210, 0.42);
+    color: #9052e0;
+    box-shadow: 0 3px 11px rgba(140, 70, 200, 0.14);
+}
+
+.speed-controls button:hover {
+    transform: translateY(-2px);
+}
+
+.speed-controls button.is-active[data-speed="18"] {
+    background: linear-gradient(135deg, #6eb8fc, #48a8f5);
     color: #fff;
+    border-color: #48a8f5;
+    box-shadow: 0 4px 0 #2880d0, 0 6px 18px rgba(60, 158, 248, 0.32);
+}
+
+.speed-controls button.is-active[data-speed="12"] {
+    background: linear-gradient(135deg, #bf7cfc, #9052e0);
+    color: #fff;
+    border-color: #9052e0;
+    box-shadow: 0 4px 0 #5a28a0, 0 6px 18px rgba(144, 82, 224, 0.32);
+}
+
+.speed-controls button.is-active[data-speed="7"] {
+    background: linear-gradient(135deg, #ff88a0, #e04868);
+    color: #fff;
+    border-color: #e04868;
+    box-shadow: 0 4px 0 #a81838, 0 6px 18px rgba(215, 55, 98, 0.32);
 }
 
 .icon-btn {
     position: fixed;
-    top: 18px;
-    width: 46px;
-    height: 46px;
+    top: 13px;
+    width: 48px;
+    height: 48px;
     padding: 0;
-    border: 0;
+    border: 1.5px solid rgba(200, 148, 178, 0.48);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.92);
-    color: #11421f;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(10px);
+    color: #c04878;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 20px;
     line-height: 1;
     cursor: pointer;
-    z-index: 13;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 16;
+    box-shadow: 0 3px 12px rgba(200, 70, 138, 0.2);
+    transition: all 0.14s;
 }
 
 .back {
-    left: 20px;
+    left: 13px;
 }
 
 .home {
-    right: 20px;
+    right: 150px;
 }
 
 .icon-btn:hover {
-    background-color: #c5f6be;
-    transform: scale(1.04);
+    transform: scale(1.08);
 }
 
 .sr-only {
@@ -940,10 +1458,10 @@ body {
 
 @keyframes walkBob {
     from {
-        transform: translateY(-2px) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
+        transform: translateX(calc(var(--run-shift) * -0.35)) translateY(-2px) rotate(calc(var(--run-tilt) * -0.2)) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
     }
     to {
-        transform: translateY(4px) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
+        transform: translateX(var(--run-shift)) translateY(4px) rotate(var(--run-tilt)) scaleX(var(--char-scale-x)) scaleY(var(--char-scale-y));
     }
 }
 
@@ -957,18 +1475,38 @@ body {
 }
 
 @media (max-width: 768px) {
+    .walk-title-pill {
+        padding: 7px 20px;
+    }
+
+    .walk-title-pill h1 {
+        font-size: 1.5rem;
+    }
+
+    .walk-title-sub {
+        font-size: 0.72rem;
+    }
+
     .timer {
-        font-size: 28px;
-        min-width: 130px;
-        padding: 12px 18px;
-        top: 72px;
-        right: auto;
-        left: 14px;
+        width: 104px;
+        height: 104px;
+        top: 12px;
+        right: 10px;
+    }
+
+    #time {
+        font-size: 1.15rem;
+    }
+
+    .step-badge {
+        bottom: 170px;
+        left: 10px;
+        font-size: 0.95rem;
     }
 
     .controls {
         width: min(96vw, 370px);
-        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
     .human-picker {
@@ -979,16 +1517,27 @@ body {
         width: 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 8px;
     }
 
     .controls input {
         width: 100%;
+        height: 49px;
+        font-size: 1.35rem;
     }
 
     .action-buttons {
         width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
+    }
+
+    #startBtn,
+    #continueBtn {
+        width: 100%;
+        padding: 10px 8px;
+        font-size: 1.2rem;
     }
 
     .creator-layout {
@@ -1003,15 +1552,22 @@ body {
         width: 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
     }
 
     .speed-controls button {
         width: 100%;
+        padding: 9px 8px;
+        font-size: 1rem;
     }
 
     .character {
         left: 8vw;
         bottom: 11vh;
+    }
+
+    .home {
+        right: 118px;
     }
 
     .trail {
