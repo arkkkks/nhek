@@ -1,419 +1,329 @@
-const startBtn = document.getElementById("startBtn");
-const continueBtn = document.getElementById("continueBtn");
 const scene = document.getElementById("scene");
-const timeDisplay = document.getElementById("time");
-
+const startBtn = document.getElementById("startBtn");
+const stepDisplay = document.getElementById("stepDisplay");
+const speedButtons = document.querySelectorAll(".speed-btn");
 const characterImage = document.getElementById("character");
-const customCharacter = document.getElementById("customCharacter");
-const walkFigure = document.getElementById("walkFigure");
 
-const hoursInput = document.getElementById("hours");
-const minutesInput = document.getElementById("minutes");
-const secondsInput = document.getElementById("seconds");
-const speedButtons = document.querySelectorAll(".speed-controls button");
+const timerWrap = document.getElementById("wtimer");
+const timerDisplay = document.getElementById("tdisp");
+const timerProgress = document.getElementById("tpg");
+const timerPlayPauseBtn = document.getElementById("tpp");
+const timerResetBtn = document.getElementById("trs");
+const timerAddMinBtn = document.getElementById("addMinBtn");
 
-const presetOptions = document.querySelectorAll(".human-option[data-character]");
-const openCreatorBtn = document.getElementById("openCreatorBtn");
-const creatorModal = document.getElementById("creatorModal");
-const creatorFigure = document.getElementById("creatorFigure");
-const closeCreatorBtn = document.getElementById("closeCreatorBtn");
-const clearObjectsBtn = document.getElementById("clearObjectsBtn");
-const useCreatorBtn = document.getElementById("useCreatorBtn");
+const timerModal = document.getElementById("timerM");
+const timerCloseBtn = document.getElementById("closeTMBtn");
+const timerSetBtn = document.getElementById("setTValBtn");
+const timerHoursInput = document.getElementById("inH");
+const timerMinutesInput = document.getElementById("inM");
+const timerSecondsInput = document.getElementById("inS");
+const finishModal = document.getElementById("finishM");
+const finishMessage = document.getElementById("finishMsg");
+const finishOkBtn = document.getElementById("finishOkBtn");
 
-const creatorGender = document.getElementById("creatorGender");
-const creatorTop = document.getElementById("creatorTop");
-const creatorBottom = document.getElementById("creatorBottom");
-const creatorHat = document.getElementById("creatorHat");
-const creatorShoes = document.getElementById("creatorShoes");
-const creatorAccessory = document.getElementById("creatorAccessory");
-const creatorSkinColor = document.getElementById("creatorSkinColor");
-const creatorHairColor = document.getElementById("creatorHairColor");
-const creatorTopColor = document.getElementById("creatorTopColor");
-const creatorBottomColor = document.getElementById("creatorBottomColor");
-const creatorHatColor = document.getElementById("creatorHatColor");
-const creatorShoeColor = document.getElementById("creatorShoeColor");
-
-const OBJECT_PARTS = ["wig", "top", "bottom", "dress", "hat", "shoes", "accessory"];
-const creatorObjectInputs = {
-    wig: document.getElementById("creatorObjectWig"),
-    top: document.getElementById("creatorObjectTop"),
-    bottom: document.getElementById("creatorObjectBottom"),
-    dress: document.getElementById("creatorObjectDress"),
-    hat: document.getElementById("creatorObjectHat"),
-    shoes: document.getElementById("creatorObjectShoes"),
-    accessory: document.getElementById("creatorObjectAccessory")
+const SPEED = {
+    slow: { rate: 0.9, stepMs: 670, runShift: "3px" },
+    fast: { rate: 2.2, stepMs: 170, runShift: "20px" }
 };
 
-const creatorFields = [
-    creatorGender,
-    creatorTop,
-    creatorBottom,
-    creatorHat,
-    creatorShoes,
-    creatorAccessory,
-    creatorSkinColor,
-    creatorHairColor,
-    creatorTopColor,
-    creatorBottomColor,
-    creatorHatColor,
-    creatorShoeColor
-];
+let running = false;
+let speedMode = "slow";
+let steps = 0;
+let stepInterval = null;
 
-let countdown = null;
-let isRunning = false;
-let remainingSeconds = 0;
-let creatorObjectMap = {
-    wig: "",
-    top: "",
-    bottom: "",
-    dress: "",
-    hat: "",
-    shoes: "",
-    accessory: ""
-};
-let appliedObjectMap = { ...creatorObjectMap };
+let timerTotal = 150;
+let timerLeft = 150;
+let timerInterval = null;
+let timerOn = false;
+let finishAlarmLock = false;
 
-const CHARACTER_CONFIG = {
-    traveler: { src: "walk-walking.gif", className: "char-traveler" },
-    sport: { src: "walk-walking.gif", className: "char-sport" },
-    sunset: { src: "walk-walking.gif", className: "char-sunset" },
-    classic: { src: "walk-walking.gif", className: "char-classic" }
-};
-
-const DEFAULT_CUSTOM_CONFIG = {
-    gender: "boy",
-    top: "hoodie",
-    bottom: "pants",
-    hat: "cap",
-    shoes: "sneakers",
-    accessory: "none",
-    skinColor: "#f2be93",
-    hairColor: "#352319",
-    topColor: "#4b8f4b",
-    bottomColor: "#55463e",
-    hatColor: "#7b3f00",
-    shoeColor: "#f5d64f"
-};
-
-function formatTime(totalSeconds) {
-    const safeSeconds = Math.max(0, totalSeconds);
-    const hrs = Math.floor(safeSeconds / 3600);
-    const mins = Math.floor((safeSeconds % 3600) / 60);
-    const secs = safeSeconds % 60;
-    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+function updateStepDisplay() {
+    stepDisplay.textContent = `\uD83D\uDC63 ${steps.toLocaleString()} steps`;
 }
 
-function startWalking() {
-    isRunning = true;
+function updateSpeedButtons() {
+    speedButtons.forEach((button) => {
+        const isActive = button.getAttribute("data-speed") === speedMode;
+        button.classList.toggle("is-active", isActive);
+    });
+}
+
+function startStepCounter() {
+    clearInterval(stepInterval);
+    stepInterval = setInterval(() => {
+        steps += 1;
+        updateStepDisplay();
+    }, SPEED[speedMode].stepMs);
+}
+
+function stopStepCounter() {
+    clearInterval(stepInterval);
+    stepInterval = null;
+}
+
+function syncScenePlaybackRate() {
+    const rate = SPEED[speedMode].rate;
+    const animations = scene.getAnimations({ subtree: true });
+    animations.forEach((animation) => {
+        if (animation.playState !== "finished") {
+            animation.playbackRate = rate;
+        }
+    });
+}
+
+function applySpeed(mode) {
+    if (!SPEED[mode]) {
+        return;
+    }
+
+    const wasRunning = running;
+    speedMode = mode;
+    scene.style.setProperty("--run-shift", SPEED[mode].runShift);
+    updateSpeedButtons();
+    scene.classList.toggle("fast-mode", mode === "fast");
+    characterImage.classList.toggle("is-fast", mode === "fast");
+
+    if (wasRunning) {
+        // Keep the run active while only changing speed.
+        running = true;
+        scene.classList.add("is-walking");
+        startBtn.innerHTML = "&#9646;&#9646; PAUSE";
+        startBtn.classList.add("running");
+        startStepCounter();
+        syncScenePlaybackRate();
+    }
+}
+
+function startRun() {
+    if (running) {
+        return;
+    }
+    if (timerTotal <= 0) {
+        alert("Set timer first.");
+        return;
+    }
+    if (timerLeft <= 0) {
+        timerLeft = timerTotal;
+        updateTimerDisplay();
+    }
+
+    running = true;
     scene.classList.add("is-walking");
     scene.classList.remove("character-paused");
+    characterImage.classList.toggle("is-fast", speedMode === "fast");
+    startBtn.innerHTML = "&#9646;&#9646; PAUSE";
+    startBtn.classList.add("running");
+    startStepCounter();
+    if (!timerOn) {
+        startTimer();
+    }
+    requestAnimationFrame(syncScenePlaybackRate);
 }
 
-function stopWalking() {
-    isRunning = false;
+function stopRun(options = {}) {
+    const { pauseTimerToo = true, keepFastMode = false } = options;
+
+    running = false;
     scene.classList.remove("is-walking");
     scene.classList.remove("character-paused");
+    startBtn.innerHTML = "&#9654; START";
+    startBtn.classList.remove("running");
+    characterImage.classList.remove("is-fast");
+    if (!keepFastMode) {
+        scene.classList.remove("fast-mode");
+    }
+    if (pauseTimerToo) {
+        pauseTimer();
+    }
+    stopStepCounter();
 }
 
-function runCountdown() {
-    clearInterval(countdown);
-    countdown = setInterval(() => {
-        remainingSeconds -= 1;
-        timeDisplay.textContent = formatTime(remainingSeconds);
+function toggleRun() {
+    if (running) {
+        stopRun();
+    } else {
+        startRun();
+    }
+}
 
-        if (remainingSeconds <= 0) {
-            clearInterval(countdown);
-            stopWalking();
-            continueBtn.classList.add("hidden");
-            alert("Time is up.");
+function updateTimerDisplay() {
+    const hours = Math.floor(timerLeft / 3600);
+    const minutes = Math.floor((timerLeft % 3600) / 60);
+    const seconds = timerLeft % 60;
+
+    if (hours > 0) {
+        timerDisplay.textContent = `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    } else {
+        timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    const ratio = timerTotal > 0 ? timerLeft / timerTotal : 0;
+    timerProgress.style.strokeDashoffset = `${325 * (1 - ratio)}`;
+}
+
+function triggerFinishAlarm(message) {
+    if (finishAlarmLock) {
+        return;
+    }
+    finishAlarmLock = true;
+
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+            const audioCtx = new AudioCtx();
+            const ringPattern = [
+                { freq: 880, duration: 0.52 },
+                { freq: 760, duration: 0.52 },
+                { freq: 980, duration: 0.72 }
+            ];
+            let t = audioCtx.currentTime;
+
+            ringPattern.forEach((tone) => {
+                const oscillator = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(tone.freq, t);
+
+                gain.gain.setValueAtTime(0.0001, t);
+                gain.gain.linearRampToValueAtTime(0.085, t + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + tone.duration);
+
+                oscillator.connect(gain);
+                gain.connect(audioCtx.destination);
+                oscillator.start(t);
+                oscillator.stop(t + tone.duration);
+                t += tone.duration + 0.09;
+            });
+
+            setTimeout(() => {
+                audioCtx.close().catch(() => {});
+            }, Math.max(0, (t - audioCtx.currentTime + 0.25) * 1000));
+        }
+    } catch (error) {
+        // Ignore audio errors and still alert.
+    }
+
+    if (navigator.vibrate) {
+        navigator.vibrate([280, 120, 280, 120, 280]);
+    }
+    finishMessage.textContent = message;
+    finishModal.classList.add("open");
+}
+
+function closeFinishModal() {
+    finishModal.classList.remove("open");
+    finishAlarmLock = false;
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerOn = false;
+    timerPlayPauseBtn.innerHTML = "&#9654;";
+}
+
+function startTimer() {
+    if (timerLeft <= 0) {
+        return;
+    }
+
+    timerOn = true;
+    timerPlayPauseBtn.innerHTML = "&#9646;&#9646;";
+    timerInterval = setInterval(() => {
+        timerLeft -= 1;
+        updateTimerDisplay();
+        if (timerLeft <= 0) {
+            pauseTimer();
+            stopRun({ pauseTimerToo: false, keepFastMode: false });
+            triggerFinishAlarm("Your set time is finished!");
         }
     }, 1000);
 }
 
-function pauseSession() {
-    if (!isRunning) {
+function toggleTimer() {
+    if (timerOn) {
+        pauseTimer();
         return;
     }
-
-    clearInterval(countdown);
-    isRunning = false;
-    scene.classList.remove("is-walking");
-    scene.classList.add("character-paused");
-    continueBtn.classList.remove("hidden");
+    startTimer();
 }
 
-function toSafeNumber(value) {
-    const num = Number(value);
-    if (!Number.isFinite(num) || num < 0) {
-        return 0;
-    }
-    return Math.floor(num);
+function resetTimer() {
+    pauseTimer();
+    timerLeft = timerTotal;
+    updateTimerDisplay();
 }
 
-function readTotalSeconds() {
-    const hours = toSafeNumber(hoursInput.value);
-    const minutes = toSafeNumber(minutesInput.value);
-    const seconds = toSafeNumber(secondsInput.value);
-    const total = (hours * 3600) + (minutes * 60) + seconds;
-    if (total <= 0) {
-        return 180;
-    }
-    return total;
+function addMin() {
+    timerTotal += 60;
+    timerLeft += 60;
+    updateTimerDisplay();
 }
 
-function markPresetSelection(selectedKey) {
-    presetOptions.forEach((option) => {
-        const selected = option.getAttribute("data-character") === selectedKey;
-        option.classList.toggle("is-active", selected);
-        option.setAttribute("aria-pressed", selected ? "true" : "false");
-    });
-    openCreatorBtn.classList.remove("is-active");
-    openCreatorBtn.setAttribute("aria-pressed", "false");
+function openTM() {
+    timerModal.classList.add("open");
 }
 
-function activateCustomSelection() {
-    presetOptions.forEach((option) => {
-        option.classList.remove("is-active");
-        option.setAttribute("aria-pressed", "false");
-    });
-    openCreatorBtn.classList.add("is-active");
-    openCreatorBtn.setAttribute("aria-pressed", "true");
+function closeTM() {
+    timerModal.classList.remove("open");
 }
 
-function showPresetCharacter() {
-    characterImage.classList.remove("hidden");
-    customCharacter.classList.add("hidden");
-    customCharacter.setAttribute("aria-hidden", "true");
-    characterImage.setAttribute("aria-hidden", "false");
+function setTVal() {
+    const h = parseInt(timerHoursInput.value, 10) || 0;
+    const m = parseInt(timerMinutesInput.value, 10) || 0;
+    const s = parseInt(timerSecondsInput.value, 10) || 0;
+
+    timerTotal = Math.max(0, (h * 3600) + (m * 60) + s);
+    timerLeft = timerTotal;
+    pauseTimer();
+    updateTimerDisplay();
+    closeTM();
 }
 
-function showCustomCharacter() {
-    characterImage.classList.add("hidden");
-    customCharacter.classList.remove("hidden");
-    characterImage.setAttribute("aria-hidden", "true");
-    customCharacter.setAttribute("aria-hidden", "false");
-}
-
-function selectPresetCharacter(characterKey) {
-    const config = CHARACTER_CONFIG[characterKey];
-    if (!config) {
-        return;
-    }
-
-    characterImage.src = config.src;
-    characterImage.classList.remove(
-        "char-traveler",
-        "char-sport",
-        "char-sunset",
-        "char-classic"
-    );
-    characterImage.classList.add(config.className);
-    showPresetCharacter();
-    markPresetSelection(characterKey);
-}
-
-function applyConfigToFigure(figure, config) {
-    figure.setAttribute("data-gender", config.gender);
-    figure.setAttribute("data-top", config.top);
-    figure.setAttribute("data-bottom", config.bottom);
-    figure.setAttribute("data-hat", config.hat);
-    figure.setAttribute("data-shoes", config.shoes);
-    figure.setAttribute("data-accessory", config.accessory);
-
-    figure.style.setProperty("--skin-color", config.skinColor);
-    figure.style.setProperty("--hair-color", config.hairColor);
-    figure.style.setProperty("--top-color", config.topColor);
-    figure.style.setProperty("--bottom-color", config.bottomColor);
-    figure.style.setProperty("--hat-color", config.hatColor);
-    figure.style.setProperty("--shoe-color", config.shoeColor);
-}
-
-function setObjectImage(figure, part, src) {
-    const hasImage = Boolean(src);
-    figure.classList.toggle(`use-object-${part}`, hasImage);
-
-    if (part === "shoes") {
-        const left = figure.querySelector(".object-shoes-left");
-        const right = figure.querySelector(".object-shoes-right");
-        [left, right].forEach((img) => {
-            if (!img) {
-                return;
-            }
-            img.src = hasImage ? src : "";
-            img.classList.toggle("is-visible", hasImage);
-        });
-        return;
-    }
-
-    const img = figure.querySelector(`.object-${part}`);
-    if (!img) {
-        return;
-    }
-    img.src = hasImage ? src : "";
-    img.classList.toggle("is-visible", hasImage);
-}
-
-function applyObjectMapToFigure(figure, objectMap) {
-    OBJECT_PARTS.forEach((part) => {
-        setObjectImage(figure, part, objectMap[part] || "");
-    });
-}
-
-function readCreatorConfig() {
-    return {
-        gender: creatorGender.value,
-        top: creatorTop.value,
-        bottom: creatorBottom.value,
-        hat: creatorHat.value,
-        shoes: creatorShoes.value,
-        accessory: creatorAccessory.value,
-        skinColor: creatorSkinColor.value,
-        hairColor: creatorHairColor.value,
-        topColor: creatorTopColor.value,
-        bottomColor: creatorBottomColor.value,
-        hatColor: creatorHatColor.value,
-        shoeColor: creatorShoeColor.value
-    };
-}
-
-function syncCreatorPreview() {
-    applyConfigToFigure(creatorFigure, readCreatorConfig());
-    applyObjectMapToFigure(creatorFigure, creatorObjectMap);
-}
-
-function setCreatorControls(config) {
-    creatorGender.value = config.gender;
-    creatorTop.value = config.top;
-    creatorBottom.value = config.bottom;
-    creatorHat.value = config.hat;
-    creatorShoes.value = config.shoes;
-    creatorAccessory.value = config.accessory;
-    creatorSkinColor.value = config.skinColor;
-    creatorHairColor.value = config.hairColor;
-    creatorTopColor.value = config.topColor;
-    creatorBottomColor.value = config.bottomColor;
-    creatorHatColor.value = config.hatColor;
-    creatorShoeColor.value = config.shoeColor;
-    syncCreatorPreview();
-}
-
-function openCreatorModal() {
-    syncCreatorPreview();
-    creatorModal.classList.remove("hidden");
-}
-
-function closeCreatorModal() {
-    creatorModal.classList.add("hidden");
-}
-
-function clearCreatorObjects() {
-    creatorObjectMap = {
-        wig: "",
-        top: "",
-        bottom: "",
-        dress: "",
-        hat: "",
-        shoes: "",
-        accessory: ""
-    };
-    Object.values(creatorObjectInputs).forEach((input) => {
-        input.value = "";
-    });
-    syncCreatorPreview();
-}
-
-startBtn.addEventListener("click", () => {
-    clearInterval(countdown);
-
-    remainingSeconds = readTotalSeconds();
-    timeDisplay.textContent = formatTime(remainingSeconds);
-    continueBtn.classList.add("hidden");
-    startWalking();
-    runCountdown();
-});
-
-continueBtn.addEventListener("click", () => {
-    if (remainingSeconds <= 0 || isRunning) {
-        return;
-    }
-
-    continueBtn.classList.add("hidden");
-    startWalking();
-    runCountdown();
-});
+startBtn.addEventListener("click", toggleRun);
 
 speedButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        const speed = Number(button.getAttribute("data-speed"));
-        if (!Number.isFinite(speed) || speed <= 0) {
-            return;
-        }
-
-        scene.style.setProperty("--bg-speed", `${speed}s`);
-        const bob = Math.max(0.35, speed / 20);
-        scene.style.setProperty("--bob-speed", `${bob.toFixed(2)}s`);
-
-        if (speed === 12 && isRunning) {
-            pauseSession();
-            return;
-        }
-
-        if (isRunning) {
-            scene.classList.remove("character-paused");
-        }
+    button.addEventListener("click", (event) => {
+        event.preventDefault();
+        applySpeed(button.getAttribute("data-speed"));
     });
 });
 
-presetOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-        selectPresetCharacter(option.getAttribute("data-character"));
-    });
+timerWrap.addEventListener("click", () => {
+    openTM();
 });
 
-openCreatorBtn.addEventListener("click", () => {
-    openCreatorModal();
+timerPlayPauseBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleTimer();
 });
 
-closeCreatorBtn.addEventListener("click", () => {
-    closeCreatorModal();
+timerResetBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    resetTimer();
 });
 
-clearObjectsBtn.addEventListener("click", () => {
-    clearCreatorObjects();
+timerAddMinBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    addMin();
 });
 
-useCreatorBtn.addEventListener("click", () => {
-    const customConfig = readCreatorConfig();
-    applyConfigToFigure(walkFigure, customConfig);
-    appliedObjectMap = { ...creatorObjectMap };
-    applyObjectMapToFigure(walkFigure, appliedObjectMap);
-    showCustomCharacter();
-    activateCustomSelection();
-    closeCreatorModal();
-});
+timerCloseBtn.addEventListener("click", closeTM);
+timerSetBtn.addEventListener("click", setTVal);
 
-creatorModal.addEventListener("click", (event) => {
-    if (event.target === creatorModal) {
-        closeCreatorModal();
+timerModal.addEventListener("click", (event) => {
+    if (event.target === timerModal) {
+        closeTM();
     }
 });
 
-creatorFields.forEach((field) => {
-    field.addEventListener("input", syncCreatorPreview);
-    field.addEventListener("change", syncCreatorPreview);
+finishOkBtn.addEventListener("click", closeFinishModal);
+finishModal.addEventListener("click", (event) => {
+    if (event.target === finishModal) {
+        closeFinishModal();
+    }
 });
 
-OBJECT_PARTS.forEach((part) => {
-    const input = creatorObjectInputs[part];
-    input.addEventListener("change", () => {
-        const file = input.files && input.files[0];
-        creatorObjectMap[part] = file ? URL.createObjectURL(file) : "";
-        syncCreatorPreview();
-    });
-});
-
-setCreatorControls(DEFAULT_CUSTOM_CONFIG);
-applyConfigToFigure(walkFigure, DEFAULT_CUSTOM_CONFIG);
-applyObjectMapToFigure(creatorFigure, creatorObjectMap);
-applyObjectMapToFigure(walkFigure, appliedObjectMap);
-selectPresetCharacter("traveler");
+applySpeed("slow");
+updateStepDisplay();
+updateTimerDisplay();
