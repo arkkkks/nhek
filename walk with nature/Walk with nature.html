@@ -4,18 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Walk with Nature</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        #home-page {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #ffd6e8 0%, #ffe8f4 20%, #c8e4ff 50%, #a8d8b0 76%, #72b85e 100%);
+            overflow: hidden;
+            font-family: "Nunito", sans-serif;
+        }
+
+        .hclouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 55%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .hcl {
+            position: absolute;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            animation: cloudMove linear infinite;
+        }
+
+        @keyframes cloudMove {
+            0% {
+                left: -350px;
+            }
+
+            100% {
+                left: 110%;
+            }
+        }
+
+        .home-sun {
+            position: absolute;
+            top: 8%;
+            right: 12%;
+            width: 78px;
+            height: 78px;
+            background: radial-gradient(circle, #ffe55a 30%, #ffcc30 60%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 50px 22px rgba(255, 215, 60, 0.45);
+            animation: homeSunGlow 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes homeSunGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 50px 22px rgba(255, 215, 60, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 70px 32px rgba(255, 215, 60, 0.65);
+            }
+        }
+
+        .home-hills {
+            position: absolute;
+            bottom: 28%;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+        }
+
+        .home-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 31%;
+            background: linear-gradient(180deg, #72b85e 0%, #57a045 45%, #3a7830 100%);
+        }
+
+        .home-edge {
+            position: absolute;
+            bottom: 29%;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: #72b85e;
+            border-radius: 60% 60% 0 0 / 18px 18px 0 0;
+        }
+
+        .home-card {
+            z-index: 10;
+            text-align: center;
+            padding: 16px 52px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1.5px solid rgba(255, 180, 210, 0.6);
+            box-shadow: 0 4px 28px rgba(210, 90, 150, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .home-card h1 {
+            font-family: "Caveat", cursive;
+            font-size: 3.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e05888, #9b5de5, #00b0d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .home-sub {
+            z-index: 10;
+            color: #9b6888;
+            font-size: 1rem;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .home-btn {
+            z-index: 10;
+            padding: 14px 52px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff80b0, #e03898);
+            border: none;
+            color: white;
+            font-family: "Caveat", cursive;
+            font-size: 1.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 0 #aa1860, 0 8px 24px rgba(200, 40, 110, 0.35);
+            transition: all 0.14s;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #aa1860;
+        }
+
+        .home-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #aa1860;
+        }
+
+        .home-trees {
+            position: absolute;
+            bottom: 28%;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 8px;
+            pointer-events: none;
+            z-index: 5;
+        }
+    </style>
 </head>
 <body>
-<button class="icon-btn back" onclick="goBack()" aria-label="Go back" title="Back">&#8592;</button>
-<button class="icon-btn home" onclick="goHome()" aria-label="Go home" title="Home">&#8962;</button>
+<div id="home-page">
+    <div class="hclouds" id="hclouds"></div>
+    <div class="home-sun"></div>
+    <div class="home-hills">
+        <svg width="100%" height="155" viewBox="0 0 1440 155" preserveAspectRatio="none">
+            <ellipse cx="200" cy="155" rx="285" ry="130" fill="#c2ddb0" opacity="0.65" />
+            <ellipse cx="530" cy="155" rx="325" ry="140" fill="#b0d0a0" opacity="0.72" />
+            <ellipse cx="870" cy="155" rx="305" ry="128" fill="#c2ddb0" opacity="0.65" />
+            <ellipse cx="1165" cy="155" rx="355" ry="137" fill="#b0d0a0" opacity="0.72" />
+            <ellipse cx="1405" cy="155" rx="280" ry="124" fill="#c2ddb0" opacity="0.65" />
+        </svg>
+    </div>
+    <div class="home-card"><h1>&#127807; Walk with Nature</h1></div>
+    <div class="home-sub">Any time you feel the pain... take a run &#128149;</div>
+    <button class="home-btn" onclick="goToWalk()">&#127939; START</button>
+    <div class="home-edge"></div>
+    <div class="home-ground"></div>
+    <div class="home-trees" id="hometrees"></div>
+</div>
 
-<div class="scene" id="scene">
+<button class="icon-btn back" id="walkBackBtn" style="display:none;" onclick="goBack()" aria-label="Go back" title="Back">&#8592;</button>
+<button class="icon-btn home" id="walkHomeBtn" style="display:none;" onclick="goHome()" aria-label="Go home" title="Home">&#8962;</button>
+
+<div class="scene" id="scene" style="display:none;">
     <div class="nature-layer sky">
         <div class="sun"></div>
         <div class="cloud cloud-1"></div>
         <div class="cloud cloud-2"></div>
         <div class="cloud cloud-3"></div>
+    </div>
+    <div class="walk-title-wrap">
+        <div class="walk-title-pill">
+            <h1>&#127807; Walk with Nature</h1>
+        </div>
+        <div class="walk-title-sub">Any time you feel the pain... &#128149;</div>
     </div>
     <div class="nature-layer mountains"></div>
     <div class="nature-layer trees trees-far"></div>
@@ -23,173 +210,129 @@
     <div class="trail"></div>
 
     <img src="walk-walking.gif" id="character" class="character char-traveler" alt="Walking character">
-    <div id="customCharacter" class="character custom-character hidden" aria-hidden="true">
-        <div class="human-figure" id="walkFigure">
-            <div class="human-head"></div>
-            <div class="human-hair"></div>
-            <div class="human-hat"></div>
-            <div class="human-body"></div>
-            <div class="human-dress"></div>
-            <div class="human-arm arm-left"></div>
-            <div class="human-arm arm-right"></div>
-            <div class="human-leg leg-left"></div>
-            <div class="human-leg leg-right"></div>
-            <div class="human-shoe shoe-left"></div>
-            <div class="human-shoe shoe-right"></div>
-            <div class="human-accessory"></div>
-            <img class="part-object object-wig" alt="Wig object">
-            <img class="part-object object-top" alt="Top object">
-            <img class="part-object object-bottom" alt="Bottom object">
-            <img class="part-object object-dress" alt="Dress object">
-            <img class="part-object object-hat" alt="Hat object">
-            <img class="part-object object-shoes-left" alt="Left shoe object">
-            <img class="part-object object-shoes-right" alt="Right shoe object">
-            <img class="part-object object-accessory" alt="Accessory object">
+
+    <div class="timer" id="wtimer" title="Set timer">
+        <svg class="timer-ring" viewBox="0 0 130 130">
+            <circle class="timer-ring-bg" cx="65" cy="65" r="51.5"></circle>
+            <circle class="timer-ring-progress" id="tpg" cx="65" cy="65" r="51.5" transform="rotate(-90 65 65)"></circle>
+        </svg>
+        <div class="timer-display" id="tdisp">02:30</div>
+        <div class="timer-controls">
+            <button class="timer-btn pp" id="tpp" type="button">&#9654;</button>
+            <button class="timer-btn rs" id="trs" type="button">&#8635;</button>
         </div>
+        <button class="timer-add" id="addMinBtn" type="button">+1 min</button>
     </div>
 
-    <div class="timer">
-        <span id="time">00:03:00</span>
-    </div>
+    <div class="step-badge" id="stepDisplay">&#128099; 0 steps</div>
 
     <div class="controls">
-        <div class="human-picker" id="humanPicker">
-            <button class="human-option is-active" type="button" data-character="traveler" aria-pressed="true">
-                <span class="human-avatar avatar-traveler"></span>
-                Traveler
-            </button>
-            <button class="human-option" type="button" data-character="sport" aria-pressed="false">
-                <span class="human-avatar avatar-sport"></span>
-                Sport
-            </button>
-            <button class="human-option" type="button" data-character="sunset" aria-pressed="false">
-                <span class="human-avatar avatar-sunset"></span>
-                Sunset
-            </button>
-            <button class="human-option" type="button" data-character="classic" aria-pressed="false">
-                <span class="human-avatar avatar-classic"></span>
-                Classic
-            </button>
-            <button class="human-option create-human-btn" id="openCreatorBtn" type="button" aria-pressed="false">
-                <span class="human-avatar avatar-create"></span>
-                Create
-            </button>
-        </div>
-        <div class="time-inputs">
-            <label for="hours" class="sr-only">Hours</label>
-            <input type="number" id="hours" placeholder="HH" min="0" value="0">
-            <label for="minutes" class="sr-only">Minutes</label>
-            <input type="number" id="minutes" placeholder="MM" min="0" value="3">
-            <label for="seconds" class="sr-only">Seconds</label>
-            <input type="number" id="seconds" placeholder="SS" min="0" value="0">
+        <div class="speed-controls">
+            <button class="speed-btn slow is-active" type="button" data-speed="slow">&#128694; Slow</button>
+            <button class="speed-btn fast" type="button" data-speed="fast">&#9889; Fast</button>
         </div>
         <div class="action-buttons">
-            <button id="startBtn" type="button">START</button>
-            <button id="continueBtn" class="hidden" type="button">CONTINUE</button>
-        </div>
-        <div class="speed-controls">
-            <button type="button" data-speed="18">Slow</button>
-            <button type="button" data-speed="12">Steady</button>
-            <button type="button" data-speed="7">Faster</button>
+            <button id="startBtn" type="button">&#9654; START</button>
         </div>
     </div>
 </div>
 
-<div id="creatorModal" class="creator-modal hidden" role="dialog" aria-modal="true" aria-labelledby="creatorTitle">
-    <div class="creator-panel">
-        <h2 id="creatorTitle">Create Human</h2>
-        <div class="creator-layout">
-            <div class="creator-preview">
-                <div class="human-figure preview-figure" id="creatorFigure">
-                    <div class="human-head"></div>
-                    <div class="human-hair"></div>
-                    <div class="human-hat"></div>
-                    <div class="human-body"></div>
-                    <div class="human-dress"></div>
-                    <div class="human-arm arm-left"></div>
-                    <div class="human-arm arm-right"></div>
-                    <div class="human-leg leg-left"></div>
-                    <div class="human-leg leg-right"></div>
-                    <div class="human-shoe shoe-left"></div>
-                    <div class="human-shoe shoe-right"></div>
-                    <div class="human-accessory"></div>
-                    <img class="part-object object-wig" alt="Wig object">
-                    <img class="part-object object-top" alt="Top object">
-                    <img class="part-object object-bottom" alt="Bottom object">
-                    <img class="part-object object-dress" alt="Dress object">
-                    <img class="part-object object-hat" alt="Hat object">
-                    <img class="part-object object-shoes-left" alt="Left shoe object">
-                    <img class="part-object object-shoes-right" alt="Right shoe object">
-                    <img class="part-object object-accessory" alt="Accessory object">
-                </div>
+<div class="mbg" id="timerM" role="dialog" aria-modal="true" aria-labelledby="timerTitle">
+    <div class="mcard">
+        <button class="mclose" id="closeTMBtn" type="button">&#10005;</button>
+        <h2 id="timerTitle">&#9201; Set Your Time</h2>
+        <div class="tinputs">
+            <div class="tg">
+                <label for="inH">Hours</label>
+                <input type="number" id="inH" min="0" max="23" value="0">
             </div>
-            <div class="creator-controls">
-                <label>Gender
-                    <select id="creatorGender">
-                        <option value="boy">Boy</option>
-                        <option value="girl">Girl</option>
-                    </select>
-                </label>
-                <label>Top
-                    <select id="creatorTop">
-                        <option value="tshirt">T-Shirt</option>
-                        <option value="hoodie">Hoodie</option>
-                        <option value="jacket">Jacket</option>
-                    </select>
-                </label>
-                <label>Bottom
-                    <select id="creatorBottom">
-                        <option value="pants">Pants</option>
-                        <option value="shorts">Shorts</option>
-                        <option value="dress">Dress</option>
-                    </select>
-                </label>
-                <label>Hat
-                    <select id="creatorHat">
-                        <option value="none">None</option>
-                        <option value="cap">Cap</option>
-                        <option value="beanie">Beanie</option>
-                    </select>
-                </label>
-                <label>Shoes
-                    <select id="creatorShoes">
-                        <option value="sneakers">Sneakers</option>
-                        <option value="boots">Boots</option>
-                    </select>
-                </label>
-                <label>Accessory
-                    <select id="creatorAccessory">
-                        <option value="none">None</option>
-                        <option value="backpack">Backpack</option>
-                        <option value="scarf">Scarf</option>
-                        <option value="glasses">Glasses</option>
-                    </select>
-                </label>
-                <label>Skin Color <input type="color" id="creatorSkinColor" value="#f2be93"></label>
-                <label>Hair Color <input type="color" id="creatorHairColor" value="#352319"></label>
-                <label>Top Color <input type="color" id="creatorTopColor" value="#4b8f4b"></label>
-                <label>Bottom Color <input type="color" id="creatorBottomColor" value="#55463e"></label>
-                <label>Hat Color <input type="color" id="creatorHatColor" value="#7b3f00"></label>
-                <label>Shoe Color <input type="color" id="creatorShoeColor" value="#f5d64f"></label>
-                <label>Wig Object <input type="file" id="creatorObjectWig" accept="image/*"></label>
-                <label>Top Object <input type="file" id="creatorObjectTop" accept="image/*"></label>
-                <label>Pants Object <input type="file" id="creatorObjectBottom" accept="image/*"></label>
-                <label>Dress Object <input type="file" id="creatorObjectDress" accept="image/*"></label>
-                <label>Hat Object <input type="file" id="creatorObjectHat" accept="image/*"></label>
-                <label>Shoes Object <input type="file" id="creatorObjectShoes" accept="image/*"></label>
-                <label>Accessory Object <input type="file" id="creatorObjectAccessory" accept="image/*"></label>
+            <div class="tsep">:</div>
+            <div class="tg">
+                <label for="inM">Min</label>
+                <input type="number" id="inM" min="0" max="59" value="2">
+            </div>
+            <div class="tsep">:</div>
+            <div class="tg">
+                <label for="inS">Sec</label>
+                <input type="number" id="inS" min="0" max="59" value="30">
             </div>
         </div>
-        <div class="creator-actions">
-            <button id="closeCreatorBtn" type="button">Close</button>
-            <button id="clearObjectsBtn" type="button">Clear Objects</button>
-            <button id="useCreatorBtn" type="button">Use in Walk</button>
-        </div>
+        <button class="tsetbtn" id="setTValBtn" type="button">Set Timer &#127919;</button>
+    </div>
+</div>
+
+<div class="mbg finish-mbg" id="finishM" role="dialog" aria-modal="true" aria-labelledby="finishTitle">
+    <div class="finish-card">
+        <div class="finish-glow"></div>
+        <div class="finish-icon">&#128276;</div>
+        <h2 id="finishTitle">Session Complete</h2>
+        <p id="finishMsg">Great job! You finished your walk.</p>
+        <button id="finishOkBtn" type="button" class="finish-ok">OK</button>
     </div>
 </div>
 
 <script src="script.js"></script>
 <script>
+    function buildHC() {
+        const wrap = document.getElementById("hclouds");
+        if (!wrap || wrap.children.length > 0) {
+            return;
+        }
+
+        [
+            [175, 50, 8, 22, 0],
+            [128, 38, 17, 17, 7],
+            [210, 62, 3, 27, 4],
+            [145, 44, 21, 19, 13],
+            [104, 34, 12, 16, 22]
+        ].forEach(([w, h, top, duration, delay]) => {
+            const cloud = document.createElement("div");
+            cloud.className = "hcl";
+            cloud.style.cssText = `width:${w}px;height:${h}px;top:${top}%;left:-${w + 10}px;animation-duration:${duration}s;animation-delay:${delay}s;`;
+            wrap.appendChild(cloud);
+        });
+    }
+
+    function buildHT() {
+        const wrap = document.getElementById("hometrees");
+        if (!wrap || wrap.children.length > 0) {
+            return;
+        }
+
+        const treeColors = ["#5ca85c", "#4a9e4a", "#3d8a3d", "#6abf5e", "#58b058"];
+        const trunkColors = ["#7a4f2d", "#6b3e22"];
+        for (let i = 0; i < 14; i += 1) {
+            const h = 72 + Math.random() * 64;
+            const leaf = treeColors[i % treeColors.length];
+            const trunk = trunkColors[i % trunkColors.length];
+            const tree = document.createElement("div");
+            tree.style.cssText = `display:inline-block;vertical-align:bottom;margin-right:${7 + Math.random() * 27}px;`;
+            tree.innerHTML = `<svg width="50" height="${h}" viewBox="0 0 50 ${h}" style="display:block;">
+                <rect x="20" y="${h * 0.63}" width="10" height="${h * 0.37}" rx="3" fill="${trunk}" />
+                <ellipse cx="25" cy="${h * 0.48}" rx="21" ry="${h * 0.28}" fill="${leaf}" />
+                <ellipse cx="25" cy="${h * 0.31}" rx="16" ry="${h * 0.21}" fill="${treeColors[(i + 1) % treeColors.length]}" opacity="0.88" />
+                <ellipse cx="25" cy="${h * 0.17}" rx="11" ry="${h * 0.14}" fill="${leaf}" opacity="0.92" />
+            </svg>`;
+            wrap.appendChild(tree);
+        }
+    }
+
+    function setWalkScreenVisible(visible) {
+        const sceneEl = document.getElementById("scene");
+        const backBtn = document.getElementById("walkBackBtn");
+        const homeBtn = document.getElementById("walkHomeBtn");
+        const homePage = document.getElementById("home-page");
+
+        homePage.style.display = visible ? "none" : "flex";
+        sceneEl.style.display = visible ? "block" : "none";
+        backBtn.style.display = visible ? "inline-flex" : "none";
+        homeBtn.style.display = visible ? "inline-flex" : "none";
+    }
+
+    function goToWalk() {
+        setWalkScreenVisible(true);
+    }
+
     function goBack() {
         if (window.history.length > 1) {
             window.history.back();
@@ -199,8 +342,21 @@
     }
 
     function goHome() {
-        window.location.href = "/Program%20Mental%20Health.html";
+        if (typeof stopRun === "function") {
+            stopRun();
+        }
+        if (typeof closeTM === "function") {
+            closeTM();
+        }
+        if (typeof closeFinishModal === "function") {
+            closeFinishModal();
+        }
+        setWalkScreenVisible(false);
     }
+
+    buildHC();
+    buildHT();
+    setWalkScreenVisible(false);
 </script>
 </body>
 </html>
